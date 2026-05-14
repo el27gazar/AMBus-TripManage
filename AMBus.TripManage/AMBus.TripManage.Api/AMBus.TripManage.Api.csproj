@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+		  <PackageReference Include="Microsoft.OpenApi" Version="1.6.14" />
+		  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	  
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AMBus.TripManage.Application\AMBus.TripManage.Application.csproj" />
+    <ProjectReference Include="..\AMBus.TripManage.Domain\AMBus.TripManage.Domain.csproj" />
+    <ProjectReference Include="..\AMBus.TripManage.Persistance\AMBus.TripManage.Persistance.csproj" />
+  </ItemGroup>
+
+</Project>
