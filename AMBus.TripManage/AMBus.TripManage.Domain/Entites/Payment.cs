@@ -11,73 +11,69 @@ namespace AMBus.TripManage.Domain.Entites
 {
     public enum PaymentMethod
     {
-        FawryCash = 1,      // دفع كاش من فروع فوري
-        FawryWallet = 2,    // محفظة فوري
-        VodafoneCash = 3,   // فودافون كاش
-        InstaPay = 4,       // إنستا باي
-       CashOnDelivery = 5, // كاش عند الاستلام (عند المكتب نفسه)
-        BankTransfer = 6   // تحويل بنكي   
+        Card,           // Paymob Credit/Debit
+        VodafoneCash,
+        OrangeCash,
+        EtisalatCash,
+        Fawry,
+        Aman,
+        Masary,
+        Cash            // يدوي Admin
     }
+
     public enum PaymentStatus
     {
-        Pending = 1,
-        Completed = 2,
-        Failed = 3,
-        Expired = 4,
-        Refunded = 5
+        Pending,
+        PendingCustomerAction,  // فاتورة Fawry/Wallet — ينتظر العميل
+        Paid,
+        Failed,
+        Refunded,
+        Cancelled
     }
 
-    public class Payment:AuditableEntity
+    public enum PaymentProvider
     {
-            public Guid Id { get; set; }
+        Paymob,
+        Manual
+    }
 
-            [Column(TypeName = "decimal(10,2)")]
-            public decimal Amount { get; set; }
+    public class Payment : AuditableEntity
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-            public PaymentMethod Method { get; set; }
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Amount { get; set; }
 
-            public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
+        [MaxLength(10)]
+        public string Currency { get; set; } = "EGP";
 
-            [MaxLength(100)]
-            public string? TransactionId { get; set; } // from payment gateway
+        public PaymentMethod Method { get; set; }
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
+        public PaymentProvider Provider { get; set; }
 
-            
+        // Paymob
+        [MaxLength(100)] public string? PaymobOrderId { get; set; }
+        [MaxLength(100)] public string? PaymobTransactionId { get; set; }
+        [MaxLength(2000)] public string? PaymobPaymentToken { get; set; }
 
-            // الرقم المرجعي اللي العميل يستخدمه للدفع (بيظهر للمستخدم)
-            [MaxLength(50)]
-            public string? ReferenceNumber { get; set; }
+        // Fawry
+        [MaxLength(100)] public string? FawryReferenceNumber { get; set; }
 
-            // رقم محفظة فودافون كاش أو إنستا باي
-            [MaxLength(20)]
-            public string? WalletNumber { get; set; }
+        // Wallet
+        [MaxLength(20)] public string? WalletMsisdn { get; set; }
+        [MaxLength(500)] public string? WalletRedirectUrl { get; set; }
 
-            // رقم تليفون العميل
-            [MaxLength(20)]
-            public string? CustomerMobile { get; set; }
+        // Aman / Masary
+        [MaxLength(100)] public string? OtcReferenceNumber { get; set; }
 
-            // تاريخ انتهاء صلاحية الدفع (فوري مثلاً 7 أيام)
-            public DateTime? ExpiresAt { get; set; }
+        // Generic
+        [MaxLength(100)] public string? ExternalTransactionId { get; set; }
 
-            // سبب الفشل لو الدفع مكملش
-            [MaxLength(500)]
-            public string? FailureReason { get; set; }
+        public DateTime? PaidAt { get; set; }
+        public DateTime? RefundedAt { get; set; }
+        public DateTime? ExpiresAt { get; set; }
 
-            // Webhook response data (كـ JSON)
-            [MaxLength(2000)]
-            public string? GatewayResponse { get; set; }
-
-            [MaxLength(100)]
-            public string? GatewayReferenceNumber { get; set; }
-
-          
-            public DateTime? PaidAt { get; set; } 
-            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-            public DateTime? UpdatedAt { get; set; }
-
-            // FK (one-to-one with Booking)
-            public Guid BookingId { get; set; }
-            public Booking Booking { get; set; } = null!;
-        
+        public Guid BookingId { get; set; }
+        public Booking Booking { get; set; } = null!;
     }
 }

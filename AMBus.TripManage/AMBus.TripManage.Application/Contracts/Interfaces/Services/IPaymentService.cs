@@ -6,9 +6,46 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Contracts.Interfaces.Services
 {
-    public interface IPaymentService
-    {
-        Task<string> ProcessPaymentAsync(decimal amount, string method, Guid bookingId);
-        Task<bool> RefundAsync(string transactionId);
-    }
+   
+        public interface IPaymentService
+        {
+            Task<PaymentInitResult> InitiatePaymentAsync(InitiatePaymentRequest req);
+            Task<VerifyPaymentResult> VerifyPaymentAsync(string transactionId, string provider);
+            Task<RefundResult> RefundAsync(string transactionId, string provider, decimal amount, string reason);
+        }
+
+    public record InitiatePaymentRequest(
+       Guid BookingId,
+       decimal Amount,
+       string Currency,
+       string Method,
+       string? PhoneNumber,
+       string CustomerName,
+       string CustomerEmail
+   );
+
+    public record PaymentInitResult(
+        bool Success,
+        string Action,
+        string? PaymentToken,
+        string? RedirectUrl,
+        string? ReferenceNumber,
+        string? OrderId,
+        string? TransactionId,
+        DateTime? ExpiresAt,
+        string? Error
+    );
+
+    public record VerifyPaymentResult(
+        bool Success,
+        string Status,
+        string? TransactionId,
+        string? Error
+    );
+
+    public record RefundResult(
+        bool Success,
+        string? RefundId,
+        string? Error
+    );
 }

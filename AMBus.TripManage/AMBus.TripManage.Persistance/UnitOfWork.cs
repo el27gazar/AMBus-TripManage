@@ -25,6 +25,8 @@ namespace AMBus.TripManage.Persistance
         public IPaymentRepository Payments { get; }
         public IDashboardRepository Dashboard { get; }
 
+        
+        public IChatRepository Chat { get; }
         public UnitOfWork(AppDbContext ctx)
         {
             _ctx = ctx;
@@ -36,6 +38,7 @@ namespace AMBus.TripManage.Persistance
             Users = new UserRepository(ctx);
             Notifications = new NotificationRepository(ctx);
             Reviews = new ReviewRepository(ctx);
+            Chat = new ChatRepository(ctx);
             Payments = new PaymentRepository(ctx);
             Dashboard = new DashboardRepository(ctx);
         }

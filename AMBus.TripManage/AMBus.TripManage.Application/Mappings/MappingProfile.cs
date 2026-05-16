@@ -139,9 +139,9 @@ namespace AMBus.TripManage.Application.Mappings
             //  PAYMENT
             // ══════════════════════════════════════════════
 
-            CreateMap<Payment, PaymentDto>()
-                .ForMember(d => d.Method, o => o.MapFrom(s => s.Method.ToString()))
-                .ForMember(d => d.Status, o => o.MapFrom(s => s.Status.ToString()));
+            CreateMap<Payment, PaymentDto>().ReverseMap();
+                
+
 
             // ══════════════════════════════════════════════
             //  REVIEW

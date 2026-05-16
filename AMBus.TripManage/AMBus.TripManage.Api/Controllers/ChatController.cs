@@ -14,7 +14,7 @@ namespace AMBus.TripManage.Api.Controllers
     [Authorize]
     public class ChatController : BaseController
     {
-        // GET /api/chat/my  [User]
+
         [HttpGet("my")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMy()
@@ -24,7 +24,7 @@ namespace AMBus.TripManage.Api.Controllers
             return Ok(result);
         }
 
-        // GET /api/chat  [Admin]
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,21 +38,23 @@ namespace AMBus.TripManage.Api.Controllers
             return Ok(result);
         }
 
-        // GET /api/chat/{id}/messages
+  
         [HttpGet("{id:guid}/messages")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetMessages(
             Guid id,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 50)
         {
             var result = await Mediator.Send(
-                new GetMessagesQuery(id, CurrentUserId, IsAdmin, page, pageSize));
+                new GetMessagesQuery(
+                    id, CurrentUserId, IsAdmin, page, pageSize));
             return Ok(result);
         }
 
-        // POST /api/chat  [User]
+
         [HttpPost]
         [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -69,10 +71,30 @@ namespace AMBus.TripManage.Api.Controllers
             return Created(string.Empty, result);
         }
 
-        // PUT /api/chat/{id}/assign  [Admin]
+     
+        //[HttpPost("{id:guid}/messages")]
+        //[ProducesResponseType(StatusCodes.Status201Created)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //public async Task<IActionResult> SendMessage(
+        //    Guid id,
+        //    [FromBody] SendMessageRequest request)
+        //{
+        //    var result = await Mediator.Send(
+        //        new SendMessageCommand(
+        //            id,
+        //            CurrentUserId,
+        //            request.Content,
+        //            IsAdmin));
+
+        //    return Created(string.Empty, result);
+        //}
+
+       
         [HttpPut("{id:guid}/assign")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Assign(Guid id)
         {
             await Mediator.Send(
@@ -80,10 +102,12 @@ namespace AMBus.TripManage.Api.Controllers
             return Ok(new { message = "تم تعيينك على المحادثة." });
         }
 
-        // PUT /api/chat/{id}/close  [Admin]
+ 
         [HttpPut("{id:guid}/close")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Close(Guid id)
         {
             await Mediator.Send(
@@ -91,4 +115,6 @@ namespace AMBus.TripManage.Api.Controllers
             return Ok(new { message = "تم إغلاق المحادثة." });
         }
     }
+
+    public record SendMessageRequest(string Content);
 }

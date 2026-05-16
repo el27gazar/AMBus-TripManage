@@ -21,12 +21,12 @@ namespace AMBus.TripManage.Application.Features.DashboardF.Queries.GetRevenueCha
             CancellationToken cancellationToken)
         {
             var payments = await _uow.Payments
-                .GetPaidPaymentsInRangeAsync(request.From, request.To);
+                .GetPaidInRangeAsync(request.From, request.To);
 
             if (request.GroupBy == "day")
             {
                 return payments
-                    .GroupBy(p => p.PaidAt!.Date)
+                    .GroupBy(p => p.PaidAt!.Value)
                     .OrderBy(g => g.Key)
                     .Select(g => new RevenuePointDto(
                         Period: g.Key.ToString("yyyy-MM-dd"),
@@ -37,7 +37,7 @@ namespace AMBus.TripManage.Application.Features.DashboardF.Queries.GetRevenueCha
             else
             {
                 return payments
-                    .GroupBy(p => new { p.PaidAt!.Year, p.PaidAt.Month })
+                    .GroupBy(p => new { p.PaidAt!.Value.Year, p.PaidAt!.Value.Month })
                     .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
                     .Select(g => new RevenuePointDto(
                         Period: new DateTime(g.Key.Year, g.Key.Month, 1)
