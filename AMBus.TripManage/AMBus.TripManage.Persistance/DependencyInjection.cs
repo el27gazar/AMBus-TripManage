@@ -64,8 +64,11 @@ namespace AMBus.TripManage.Persistance
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-                    ValidateIssuer = true, 
-                    ValidateAudience = true, 
+                    ValidateIssuer = true,
+                    ValidIssuer = configuration["Jwt:Issuer"], 
+
+                    ValidateAudience = true,
+                    ValidAudience = configuration["Jwt:Audience"], 
                     ClockSkew = TimeSpan.Zero
                 };
 
