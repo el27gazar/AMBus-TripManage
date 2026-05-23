@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Jolly+Lodger&display=swap');
+
+.logo {
+  cursor: pointer;
+}
+
+.logo h1 span {
+  font-family: 'Jolly Lodger', system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 50px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+  color: #fff;
+}
+.container {
+  width: 100%;
+  background-color: #1e1e1e;
+}
+
+.navbar-container {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  margin: auto;
+  color: #fff;
+}
+
+.container-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  font-size: 20px;
+  transition: 0.3s ease;
+}
+.auth:hover,
+button:hover {
+  transform: scale(1.1);
+  color: #db1919;
+}
+
+button {
+  background-color: inherit;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}

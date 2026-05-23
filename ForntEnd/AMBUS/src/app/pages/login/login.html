@@ -1,0 +1,41 @@
+<div class="container-login">
+  <div class="landing-login">
+    <div>
+      <h2 class="h-lan">Welcome, Back</h2>
+      <p class="p-lan">Enter your Personal details and start journey with us</p>
+    </div>
+    <img class="img-lan" src="assets/images/busWithoutBacd-compressed.webp" alt="bus" />
+  </div>
+
+  <div class="form-login">
+    <h2 class="h-form">Login to AMBUS</h2>
+    <form [formGroup]="LoginForm" (submit)="Login()">
+      <input type="email" placeholder="Email Address" formControlName="Email" />
+       @if(Email.dirty){
+         @if(Email.getError("required")){
+            <p class="Error"> ! Validation error: Email Address Is Required </p>
+         }
+       }
+      <input type="password" placeholder="Password" formControlName="Password" />
+       @if(Password.dirty){
+         @if(Password.getError("required")){
+            <p class="Error"> ! Validation error: Password Is Required </p>
+         }
+       }
+      <a [routerLink]="['/ForgetPassword']" class="a-form">Forgot your Password? </a>
+      <button class="submit-from" type="submit">Login</button>
+    </form>
+    <div class="signup">
+      <p class="p-form">Create New Account </p>
+      <a class="a-form" [routerLink]="['/register']">Register</a>
+
+    </div>
+  </div>
+
+
+  <div class="toast" id="toastError">
+    <p class="toast-message"> </p>
+  </div>
+
+</div>
+
