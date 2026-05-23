@@ -33,6 +33,7 @@ namespace AMBus.TripManage.Application.Mappings
 
        CreateMap<RegisterRequestDto, User>()
      .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
+     .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
      .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
      .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
      .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
@@ -48,7 +49,6 @@ namespace AMBus.TripManage.Application.Mappings
      .ForMember(dest => dest.LockoutEnabled, opt => opt.Ignore())
      .ForMember(dest => dest.LockoutEnd, opt => opt.Ignore())
      .ForMember(dest => dest.TwoFactorEnabled, opt => opt.Ignore())
-     .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())
      .ForMember(dest => dest.PhoneNumberConfirmed, opt => opt.Ignore());
 
 

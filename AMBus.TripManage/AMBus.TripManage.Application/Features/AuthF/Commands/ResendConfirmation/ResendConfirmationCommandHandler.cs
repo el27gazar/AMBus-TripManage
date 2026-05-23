@@ -1,5 +1,6 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces.Services;
 using AMBus.TripManage.Application.Exceptions;
+using AMBus.TripManage.Application.Templates;
 using AMBus.TripManage.Domain.Entites;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -13,16 +14,13 @@ namespace AMBus.TripManage.Application.Features.AuthF.Commands.ResendConfirmatio
     {
         private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
-        private readonly IConfiguration _config;
 
         public ResendConfirmationCommandHandler(
             UserManager<User> userManager,
-            IEmailService emailService,
-            IConfiguration config)
+            IEmailService emailService)
         {
             _userManager = userManager;
             _emailService = emailService;
-            _config = config;
         }
 
         public async Task<bool> Handle(ResendConfirmationCommand request, CancellationToken cancellationToken)
@@ -33,17 +31,13 @@ namespace AMBus.TripManage.Application.Features.AuthF.Commands.ResendConfirmatio
             if (user.EmailConfirmed)
                 throw new ConflictException("Email already confirmed.");
 
-            
-            var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            // OTP بدل link
+            var otpCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
 
-         
-            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmationToken));
-
-            
-            var confirmationLink = $"https://localhost:7172/api/Auth/confirm-email?email={request.Email}&token={encodedToken}";
-
-          
-            await _emailService.SendConfirmationEmailAsync(user.Email, confirmationLink);
+            await _emailService.SendEmailAsync(
+                user.Email!,
+                "تأكيد البريد الإلكتروني",
+                EmailTemplates.ConfirmEmail(user.FullName, otpCode));
 
             return true;
         }

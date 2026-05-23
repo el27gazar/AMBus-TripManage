@@ -11,7 +11,7 @@ namespace AMBus.TripManage.Domain.Entites
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        
+        public string PhoneNumber { get; set; } = string.Empty;
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<Notification> Notifications { get; set; } = new List<Notification>();

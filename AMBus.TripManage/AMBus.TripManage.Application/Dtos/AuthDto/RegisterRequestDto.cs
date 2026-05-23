@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,6 @@ namespace AMBus.TripManage.Application.Dtos.AuthDto
       string FullName,
       string Email,
       string Password,
-      string? PhoneNumber
-  ):IRequest<AuthResponseDto>;
+      [Required, Phone] string PhoneNumber
+  ) :IRequest<AuthResponseDto>;
 }

@@ -6,14 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AMBus.TripManage.Application.Contracts.Interfaces.Services
-{
-    public interface IAuthService
+
+   
+    namespace AMBus.TripManage.Application.Contracts.Interfaces.Services
     {
-        Task<AuthResponseDto> RegisterAsync(RegisterRequestDto command);
-        Task<AuthResponseDto> LoginAsync(LoginRequestDto loginRequestDto);
-        Task ChangePasswordAsync(Guid userId, string current, string newPass);
-        Task<string> GenerateForgotPasswordTokenAsync(string email);
-        Task ResetPasswordAsync(string email, string token, string newPassword);
+        public interface IAuthService
+        {
+            Task<AuthResponseDto> RegisterAsync(RegisterRequestDto command);
+            Task<AuthResponseDto> LoginAsync(LoginRequestDto loginRequestDto);
+            Task ChangePasswordAsync(Guid userId, string current, string newPass);
+            Task GenerateForgotPasswordCodeAsync(string email);
+            Task ResetPasswordAsync(string email, string otpCode, string newPassword);
+            Task<bool> ConfirmEmailOtpAsync(string email, string code);
+        }
     }
-}
+

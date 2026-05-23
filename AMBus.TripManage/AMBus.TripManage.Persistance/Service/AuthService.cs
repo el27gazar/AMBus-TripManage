@@ -2,8 +2,10 @@
 using AMBus.TripManage.Application.Dtos.AuthDto;
 using AMBus.TripManage.Application.Exceptions;
 using AMBus.TripManage.Application.Features.AuthF.Commands.RegisterCommands;
+using AMBus.TripManage.Application.Templates;
 using AMBus.TripManage.Domain.Entites;
 using AutoMapper;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +28,9 @@ namespace AMBus.TripManage.Persistance.Service
         public AuthService(
             UserManager<User> userManager,
             ITokenService tokenService,
-            IMapper mapper, IEmailService emailService, IConfiguration config)
+            IMapper mapper,
+            IEmailService emailService,
+            IConfiguration config)
         {
             _userManager = userManager;
             _tokenService = tokenService;
@@ -39,7 +43,7 @@ namespace AMBus.TripManage.Persistance.Service
         {
             var exists = await _userManager.FindByEmailAsync(command.Email);
             if (exists is not null)
-                throw new ConflictException($"البريد الإلكتروني '{command.Email}' مسجل بالفعل.");
+                throw new ConflictException($"'{command.Email}' already exists.");
 
             var user = _mapper.Map<User>(command);
 
@@ -52,8 +56,9 @@ namespace AMBus.TripManage.Persistance.Service
 
             if (!result.Succeeded)
             {
-                var failures = result.Errors.Select(e =>
-                    new FluentValidation.Results.ValidationFailure(e.Code, e.Description)).ToList();
+                var failures = result.Errors
+                    .Select(e => new ValidationFailure(e.Code, e.Description))
+                    .ToList();
                 throw new ValidationException(failures);
             }
 
@@ -61,8 +66,11 @@ namespace AMBus.TripManage.Persistance.Service
 
             var otpCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
 
+            await _emailService.SendEmailAsync(
+                user.Email!,
+                "تأكيد البريد الإلكتروني",
+                EmailTemplates.ConfirmEmail(user.FullName, otpCode));
 
-            await _emailService.SendEmailAsync(user.Email, "رمز التأكيد الخاص بك", $"رمز التأكيد هو: {otpCode}");
             return new AuthResponseDto(
                 Token: null,
                 ExpiresAt: null,
@@ -70,19 +78,19 @@ namespace AMBus.TripManage.Persistance.Service
                 FullName: user.FullName,
                 Email: user.Email!,
                 Role: "User",
-                RequiresEmailConfirmation: true
-            );
+                RequiresEmailConfirmation: true);
         }
+
         public async Task<AuthResponseDto> LoginAsync(LoginRequestDto loginRequestDto)
         {
             var user = await _userManager.FindByEmailAsync(loginRequestDto.Email)
-                ?? throw new UnauthorizedException("بيانات الدخول غير صحيحة.");
+                ?? throw new UnauthorizedException("Wrong email or password.");
 
             if (!user.EmailConfirmed)
-                throw new UnauthorizedException("Please confirm your email address before logging in. Check your inbox for the confirmation link.");
+                throw new UnauthorizedException("Please confirm your email address before logging in.");
 
             if (!await _userManager.CheckPasswordAsync(user, loginRequestDto.Password))
-                throw new UnauthorizedException("بيانات الدخول غير صحيحة.");
+                throw new UnauthorizedException("Wrong email or password.");
 
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault() ?? "User";
@@ -94,55 +102,61 @@ namespace AMBus.TripManage.Persistance.Service
                 FullName: user.FullName,
                 Email: user.Email!,
                 Role: role,
-                RequiresEmailConfirmation: false
-            );
+                RequiresEmailConfirmation: false);
         }
-        public async Task ChangePasswordAsync(
-            Guid userId, string current, string newPass)
+
+        public async Task ChangePasswordAsync(Guid userId, string current, string newPass)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString())
                 ?? throw new NotFoundException(nameof(User), userId);
 
-            var result = await _userManager.ChangePasswordAsync(
-                user, current, newPass);
+            var result = await _userManager.ChangePasswordAsync(user, current, newPass);
 
             if (!result.Succeeded)
                 throw new ValidationException(
                     result.Errors.Select(e =>
-                        new FluentValidation.Results.ValidationFailure(
-                            "Password", e.Description)));
+                        new ValidationFailure("Password", e.Description)));
         }
 
-        public async Task<string> GenerateForgotPasswordTokenAsync(string email)
+        public async Task GenerateForgotPasswordCodeAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email)
                 ?? throw new NotFoundException("User", email);
 
-            return await _userManager.GeneratePasswordResetTokenAsync(user);
+            var otpCode = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+            await _emailService.SendEmailAsync(
+                user.Email!,
+                "إعادة تعيين كلمة المرور",
+                EmailTemplates.ResetPassword(user.FullName, otpCode));
         }
 
-        public async Task ResetPasswordAsync(
-            string email, string token, string newPassword)
+        public async Task ResetPasswordAsync(string email, string otpCode, string newPassword)
         {
             var user = await _userManager.FindByEmailAsync(email)
                 ?? throw new NotFoundException("User", email);
 
-            var result = await _userManager.ResetPasswordAsync(
-                user, token, newPassword);
+            var isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", otpCode);
+            if (!isValid)
+                throw new ValidationException(new[]
+                {
+                    new ValidationFailure("OTP", "الرمز غير صحيح أو منتهي الصلاحية.")
+                });
+
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
 
             if (!result.Succeeded)
                 throw new ValidationException(
                     result.Errors.Select(e =>
-                        new FluentValidation.Results.ValidationFailure(
-                            "Password", e.Description)));
+                        new ValidationFailure("Password", e.Description)));
         }
 
         public async Task<bool> ConfirmEmailOtpAsync(string email, string code)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if (user == null) return false;
+            if (user is null) return false;
 
-           
             var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", code);
 
             if (result)
