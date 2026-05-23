@@ -1,0 +1,34 @@
+<div class="container-login">
+  <div class="landing-login">
+    <div>
+      <p class="p-lan">Enter the verification code that was sent to your email For Confirm your account</p>
+    </div>
+    <img class="img-lan" src="assets/images/busWithoutBacd-compressed.webp" alt="bus" />
+  </div>
+
+  <div class="form-login">
+    <h2 class="h-form">verification Email</h2>
+    <form [formGroup]="validationForm" (submit)="VerifyEmail()">
+      <input type="text" placeholder="verification Code" formControlName="Code" />
+      @if (Code.dirty) {
+        @if (Code.getError("required")) {
+          <p class="Error"> ! Validation error: Code Is Required </p>
+        }
+      }
+
+      @if(count>0)
+      {
+        <p>Resend Code After {{count}} seconds </p>
+      }
+      @else{
+        <a class="a-form" (click) ="Resend()">Resend Code</a>
+      }
+
+      <button class="submit-from" type="submit">Verify</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toastError">
+  <p class="toast-message"> </p>
+</div>

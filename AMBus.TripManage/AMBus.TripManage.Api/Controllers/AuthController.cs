@@ -8,7 +8,6 @@ using AMBus.TripManage.Application.Features.AuthF.Commands.RegisterCommands;
 using AMBus.TripManage.Application.Features.AuthF.Commands.ResendConfirmation;
 using AMBus.TripManage.Application.Features.AuthF.Commands.ResetPasswordCommands;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMBus.TripManage.Api.Controllers

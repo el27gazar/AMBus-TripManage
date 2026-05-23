@@ -1,0 +1,64 @@
+/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #fff;
+}
+
+:root {
+  --primary: #1e1e1e;
+  --secondary: #ffffff;
+  --hover: #db1919;
+}
+
+.mainlayout {
+  background-color: #1e1e1e;
+}
+
+body {
+  /* background-color: #1e1e1e; */
+  width: 100%;
+}
+
+.Error {
+  color: red;
+  font-bold: 600;
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  border: 1px solid #fff;
+  background-color: #fff;
+  width: 300px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: slide-in 0.3s ease-in-out;
+  display: none;
+}
+.toast.show {
+  display: block;
+}
+
+.toast p {
+  color: #ff0000;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

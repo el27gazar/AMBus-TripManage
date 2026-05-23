@@ -1,0 +1,90 @@
+<div class="container-login">
+  <div class="landing-login">
+    <div>
+      <h2 class="h-lan">Hello, Friend</h2>
+      <p class="p-lan">Enter your Personal details and start journey with us</p>
+    </div>
+    <img class="img-lan" src="assets/images/busWithoutBacd-compressed.webp" alt="bus" />
+  </div>
+
+  <div class="form-login">
+    <h2 class="h-form">Create new Account </h2>
+    <form [formGroup]="RegisterForm" (ngSubmit)="Submit()">
+      <input type="text" placeholder="UserName" formControlName="FullName" />
+       @if(FullName.dirty)
+       {
+         @if(FullName.getError("required"))
+         {
+            <p class="Error"> ! Validation error: Username Is Required </p>
+         }
+        @if(FullName.getError("minlength"))
+        {
+        <p class="Error"> ! Validation error: Username must be at least 3 characters </p>
+        }
+        @if(FullName.getError("maxlength"))
+        {
+        <p class="Error"> ! Validation error: Username must be at most 50 characters </p>
+        }
+       }
+      <input type="email" placeholder="Email Address" formControlName="Email" />
+       @if(EmailAddress.dirty )
+       {
+         @if(EmailAddress.getError("required"))
+         {
+            <p class="Error"> ! Validation error: Email Address Is Required </p>
+         }
+         @if(EmailAddress.getError("email"))
+         {
+            <p class="Error"> ! Validation error: Invalid Email Address </p>
+         }
+       }
+      <input type="phone" placeholder="Phone Number" formControlName="PhoneNumber" />
+       @if(PhoneNumber.dirty )
+       {
+         @if(PhoneNumber.getError("required"))
+         {
+            <p class="Error"> ! Validation error: Phone Number Is Required </p>
+         }
+         @if(PhoneNumber.getError("pattern"))
+         {
+            <p class="Error"> ! Validation error: Invalid Phone Number </p>
+         }
+       }
+       <input [type]="showPassword? 'text': 'password'" placeholder="Password" formControlName="Password" />
+       @if(Password.dirty )
+       {
+         @if(Password.getError("required"))
+         {
+            <p class="Error"> ! Validation error: Password Is Required </p>
+         }
+         @if(Password.getError("pattern"))
+         {
+            <p class="Error"> ! Validation error: Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character </p>
+         }
+       }
+      <input [type]="showPassword? 'text': 'password'" placeholder="Confirm Password" formControlName="ConfirmPassword" />
+       @if(ConfirmPassword.dirty )
+       {
+         @if(ConfirmPassword.getError("notSame"))
+         {
+            <p class="Error"> ! Validation error: Password and Confirm Password do not match </p>
+         }
+       }
+      <div class="showPassword">
+        <input type="checkbox" (change)="ChangePassword()" />
+        <label for="checkbox" style="color:black; ">Show Password</label>
+      </div>
+      <button class="submit-from" type="submit">Register</button>
+    </form>
+    <div class="signup">
+      <p class="p-form">Already have an account? </p>
+      <a class="a-form" [routerLink]="['/login']">Login</a>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="toast" id="toastError">
+   <p class="toast-message">  </p>
+</div>
