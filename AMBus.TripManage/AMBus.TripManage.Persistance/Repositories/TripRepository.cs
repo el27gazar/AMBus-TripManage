@@ -16,8 +16,8 @@ namespace AMBus.TripManage.Persistance.Repositories
 
         public async Task<Trip?> GetTripWithDetailsAsync(Guid tripId)
             => await _ctx.Trips
-                .Include(t => t.Route)
-                    .ThenInclude(r => r.Stops.OrderBy(s => s.StopOrder))
+                .Include(t => t.From)                               // ✅
+                .Include(t => t.To)                                 // ✅
                 .Include(t => t.Bus)
                     .ThenInclude(b => b.Seats)
                 .Include(t => t.Driver)
@@ -36,7 +36,8 @@ namespace AMBus.TripManage.Persistance.Repositories
         public async Task<IEnumerable<Trip>> GetUpcomingTripsAsync(
             DateTime from, DateTime until)
             => await _ctx.Trips
-                .Include(t => t.Route)
+                .Include(t => t.From)                               // ✅
+                .Include(t => t.To)                                 // ✅
                 .Include(t => t.Bus)
                 .Include(t => t.Driver).ThenInclude(d => d.User)
                 .Where(t =>
@@ -51,7 +52,8 @@ namespace AMBus.TripManage.Persistance.Repositories
             int seats, int page, int pageSize)
         {
             var query = _ctx.Trips
-                .Include(t => t.Route)
+                .Include(t => t.From)                               
+                .Include(t => t.To)                                
                 .Include(t => t.Bus)
                 .Include(t => t.Driver).ThenInclude(d => d.User)
                 .Where(t =>
@@ -61,11 +63,11 @@ namespace AMBus.TripManage.Persistance.Repositories
 
             if (!string.IsNullOrWhiteSpace(fromCity))
                 query = query.Where(t =>
-                    t.Route.FromCity.Contains(fromCity));
+                    t.From.Name.Contains(fromCity));               
 
             if (!string.IsNullOrWhiteSpace(toCity))
                 query = query.Where(t =>
-                    t.Route.ToCity.Contains(toCity));
+                    t.To.Name.Contains(toCity));                    
 
             if (date.HasValue)
                 query = query.Where(t =>

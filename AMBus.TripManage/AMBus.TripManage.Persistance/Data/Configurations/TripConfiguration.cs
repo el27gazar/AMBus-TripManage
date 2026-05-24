@@ -24,7 +24,6 @@ namespace AMBus.TripManage.Persistance.Data.Configurations
              .HasMaxLength(20);
 
             // ── Audit fields ──────────────────────────────
-            // بتتعمل أوتوماتيك من ApplyAudit في SaveChanges
             b.Property(t => t.CreatedBy)
              .HasMaxLength(100);
 
@@ -32,9 +31,14 @@ namespace AMBus.TripManage.Persistance.Data.Configurations
              .HasMaxLength(100);
 
             // ── Relations ────────────────────────────────
-            b.HasOne(t => t.Route)
-             .WithMany(r => r.Trips)
-             .HasForeignKey(t => t.RouteId)
+            b.HasOne(t => t.From)
+             .WithMany(r => r.DepartureTrips)
+             .HasForeignKey(t => t.FromId)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(t => t.To)
+             .WithMany(r => r.ArrivalTrips)
+             .HasForeignKey(t => t.ToId)
              .OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(t => t.Bus)

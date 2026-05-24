@@ -31,7 +31,7 @@ namespace AMBus.TripManage.Persistance.Service
                 booking.User.Id,
                 NotificationType.BookingConfirmed,
                 $"✅ تم تأكيد حجزك | " +
-                $"{booking.Trip.Route.FromCity} → {booking.Trip.Route.ToCity} | " +
+                $"{booking.Trip.From.Name} → {booking.Trip.To.Name} | " +
                 $"{booking.Trip.DepartureTime:dd MMM HH:mm} | " +
                 $"رمز الحجز: {booking.QrCode}");
         }
@@ -43,8 +43,8 @@ namespace AMBus.TripManage.Persistance.Service
             if (booking is null) return;
 
             var msg = $"❌ تم إلغاء حجزك | " +
-                      $"{booking.Trip.Route.FromCity} → " +
-                      $"{booking.Trip.Route.ToCity}";
+                      $"{booking.Trip.From.Name} → " +
+                      $"{booking.Trip.To.Name}";
 
             await _sender.SendAsync(
                 booking.User.Id, NotificationType.TripCancelled, msg);
@@ -65,7 +65,7 @@ namespace AMBus.TripManage.Persistance.Service
                 booking.User.Id,
                 NotificationType.General,
                 $"⏳ حجزك في انتظار الدفع | " +
-                $"{booking.Trip.Route.FromCity} → {booking.Trip.Route.ToCity} | " +
+                $"{booking.Trip.From.Name} → {booking.Trip.To.Name} | " +
                 $"المبلغ: {booking.TotalPrice} جنيه");
         }
 
@@ -111,7 +111,7 @@ namespace AMBus.TripManage.Persistance.Service
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
                 t => $"🚌 رحلتك بدأت | " +
-                     $"{t.Route.FromCity} → {t.Route.ToCity} | رحلة موفقة!");
+                     $"{t.From.Name} → {t.To.Name} | رحلة موفقة!");
 
             await _sender.SendBulkAsync(
                 userIds, NotificationType.General, msg);
@@ -121,7 +121,7 @@ namespace AMBus.TripManage.Persistance.Service
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
                 t => $"❌ تم إلغاء الرحلة | " +
-                     $"{t.Route.FromCity} → {t.Route.ToCity} | " +
+                     $"{t.From.Name} → {t.To.Name} | " +
                      $"{t.DepartureTime:dd MMM HH:mm} | " +
                      $"السبب: {reason} | سيتم استرداد المبلغ تلقائياً.");
 
@@ -144,7 +144,7 @@ namespace AMBus.TripManage.Persistance.Service
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
                 t => $"✅ اكتملت رحلتك | " +
-                     $"{t.Route.FromCity} → {t.Route.ToCity} | " +
+                     $"{t.From.Name} → {t.To.Name} | " +
                      $"شاركنا تقييمك ⭐");
 
             await _sender.SendBulkAsync(
@@ -155,7 +155,7 @@ namespace AMBus.TripManage.Persistance.Service
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
                 t => $"⏰ تذكير | رحلتك بعد ساعة | " +
-                     $"{t.Route.FromCity} → {t.Route.ToCity} | " +
+                     $"{t.From.Name}  →  {t.To.Name} | " +
                      $"{t.DepartureTime:HH:mm} | كن في موعدك!");
 
             await _sender.SendBulkAsync(
@@ -167,7 +167,9 @@ namespace AMBus.TripManage.Persistance.Service
         private async Task<Domain.Entites.Booking?> GetBookingWithTripAsync(Guid bookingId)
             => await _ctx.Bookings
                 .Include(b => b.Trip)
-                    .ThenInclude(t => t.Route)
+                    .ThenInclude(t => t.From)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t.To)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
         private async Task<(IEnumerable<Guid> UserIds, string Message)>
@@ -176,7 +178,8 @@ namespace AMBus.TripManage.Persistance.Service
                 Func<Domain.Entites.Trip, string> buildMsg)
         {
             var trip = await _ctx.Trips
-                .Include(t => t.Route)
+                .Include(t => t.From)
+                .Include(t => t.To)
                 .FirstOrDefaultAsync(t => t.Id == tripId);
 
             if (trip is null)

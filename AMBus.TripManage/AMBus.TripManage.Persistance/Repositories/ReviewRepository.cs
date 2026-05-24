@@ -18,7 +18,9 @@ namespace AMBus.TripManage.Persistance.Repositories
             => await _ctx.Reviews
                 .Include(r => r.User)
                 .Include(r => r.Trip)
-                    .ThenInclude(t => t.Route)
+                    .ThenInclude(t => t.From)   // ✅
+                .Include(r => r.Trip)
+                    .ThenInclude(t => t.To)     // ✅
                 .FirstOrDefaultAsync(r => r.Id == reviewId);
 
         public async Task<bool> HasUserReviewedTripAsync(Guid userId, Guid tripId)
@@ -27,14 +29,16 @@ namespace AMBus.TripManage.Persistance.Repositories
 
         public async Task<IEnumerable<Review>> GetUserReviewsAsync(Guid userId)
             => await _ctx.Reviews
-                .Include(r => r.Trip).ThenInclude(t => t.Route)
+                .Include(r => r.Trip)
+                    .ThenInclude(t => t.From)   // ✅
+                .Include(r => r.Trip)
+                    .ThenInclude(t => t.To)     // ✅
                 .Where(r => r.UserId == userId)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
 
         public async Task<(IEnumerable<Review> Items, int Total, double AvgRating)>
-            GetTripReviewsPagedAsync(
-                Guid tripId, int? rating, int page, int pageSize)
+            GetTripReviewsPagedAsync(Guid tripId, int? rating, int page, int pageSize)
         {
             var query = _ctx.Reviews
                 .Include(r => r.User)
@@ -46,6 +50,7 @@ namespace AMBus.TripManage.Persistance.Repositories
 
             var total = await query.CountAsync();
             var avg = total > 0 ? await query.AverageAsync(r => (double)r.Rating) : 0;
+
             var items = await query
                 .OrderByDescending(r => r.CreatedAt)
                 .Skip((page - 1) * pageSize)

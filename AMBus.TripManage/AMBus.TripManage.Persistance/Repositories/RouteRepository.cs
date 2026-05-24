@@ -12,11 +12,26 @@ namespace AMBus.TripManage.Persistance.Repositories
 {
     public class RouteRepository : GenericRepository<Route>, IRouteRepository
     {
-        public RouteRepository(AppDbContext ctx) : base(ctx) { }
+        private readonly AppDbContext _ctx;
+
+        public RouteRepository(AppDbContext ctx) : base(ctx)
+        {
+            _ctx = ctx;
+        }
 
         public async Task<Route?> GetRouteWithStopsAsync(Guid routeId)
-            => await _ctx.Routes
+        {
+            return await _ctx.Routes
                 .Include(r => r.Stops.OrderBy(s => s.StopOrder))
                 .FirstOrDefaultAsync(r => r.Id == routeId);
+        }
+
+        public async Task<IEnumerable<Route>> GetAllActiveRoutesAsync()
+        {
+            return await _ctx.Routes
+                .Where(r => r.IsActive)
+                .OrderBy(r => r.Name)
+                .ToListAsync();
+        }
     }
 }

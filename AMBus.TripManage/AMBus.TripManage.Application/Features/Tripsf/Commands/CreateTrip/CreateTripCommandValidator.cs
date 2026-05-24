@@ -7,30 +7,34 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Features.Tripsf.Commands.CreateTrip
 {
-    public class CreateTripCommandValidator:AbstractValidator<CreateTripCommand>
+    public class CreateTripCommandValidator : AbstractValidator<CreateTripCommand>
     {
         public CreateTripCommandValidator()
         {
-            RuleFor(x => x.RouteId)
-                .NotEmpty().WithMessage("الخط مطلوب.");
+            RuleFor(x => x.FromId)
+                .NotEmpty().WithMessage("Departure city is required.");
+
+            RuleFor(x => x.ToId)
+                .NotEmpty().WithMessage("Arrival city is required.")
+                .NotEqual(x => x.FromId).WithMessage("Arrival city must be different from departure city.");
 
             RuleFor(x => x.BusId)
-                .NotEmpty().WithMessage("الباص مطلوب.");
+                .NotEmpty().WithMessage("Bus is required.");
 
             RuleFor(x => x.DriverId)
-                .NotEmpty().WithMessage("السائق مطلوب.");
+                .NotEmpty().WithMessage("Driver is required.");
 
             RuleFor(x => x.DepartureTime)
                 .GreaterThan(DateTime.UtcNow)
-                    .WithMessage("وقت الانطلاق يجب أن يكون في المستقبل.");
+                .WithMessage("Departure time must be in the future.");
 
             RuleFor(x => x.ArrivalTime)
                 .GreaterThan(x => x.DepartureTime)
-                    .WithMessage("وقت الوصول يجب أن يكون بعد وقت الانطلاق.");
+                .WithMessage("Arrival time must be after departure time.");
 
             RuleFor(x => x.BasePrice)
                 .GreaterThan(0)
-                    .WithMessage("السعر يجب أن يكون أكبر من 0.");
+                .WithMessage("Base price must be greater than 0.");
         }
     }
 }

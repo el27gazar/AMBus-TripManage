@@ -18,7 +18,9 @@ namespace AMBus.TripManage.Persistance.Repositories
             => await _ctx.Bookings
                 .Include(b => b.User)
                 .Include(b => b.Trip)
-                    .ThenInclude(t => t.Route)
+                    .ThenInclude(t => t.From)   // ✅ بدل Route
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t.To)     // ✅ أضفنا To
                 .Include(b => b.Trip)
                     .ThenInclude(t => t.Bus)
                 .Include(b => b.BookingSeats)
@@ -37,8 +39,7 @@ namespace AMBus.TripManage.Persistance.Repositories
                 b.TripId == tripId &&
                 b.Status != BookingStatus.Cancelled);
 
-        public async Task<bool> HasCompletedBookingForTripAsync(
-            Guid userId, Guid tripId)
+        public async Task<bool> HasCompletedBookingForTripAsync(Guid userId, Guid tripId)
             => await _ctx.Bookings.AnyAsync(b =>
                 b.UserId == userId &&
                 b.TripId == tripId &&
@@ -53,12 +54,13 @@ namespace AMBus.TripManage.Persistance.Repositories
                 .ToListAsync();
 
         public async Task<(IEnumerable<Booking> Items, int Total)>
-            GetUserBookingsPagedAsync(
-                Guid userId, string? status, int page, int pageSize)
+            GetUserBookingsPagedAsync(Guid userId, string? status, int page, int pageSize)
         {
             var query = _ctx.Bookings
                 .Include(b => b.Trip)
-                    .ThenInclude(t => t.Route)
+                    .ThenInclude(t => t.From)   // ✅
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t.To)     // ✅
                 .Include(b => b.BookingSeats)
                     .ThenInclude(bs => bs.Seat)
                 .Include(b => b.Payment)
@@ -87,7 +89,9 @@ namespace AMBus.TripManage.Persistance.Repositories
             var query = _ctx.Bookings
                 .Include(b => b.User)
                 .Include(b => b.Trip)
-                    .ThenInclude(t => t.Route)
+                    .ThenInclude(t => t.From)   // ✅
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t.To)     // ✅
                 .Include(b => b.BookingSeats)
                     .ThenInclude(bs => bs.Seat)
                 .Include(b => b.Payment)

@@ -10,10 +10,9 @@ namespace AMBus.TripManage.Domain.Entites
 {
     public enum TripStatus { Scheduled, InProgress, Completed, Cancelled }
 
-    public class Trip: AuditableEntity
+    public class Trip : AuditableEntity
     {
         public Guid Id { get; set; }
-
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
 
@@ -23,10 +22,13 @@ namespace AMBus.TripManage.Domain.Entites
         public TripStatus Status { get; set; } = TripStatus.Scheduled;
         public int AvailableSeats { get; set; }
 
-        // FKs
-        public Guid RouteId { get; set; }
-        public Route Route { get; set; } = null!;
+        public Guid FromId { get; set; }
+        public Route From { get; set; } = null!;
 
+        public Guid ToId { get; set; }
+        public Route To { get; set; } = null!;
+
+        // FKs
         public Guid BusId { get; set; }
         public Bus Bus { get; set; } = null!;
 

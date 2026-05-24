@@ -10,6 +10,6 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
     public interface IRouteRepository : IGenericRepository<Route>
     {
         Task<Route?> GetRouteWithStopsAsync(Guid routeId);
-        //Task<IEnumerable<Route>> SearchRoutesAsync(string from, string to);
+        Task<IEnumerable<Route>> GetAllActiveRoutesAsync(); //  Drop down list of active routes
     }
 }

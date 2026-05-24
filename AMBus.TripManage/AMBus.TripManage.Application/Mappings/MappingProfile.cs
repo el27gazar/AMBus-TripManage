@@ -84,36 +84,41 @@ namespace AMBus.TripManage.Application.Mappings
 
             CreateMap<Route, RouteDto>()
                 .ForMember(d => d.Stops, o => o.MapFrom(s =>
-                    s.Stops.OrderBy(st => st.StopOrder).ToList()));
+                    s.Stops.OrderBy(st => st.StopOrder).ToList()))
+                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedDate));
 
             CreateMap<Stop, StopDto>();
 
             // ══════════════════════════════════════════════
             //  TRIP
             // ══════════════════════════════════════════════
-
             CreateMap<Trip, TripDto>()
-                .ForMember(d => d.FromCity, o => o.MapFrom(s => s.Route.FromCity))
-                .ForMember(d => d.ToCity, o => o.MapFrom(s => s.Route.ToCity))
+                .ForMember(d => d.FromCity, o => o.MapFrom(s => s.From.Name))
+                .ForMember(d => d.ToCity, o => o.MapFrom(s => s.To.Name))
+                .ForMember(d => d.FromId, o => o.MapFrom(s => s.FromId))
+                .ForMember(d => d.ToId, o => o.MapFrom(s => s.ToId))
                 .ForMember(d => d.Status, o => o.MapFrom(s => s.Status.ToString()))
                 .ForMember(d => d.BusType, o => o.MapFrom(s => s.Bus.Type.ToString()))
                 .ForMember(d => d.BusPlate, o => o.MapFrom(s => s.Bus.PlateNumber))
-                .ForMember(d => d.DriverName, o => o.MapFrom(s => s.Driver.User.FullName));
+                .ForMember(d => d.DriverName, o => o.MapFrom(s => s.Driver.User.FullName))
+                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedDate));
+
 
             // ══════════════════════════════════════════════
             //  BOOKING
             // ══════════════════════════════════════════════
 
             CreateMap<Booking, BookingDto>()
-                .ForMember(d => d.UserId, o => o.MapFrom(s => s.User))
-                .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.FullName))
-                .ForMember(d => d.TripId, o => o.MapFrom(s => s.Trip))
-                .ForMember(d => d.TripSummary, o => o.MapFrom(s =>
-                    $"{s.Trip.Route.FromCity} → {s.Trip.Route.ToCity}" +
-                    $" | {s.Trip.DepartureTime:dd MMM yyyy HH:mm}"))
-                .ForMember(d => d.Status, o => o.MapFrom(s => s.Status.ToString()))
-                .ForMember(d => d.BookedAt, o => o.MapFrom(s => s.BookedAt))
-                .ForMember(d => d.Seats, o => o.MapFrom(s => s.BookingSeats));
+    .ForMember(d => d.UserId, o => o.MapFrom(s => s.User))
+    .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.FullName))
+    .ForMember(d => d.TripId, o => o.MapFrom(s => s.Trip))
+    .ForMember(d => d.TripSummary, o => o.MapFrom(s =>
+        $"{s.Trip.From.Name} → {s.Trip.To.Name}" +
+        $" | {s.Trip.DepartureTime:dd MMM yyyy HH:mm}"))
+    .ForMember(d => d.Status, o => o.MapFrom(s => s.Status.ToString()))
+    .ForMember(d => d.BookedAt, o => o.MapFrom(s => s.BookedAt))
+    .ForMember(d => d.Seats, o => o.MapFrom(s => s.BookingSeats));
+
 
             // ══════════════════════════════════════════════
             //  BOOKING SEAT
@@ -127,20 +132,21 @@ namespace AMBus.TripManage.Application.Mappings
             // ══════════════════════════════════════════════
 
             CreateMap<Booking, TicketDto>()
-                .ForMember(d => d.BookingId, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.FromCity, o => o.MapFrom(s => s.Trip.Route.FromCity))
-                .ForMember(d => d.ToCity, o => o.MapFrom(s => s.Trip.Route.ToCity))
-                .ForMember(d => d.DepartureTime, o => o.MapFrom(s => s.Trip.DepartureTime))
-                .ForMember(d => d.BusPlate, o => o.MapFrom(s => s.Trip.Bus.PlateNumber))
-                .ForMember(d => d.BusType, o => o.MapFrom(s => s.Trip.Bus.Type.ToString()))
-                .ForMember(d => d.Passengers, o => o.MapFrom(s => s.BookingSeats));
+     .ForMember(d => d.BookingId, o => o.MapFrom(s => s.Id))
+     .ForMember(d => d.FromCity, o => o.MapFrom(s => s.Trip.From.Name))
+     .ForMember(d => d.ToCity, o => o.MapFrom(s => s.Trip.To.Name))
+     .ForMember(d => d.DepartureTime, o => o.MapFrom(s => s.Trip.DepartureTime))
+     .ForMember(d => d.BusPlate, o => o.MapFrom(s => s.Trip.Bus.PlateNumber))
+     .ForMember(d => d.BusType, o => o.MapFrom(s => s.Trip.Bus.Type.ToString()))
+     .ForMember(d => d.Passengers, o => o.MapFrom(s => s.BookingSeats));
+
 
             // ══════════════════════════════════════════════
             //  PAYMENT
             // ══════════════════════════════════════════════
 
             CreateMap<Payment, PaymentDto>().ReverseMap();
-                
+
 
 
             // ══════════════════════════════════════════════
@@ -148,9 +154,9 @@ namespace AMBus.TripManage.Application.Mappings
             // ══════════════════════════════════════════════
 
             CreateMap<Review, ReviewDto>()
-                .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.FullName))
-                .ForMember(d => d.TripSummary, o => o.MapFrom(s =>
-                    $"{s.Trip.Route.FromCity} → {s.Trip.Route.ToCity}"));
+     .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.FullName))
+     .ForMember(d => d.TripSummary, o => o.MapFrom(s =>
+         $"{s.Trip.From.Name} → {s.Trip.To.Name}"));
 
             // ══════════════════════════════════════════════
             //  NOTIFICATION

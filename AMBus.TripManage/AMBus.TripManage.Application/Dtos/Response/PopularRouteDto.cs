@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 namespace AMBus.TripManage.Application.Dtos.Response
 {
     public record PopularRouteDto(
-           Guid RouteId,
-           string FromCity,
-           string ToCity,
-           int BookingsCount,
-           double AverageRating
-       );
+      Guid FromId,
+      Guid ToId,
+      string FromName,
+      string ToName,
+      int BookingsCount,
+      double AverageRating
+  );
 }

@@ -96,22 +96,19 @@ namespace AMBus.TripManage.Persistance.Data
         {
             base.OnModelCreating(builder);
 
-            // ── تطبيق كل الـ Configurations ───────────────
+           
             builder.ApplyConfigurationsFromAssembly(
                 typeof(AppDbContext).Assembly);
 
-            // ════════════════════════════════════════════
-            //  FIX الرئيسي — إيقاف Cascade على كل
-            //  العلاقات اللي بتسبب cycles
-            // ════════════════════════════════════════════
+            
 
             // ── Identity tables ────────────────────────
-            // FIX: هذه العلاقات في Identity بتسبب الـ error
+           
             builder.Entity<User>()
                 .HasMany(e => e.Claims)
                 .WithOne()
                 .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Restrict);    // ← Restrict مش Cascade
+                .OnDelete(DeleteBehavior.Restrict);    
 
             builder.Entity<User>()
                 .HasMany(e => e.Logins)
@@ -152,23 +149,18 @@ namespace AMBus.TripManage.Persistance.Data
 
             // ── Trip → Route / Bus / Driver ────────────
             builder.Entity<Trip>()
-                .HasOne(t => t.Route)
-                .WithMany(r => r.Trips)
-                .HasForeignKey(t => t.RouteId)
-                .OnDelete(DeleteBehavior.Restrict);
+     .HasOne(t => t.From)
+     .WithMany(r => r.DepartureTrips)
+     .HasForeignKey(t => t.FromId)
+     .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Trip>()
-                .HasOne(t => t.Bus)
-                .WithMany(b => b.Trips)
-                .HasForeignKey(t => t.BusId)
-                .OnDelete(DeleteBehavior.Restrict);
+    .HasOne(t => t.To)
+    .WithMany(r => r.ArrivalTrips)
+    .HasForeignKey(t => t.ToId)
+    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Trip>()
-                .HasOne(t => t.Driver)
-                .WithMany(d => d.Trips)
-                .HasForeignKey(t => t.DriverId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+          
             // ── Booking → User / Trip ──────────────────
             builder.Entity<Booking>()
                 .HasOne(b => b.User)
@@ -231,10 +223,12 @@ namespace AMBus.TripManage.Persistance.Data
 
             // ── Stop → Route ──────────────────────────
             builder.Entity<Stop>()
-                .HasOne(s => s.Route)
-                .WithMany(r => r.Stops)
-                .HasForeignKey(s => s.RouteId)
-                .OnDelete(DeleteBehavior.Restrict);
+     .HasOne(s => s.Route)
+     .WithMany(r => r.Stops)
+     .HasForeignKey(s => s.RouteId)
+     .OnDelete(DeleteBehavior.Restrict);
+
+            // ── ChatConversation → User / Admin ───────────
 
             builder.Entity<ChatConversation>()
        .HasOne(c => c.User)
@@ -281,6 +275,8 @@ namespace AMBus.TripManage.Persistance.Data
                     NormalizedName = "DRIVER"
                 }
             );
+
+           
         }
     }
 }

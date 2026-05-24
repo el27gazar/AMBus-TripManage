@@ -4,6 +4,7 @@ using AMBus.TripManage.Application.Dtos.TripDto;
 using AMBus.TripManage.Application.Exceptions;
 using AMBus.TripManage.Domain.Entites;
 using AutoMapper;
+using FluentValidation.Results;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -28,9 +29,20 @@ namespace AMBus.TripManage.Application.Features.Tripsf.Commands.CreateTrip
             CreateTripCommand request,
             CancellationToken cancellationToken)
         {
-            // التحقق من وجود الـ Route
-            var route = await _uow.Routes.GetByIdAsync(request.RouteId)
-                ?? throw new NotFoundException(nameof(Route), request.RouteId);
+            // التحقق من وجود الـ From
+            var from = await _uow.Routes.GetByIdAsync(request.FromId)
+                ?? throw new NotFoundException(nameof(Route), request.FromId);
+
+            // التحقق من وجود الـ To
+            var to = await _uow.Routes.GetByIdAsync(request.ToId)
+                ?? throw new NotFoundException(nameof(Route), request.ToId);
+
+            // التأكد إن From مش نفس To
+            if (request.FromId == request.ToId)
+                throw new ValidationException(new[]
+                {
+                    new ValidationFailure("ToId", "نقطة الوصول لا يمكن أن تكون نفس نقطة الانطلاق.")
+                });
 
             // التحقق من وجود الـ Bus
             var bus = await _uow.Buses.GetByIdAsync(request.BusId)
@@ -53,7 +65,8 @@ namespace AMBus.TripManage.Application.Features.Tripsf.Commands.CreateTrip
             var trip = new Trip
             {
                 Id = Guid.NewGuid(),
-                RouteId = request.RouteId,
+                FromId = request.FromId,
+                ToId = request.ToId,
                 BusId = request.BusId,
                 DriverId = request.DriverId,
                 DepartureTime = request.DepartureTime,
