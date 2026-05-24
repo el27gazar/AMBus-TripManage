@@ -22,7 +22,9 @@ export class Register {
   RegisterForm! :FormGroup;
 
 
-  constructor(private authService:AuthService, private _router:Router){
+  constructor(private authService:AuthService,
+              private _router:Router
+   ){
     this.initFormControl();
     this.initFormGroup();
   }
@@ -63,7 +65,7 @@ export class Register {
     this.authService.RegisterService(Date).subscribe({
       next:(res)=>{
           this._router.navigate(['/ConfirmEmail'],{queryParams:{Email:Date.Email}});
-      }
+        }
       ,
       error:(err)=>{
         document.getElementsByClassName("toast-message")[0].innerHTML = err.error.errors[0];
@@ -71,6 +73,7 @@ export class Register {
         setTimeout(() => {
         document.getElementById("toastError")?.classList.remove("show");
         },4000);
+
       }
     }
 )

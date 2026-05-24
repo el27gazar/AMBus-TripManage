@@ -6,7 +6,7 @@ import { ILogin } from '../../Core/interfaces/ilogin';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink,ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
