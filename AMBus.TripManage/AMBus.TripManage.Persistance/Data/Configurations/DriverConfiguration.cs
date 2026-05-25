@@ -34,11 +34,14 @@ namespace AMBus.TripManage.Persistance.Data.Configurations
              .WithOne(u => u.Driver)
              .HasForeignKey<Driver>(d => d.UserId)
              .OnDelete(DeleteBehavior.Restrict);
+
             b.Property(t => t.CreatedBy)
-           .HasMaxLength(100);
+             .HasMaxLength(100);
 
             b.Property(t => t.LastModifiedBy)
              .HasMaxLength(100);
+
+          
         }
     }
 }

@@ -4,6 +4,7 @@ using AMBus.TripManage.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMBus.TripManage.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260525163506_driver_edit")]
+    partial class driver_edit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -842,6 +845,22 @@ namespace AMBus.TripManage.Persistance.Migrations
                     b.HasIndex("ToId");
 
                     b.ToTable("Trips");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-2222-3333-4444-555555555555"),
+                            ArrivalTime = new DateTime(2026, 8, 2, 8, 25, 1, 0, DateTimeKind.Unspecified),
+                            AvailableSeats = 0,
+                            BasePrice = 5207.25m,
+                            BusId = new Guid("a2e34b73-475b-ab84-1236-b77bc807d26f"),
+                            CreatedDate = new DateTime(2026, 5, 25, 16, 35, 5, 351, DateTimeKind.Utc).AddTicks(9790),
+                            DepartureTime = new DateTime(2026, 7, 14, 5, 40, 3, 0, DateTimeKind.Unspecified),
+                            DriverId = new Guid("1bd6a872-4dd8-559c-aa38-f72c6f59f3ef"),
+                            FromId = new Guid("aaaaaaaa-0000-0000-0000-000000000001"),
+                            Status = "Scheduled",
+                            ToId = new Guid("aaaaaaaa-0000-0000-0000-000000000002")
+                        });
                 });
 
             modelBuilder.Entity("AMBus.TripManage.Domain.Entites.User", b =>
@@ -930,8 +949,8 @@ namespace AMBus.TripManage.Persistance.Migrations
                         {
                             Id = new Guid("cccccccc-0000-0000-0000-000000000001"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "403b05ec-d406-47f1-afbc-642f199f2fb4",
-                            CreatedAt = new DateTime(2026, 5, 25, 16, 37, 31, 780, DateTimeKind.Utc).AddTicks(1159),
+                            ConcurrencyStamp = "b74d4e32-5bae-43b2-80e4-ac9143f50f8f",
+                            CreatedAt = new DateTime(2026, 5, 25, 16, 35, 5, 353, DateTimeKind.Utc).AddTicks(4592),
                             Email = "driver1@ambus.com",
                             EmailConfirmed = false,
                             FullName = "كابتن محمد أحمد",
@@ -945,8 +964,8 @@ namespace AMBus.TripManage.Persistance.Migrations
                         {
                             Id = new Guid("cccccccc-0000-0000-0000-000000000002"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ca2a41c2-388d-4144-b092-8e283b8801d7",
-                            CreatedAt = new DateTime(2026, 5, 25, 16, 37, 31, 780, DateTimeKind.Utc).AddTicks(1166),
+                            ConcurrencyStamp = "84372923-dcbf-4091-9d8d-b0452d290c65",
+                            CreatedAt = new DateTime(2026, 5, 25, 16, 35, 5, 353, DateTimeKind.Utc).AddTicks(4608),
                             Email = "driver2@ambus.com",
                             EmailConfirmed = false,
                             FullName = "كابتن محمود علي",

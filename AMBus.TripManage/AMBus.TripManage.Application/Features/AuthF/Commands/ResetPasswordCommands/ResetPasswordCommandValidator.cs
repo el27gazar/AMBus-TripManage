@@ -15,7 +15,7 @@ namespace AMBus.TripManage.Application.Features.AuthF.Commands.ResetPasswordComm
                 .NotEmpty().WithMessage("Email Required.")
                 .EmailAddress();
 
-            RuleFor(x => x.Token)
+            RuleFor(x => x.otpCode)
                 .NotEmpty().WithMessage("رمز إعادة التعيين مطلوب.");
 
             RuleFor(x => x.NewPassword)

@@ -21,7 +21,7 @@ namespace AMBus.TripManage.Application.Features.AuthF.Commands.ResetPasswordComm
         {
             await _authService.ResetPasswordAsync(
                 request.Email,
-                request.Token,
+                request.otpCode,
                 request.NewPassword);
 
             return Unit.Value;

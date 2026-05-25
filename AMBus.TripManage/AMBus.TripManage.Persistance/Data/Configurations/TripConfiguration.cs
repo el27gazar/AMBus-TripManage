@@ -50,6 +50,7 @@ namespace AMBus.TripManage.Persistance.Data.Configurations
              .WithMany(d => d.Trips)
              .HasForeignKey(t => t.DriverId)
              .OnDelete(DeleteBehavior.Restrict);
+            
         }
     }
 }

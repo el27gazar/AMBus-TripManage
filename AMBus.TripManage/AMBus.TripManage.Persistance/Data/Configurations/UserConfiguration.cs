@@ -22,6 +22,27 @@ namespace AMBus.TripManage.Persistance.Data.Configurations
 
             b.Property(u => u.CreatedAt)
              .HasDefaultValueSql("GETUTCDATE()");
+
+            // --- Seed Data (للمستخدمين السائقين) ---
+            b.HasData(
+                new User
+                {
+                    Id = Guid.Parse("cccccccc-0000-0000-0000-000000000001"),
+                    FullName = "كابتن محمد أحمد",
+                    Email = "driver1@ambus.com",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                },
+                new User
+                {
+                    Id = Guid.Parse("cccccccc-0000-0000-0000-000000000002"),
+                    FullName = "كابتن محمود علي",
+                    Email = "driver2@ambus.com",
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                }
+            );
         }
     }
-}
+    }
+

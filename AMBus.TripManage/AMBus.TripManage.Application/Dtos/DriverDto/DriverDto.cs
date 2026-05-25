@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.DriverDto
 {
-    public record DriverDto(
-      Guid Id,
-      Guid UserId,
-      string FullName,
-      string Email,
-      string LicenseNumber,
-      DateTime LicenseExpiry,
-      string? EmergencyContact,
-      bool IsAvailable,
-      DateTime CreatedAt
-  );
+    public class DriverDto
+    {
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string LicenseNumber { get; set; } = string.Empty;
+        public DateTime LicenseExpiry { get; set; }
+        public string? EmergencyContact { get; set; }
+        public bool IsAvailable { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
 }
