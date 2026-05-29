@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos
 {
-    public record ReviewDto(
-            Guid Id,
-            Guid UserId,
-            string UserName,
-            Guid TripId,
-            string TripSummary,
-            int Rating,
-            string? Comment,
-            DateTime CreatedAt
-        );
+    public class ReviewDto
+    {
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public Guid TripId { get; set; }
+        public string TripSummary { get; set; } = string.Empty;
+        public int Rating { get; set; }
+        public string? Comment { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
 }

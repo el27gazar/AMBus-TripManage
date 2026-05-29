@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.BookingDto
 {
-    public record BookingSeatDto(
-        Guid Id,
-        Guid SeatId,
-        string SeatNumber,
-        string PassengerName,
-        string? PassengerIdNumber
-    );
+    public class BookingSeatDto
+    {
+       public Guid Id { get; set; }
+
+       public Guid SeatId { get;set; }
+       public string SeatNumber { get; set; }
+       public string PassengerName { get; set; }
+      public string? PassengerIdNumber { get; set; }
+    }
 }

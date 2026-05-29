@@ -6,37 +6,41 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.Chat
 {
-    public record ConversationDto(
-         Guid Id,
-         Guid UserId,
-         string UserName,
-         Guid? AdminId,
-         string? AdminName,
-         string Status,
-         string? Subject,
-         int UnreadCount,
-         ChatMessageDto? LastMessage,
-         DateTime CreatedDate
-     );
-    public record ChatMessageDto(
-    Guid Id,
-    Guid ConversationId,
-    Guid SenderId,
-    string SenderName,
-    bool SenderIsAdmin,
-    string Content,
-    bool IsRead,
-    DateTime? ReadAt,
-    DateTime CreatedDate
-);
+    public class ConversationDto
+    {
+      public Guid Id { get; set; }
+      public  Guid UserId { get; set; }
+     public string UserName { get; set; }
+      public  Guid? AdminId { get; set; }
+      public  string? AdminName { get; set; }
+      public  string Status { get; set; }
+       public string? Subject { get; set; }
+      public int UnreadCount { get; set; }
+        public ChatMessageDto? LastMessage { get; set; }
+         public DateTime CreatedDate { get; set; }
+     }
+    public class ChatMessageDto
+    {
+      public Guid Id { get; set; }
+       public Guid ConversationId { get; set; }
+    public Guid SenderId { get; set; } 
+    public string SenderName { get; set; }
+    public bool SenderIsAdmin { get; set; }
+    public string Content { get; set; }
+    public bool IsRead { get; set; }
+    public DateTime? ReadAt { get; set; }
+    public DateTime CreatedDate { get; set; }
+    }
 
-    public record SendMessageDto(
-        Guid ConversationId,
-        string Content
-    );
+    public class SendMessageDto
+    {
+       public Guid ConversationId { get; set; }
+       public string Content { get; set; }
+    }
 
-    public record CreateConversationDto(
-        string? Subject,
-        string FirstMessage
-    );
+    public class CreateConversationDto
+    {
+       public string? Subject { get; set; }
+        public string FirstMessage { get; set; }
+    };
 }

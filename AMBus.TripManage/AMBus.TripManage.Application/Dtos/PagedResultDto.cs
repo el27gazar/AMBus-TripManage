@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos
 {
-   
-        public record PagedResultDto<T>(
-            List<T> Items,
-            int TotalCount,
-            int Page,
-            int PageSize,
-            int TotalPages
-        );
+
+    public class PagedResultDto<T>
+    {
+        public List<T> Items { get; set; } = new List<T>();
+        public int TotalCount { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages { get; set; }
+    }
     
 }

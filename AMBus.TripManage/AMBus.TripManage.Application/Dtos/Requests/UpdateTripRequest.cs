@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.Requests
 {
-    public record UpdateTripRequest(
-          Guid DriverId,
-          DateTime DepartureTime,
-          DateTime ArrivalTime,
-          decimal BasePrice);
+    public class UpdateTripRequest
+    {
+        public Guid DriverId { get; set; }
+        public DateTime DepartureTime { get; set; }
+        public DateTime ArrivalTime { get; set; }
+        public decimal BasePrice { get; set; }
+    }
 
-    public record UpdateTripStatusRequest(string Status);
+    public class UpdateTripStatusRequest
+    {
+        public string Status { get; set; } = string.Empty;
+    }
 }

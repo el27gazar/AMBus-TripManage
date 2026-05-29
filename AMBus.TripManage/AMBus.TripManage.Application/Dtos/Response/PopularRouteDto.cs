@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.Response
 {
-    public record PopularRouteDto(
-      Guid FromId,
-      Guid ToId,
-      string FromName,
-      string ToName,
-      int BookingsCount,
-      double AverageRating
-  );
+    public class PopularRouteDto
+    {
+        public Guid FromId { get; set; }
+        public Guid ToId { get; set; }
+        public string FromName { get; set; } = string.Empty;
+        public string ToName { get; set; } = string.Empty;
+        public int BookingsCount { get; set; }
+        public double AverageRating { get; set; }
+    }
 }

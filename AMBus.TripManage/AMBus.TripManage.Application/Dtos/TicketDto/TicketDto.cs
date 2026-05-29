@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.TicketDto
 {
-    public record TicketDto(
-            Guid BookingId,
-            string QrCode,
-            string FromCity,
-            string ToCity,
-            DateTime DepartureTime,
-            string BusPlate,
-            string BusType,
-            List<BookingSeatDto> Passengers
-        );
+    public class TicketDto
+    {
+        public Guid BookingId { get; set; }
+        public string QrCode { get; set; } = string.Empty;
+        public string FromCity { get; set; } = string.Empty;
+        public string ToCity { get; set; } = string.Empty;
+        public DateTime DepartureTime { get; set; }
+        public string BusPlate { get; set; } = string.Empty;
+        public string BusType { get; set; } = string.Empty;
+        public List<BookingSeatDto> Passengers { get; set; } = new List<BookingSeatDto>();
+    }
 }

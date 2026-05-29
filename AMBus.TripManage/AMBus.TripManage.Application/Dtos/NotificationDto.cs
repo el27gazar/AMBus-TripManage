@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos
 {
-    public record NotificationDto(
-       Guid Id,
-       string Type,
-       string Message,
-       bool IsRead,
-       DateTime CreatedAt
-   );
+    public class NotificationDto
+    {
+        public Guid Id { get; set; }
+        public string Type { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+        public bool IsRead { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
 }

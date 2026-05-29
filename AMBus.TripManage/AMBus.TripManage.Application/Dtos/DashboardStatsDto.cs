@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos
 {
-    public record DashboardStatsDto(
-     int TotalUsers,
-     int TotalDrivers,
-     int TotalBuses,
-     int TotalRoutes,
-     int TotalTrips,
-     int TotalBookings,
-     decimal TotalRevenue,
-     int TodayBookings,
-     int ActiveTrips,
-     int PendingBookings
- );
-
+    public class DashboardStatsDto
+    {
+        public int TotalUsers { get; set; }
+        public int TotalDrivers { get; set; }
+        public int TotalBuses { get; set; }
+        public int TotalRoutes { get; set; }
+        public int TotalTrips { get; set; }
+        public int TotalBookings { get; set; } = 0;
+        public decimal TotalRevenue { get; set; } = 0;
+        public int TodayBookings { get; set; } = 0;
+        public int ActiveTrips { get; set; } = 0;
+        public int PendingBookings { get; set; } = 0;
+    }
 }

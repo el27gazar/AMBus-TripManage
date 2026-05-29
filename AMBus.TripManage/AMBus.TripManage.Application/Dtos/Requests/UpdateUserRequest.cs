@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.Requests
 {
-    public record UpdateUserRequest(
-           string FullName,
-           string? PhoneNumber);
-    public record UpdateUserRoleRequest(string Role);
+    public class UpdateUserRequest
+    {
+        public string FullName { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
+    }
+    public class UpdateUserRoleRequest
+    {
+        public string Role { get; set; } = string.Empty;
+    }
 
 }

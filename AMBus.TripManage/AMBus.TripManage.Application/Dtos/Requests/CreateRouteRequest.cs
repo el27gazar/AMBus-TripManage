@@ -21,15 +21,19 @@ namespace AMBus.TripManage.Application.Dtos.Requests
         public string Name { get; set; } = string.Empty;
         public bool IsActive { get; set; }
     }
-    public record CreateStopRequest(
-        string CityName,
-        string? StationAddress,
-        int StopOrder,
-        int ArrivalOffsetMinutes);
+    public class CreateStopRequest
+    {
+        public string CityName { get; set; } = string.Empty;
+        public string? StationAddress { get; set; }
+        public int StopOrder { get; set; }
+        public int ArrivalOffsetMinutes { get; set; }
+    }
 
-    public record UpdateStopRequest(
-        string CityName,
-        string? StationAddress,
-        int StopOrder,
-        int ArrivalOffsetMinutes);
+    public class UpdateStopRequest
+    {
+        public string CityName { get; set; } = string.Empty;
+        public string? StationAddress { get; set; }
+        public int StopOrder { get; set; }
+        public int ArrivalOffsetMinutes { get; set; }
+    }
 }

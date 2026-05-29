@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos
 {
-    public record PaymentDto(
-          Guid Id,
-          Guid BookingId,
-          decimal Amount,
-          string Method,
-          string Status,
-          string? TransactionId,
-          DateTime? PaidAt,
-          DateTime CreatedAt
-      );
+    public class PaymentDto
+    {
+        public Guid Id { get; set; }
+        public Guid BookingId { get; set; }
+        public decimal Amount { get; set; }
+        public string Method { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+         public string? TransactionId { get; set; }
+       public DateTime? PaidAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
 }

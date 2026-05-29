@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.SeatDto
 {
-    public record SeatDto(
-         Guid Id,
-         string SeatNumber,
-         bool IsAvailable,
-         Guid BusId
-     );
+    public class SeatDto
+    {
+        public Guid Id { get; set; }
+        public string SeatNumber { get; set; } = string.Empty;
+        public bool IsAvailable { get; set; }
+        public Guid BusId { get; set; }
+    }
 }

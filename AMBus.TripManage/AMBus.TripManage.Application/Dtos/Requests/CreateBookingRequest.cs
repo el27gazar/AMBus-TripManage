@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.Requests
 {
-    public record CreateBookingRequest(
-           Guid TripId,
-           List<BookingSeatDto> Seats);
+    public class CreateBookingRequest
+    {
+        public Guid TripId { get; set; }
+        public List<BookingSeatDto> Seats { get; set; }
+    }
 }

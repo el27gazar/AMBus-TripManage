@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.Requests
 {
-    public record ChangePasswordRequest(
-            string CurrentPassword,
-            string NewPassword);
+    public class ChangePasswordRequest
+    {
+        public string CurrentPassword { get; set; }
+        public string NewPassword { get; set; }
+    }
 }

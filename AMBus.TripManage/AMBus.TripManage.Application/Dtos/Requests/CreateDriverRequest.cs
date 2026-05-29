@@ -6,16 +6,22 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.Requests
 {
-    public record CreateDriverRequest(
-          Guid UserId,
-          string LicenseNumber,
-          DateTime LicenseExpiry,
-          string? EmergencyContact);
+    public class CreateDriverRequest
+    {
+        public Guid UserId { get; set; }
+        public string LicenseNumber { get; set; }
+        public DateTime LicenseExpiry { get; set; }
+        public string? EmergencyContact { get; set; }
+    }
+    public class UpdateDriverRequest
+    {
+        public string LicenseNumber { get; set; }
+        public DateTime LicenseExpiry { get; set; }
+        public string? EmergencyContact { get; set; }
+    }
 
-    public record UpdateDriverRequest(
-        string LicenseNumber,
-        DateTime LicenseExpiry,
-        string? EmergencyContact);
-
-    public record UpdateAvailabilityRequest(bool IsAvailable);
+    public class UpdateAvailabilityRequest
+    {
+        public bool IsAvailable { get; set; }
+    }
 }

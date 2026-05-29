@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Dtos.Requests
 {
-    public record CreateReviewRequest(
-          Guid TripId,
-          int Rating,
-          string? Comment);
+    public class CreateReviewRequest
+    {
+        public Guid TripId { get; set; }
+        public int Rating { get; set; }
+        public string? Comment { get; set; }
+    }
 
-    public record UpdateReviewRequest(
-        int Rating,
-        string? Comment);
+    public class UpdateReviewRequest
+    {
+        public int Rating { get; set; }
+        public string? Comment { get; set; }
+    }
 }
