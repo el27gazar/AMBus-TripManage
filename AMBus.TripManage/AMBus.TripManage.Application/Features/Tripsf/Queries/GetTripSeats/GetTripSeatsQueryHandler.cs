@@ -34,11 +34,11 @@ namespace AMBus.TripManage.Application.Features.Tripsf.Queries.GetTripSeats
             var bookedSeatIds = await _uow.Bookings
                 .GetBookedSeatIdsForTripAsync(request.TripId);
 
-            return trip.Bus.Seats.Select(s => new SeatAvailabilityDto(
-                SeatId: s.Id,
-                SeatNumber: s.SeatNumber,
-                IsAvailable: !bookedSeatIds.Contains(s.Id)
-            ));
+            return trip.Bus.Seats.Select(s => new SeatAvailabilityDto {
+                SeatId = s.Id,
+                SeatNumber = s.SeatNumber,
+                IsAvailable = !bookedSeatIds.Contains(s.Id)
+            });
         }
     }
 }

@@ -51,14 +51,14 @@ namespace AMBus.TripManage.Application.Features.ChatF.Queries.GetMessages
                 query.ConversationId, query.UserId);
             await _chatRepo.SaveChangesAsync();
 
-            return new PagedResultDto<ChatMessageDto>(
-                Items: _mapper.Map<List<ChatMessageDto>>(messages),
-                TotalCount: total,
-                Page: query.Page,
-                PageSize: query.PageSize,
-                TotalPages: (int)Math.Ceiling(
+            return new PagedResultDto<ChatMessageDto> {
+                Items = _mapper.Map<List<ChatMessageDto>>(messages),
+                TotalCount = total,
+                Page = query.Page,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(
                     total / (double)query.PageSize)
-            );
+            };
         }
     }
 }

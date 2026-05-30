@@ -34,14 +34,14 @@ namespace AMBus.TripManage.Application.Features.ReviewsF.Queries.GetTripReviews
                     request.Page,
                     request.PageSize);
 
-            return new TripReviewsResultDto(
-                Reviews: _mapper.Map<List<ReviewDto>>(reviews),
-                AverageRating: Math.Round(avg, 1),
-                TotalReviews: total,
-                Page: request.Page,
-                PageSize: request.PageSize,
-                TotalPages: (int)Math.Ceiling(total / (double)request.PageSize)
-            );
+            return new TripReviewsResultDto {
+                Reviews = _mapper.Map<List<ReviewDto>>(reviews),
+                AverageRating = Math.Round(avg, 1),
+                TotalReviews = total,
+                Page = request.Page,
+                PageSize = request.PageSize,
+                TotalPages = (int)Math.Ceiling(total / (double)request.PageSize)
+            };
         }
     }
 }

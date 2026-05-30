@@ -40,6 +40,15 @@ namespace AMBus.TripManage.Api.Controllers
 
             return Ok(_mapper.Map<IEnumerable<BusDto>>(buses));
         }
+    
+        [HttpGet("GetAllBuses")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllBuses()
+        {
+            var buses = await _uow.Buses.GetAllAsync();
+            return Ok(_mapper.Map<IEnumerable<BusDto>>(buses));
+        }
 
         [HttpGet("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]

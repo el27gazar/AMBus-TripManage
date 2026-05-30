@@ -32,6 +32,15 @@ namespace AMBus.TripManage.Api.Controllers
                 new GetAllTripsQuery(fromCity, toCity, date, seats, page, pageSize));
             return Ok(result);
         }
+        [HttpGet("GetAllTrips")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllTrip()
+        {
+            var result = await Mediator.Send(
+                new GetAllTripsQuery(null, null, null, 0, 1, int.MaxValue));
+            return Ok(result);
+        }
 
         [HttpGet("{id:guid}")]
         [AllowAnonymous]

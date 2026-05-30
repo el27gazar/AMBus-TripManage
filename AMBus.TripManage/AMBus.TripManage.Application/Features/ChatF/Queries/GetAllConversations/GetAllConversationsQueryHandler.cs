@@ -36,14 +36,14 @@ namespace AMBus.TripManage.Application.Features.ChatF.Queries.GetAllConversation
             var total = await _chatRepo
                 .GetTotalConversationsCountAsync(query.Status);
 
-            return new PagedResultDto<ConversationDto>(
-                Items: _mapper.Map<List<ConversationDto>>(convs),
-                TotalCount: total,
-                Page: query.Page,
-                PageSize: query.PageSize,
-                TotalPages: (int)Math.Ceiling(
+            return new PagedResultDto<ConversationDto> {
+                Items = _mapper.Map<List<ConversationDto>>(convs),
+                TotalCount = total,
+                Page = query.Page,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(
                     total / (double)query.PageSize)
-            );
+            };
         }
     }
 }

@@ -207,17 +207,17 @@ namespace AMBus.TripManage.Persistance.Hubs
             await _chatRepo.SaveChangesAsync();
 
             // ── بناء الـ DTO ───────────────────────────────
-            var dto = new ChatMessageDto(
-                Id: message.Id,
-                ConversationId: convId,
-                SenderId: userId,
-                SenderName: senderName,
-                SenderIsAdmin: isAdmin,
-                Content: content.Trim(),
-                IsRead: false,
-                ReadAt: null,
-                CreatedDate: now
-            );
+            var dto = new ChatMessageDto {
+                Id = message.Id,
+                ConversationId = convId,
+                SenderId = userId,
+                SenderName = senderName,
+                SenderIsAdmin = isAdmin,
+                Content = content.Trim(),
+                IsRead= false,
+                ReadAt = null,
+                CreatedDate = now
+            };
 
             // ── إرسال لكل في المحادثة ─────────────────────
             await Clients

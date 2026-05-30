@@ -28,23 +28,23 @@ namespace AMBus.TripManage.Application.Features.DashboardF.Queries.GetRevenueCha
                 return payments
                     .GroupBy(p => p.PaidAt!.Value)
                     .OrderBy(g => g.Key)
-                    .Select(g => new RevenuePointDto(
-                        Period: g.Key.ToString("yyyy-MM-dd"),
-                        Amount: g.Sum(p => p.Amount),
-                        BookingsCount: g.Count()
-                    ));
+                    .Select(g => new RevenuePointDto {
+                        Period = g.Key.ToString("yyyy-MM-dd"),
+                        Amount = g.Sum(p => p.Amount),
+                        BookingsCount = g.Count()
+                    });
             }
             else
             {
                 return payments
                     .GroupBy(p => new { p.PaidAt!.Value.Year, p.PaidAt!.Value.Month })
                     .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
-                    .Select(g => new RevenuePointDto(
-                        Period: new DateTime(g.Key.Year, g.Key.Month, 1)
+                    .Select(g => new RevenuePointDto {
+                        Period = new DateTime(g.Key.Year, g.Key.Month, 1)
                                             .ToString("MMM yyyy"),
-                        Amount: g.Sum(p => p.Amount),
-                        BookingsCount: g.Count()
-                    ));
+                        Amount = g.Sum(p => p.Amount),
+                        BookingsCount = g.Count()
+                    });
             }
         }
     }

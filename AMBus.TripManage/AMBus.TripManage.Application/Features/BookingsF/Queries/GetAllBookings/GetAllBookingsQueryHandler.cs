@@ -35,13 +35,13 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Queries.GetAllBookings
                     request.Page,
                     request.PageSize);
 
-            return new PagedResultDto<BookingDto>(
-                Items: _mapper.Map<List<BookingDto>>(bookings),
-                TotalCount: total,
-                Page: request.Page,
-                PageSize: request.PageSize,
-                TotalPages: (int)Math.Ceiling(total / (double)request.PageSize)
-            );
+            return new PagedResultDto<BookingDto> { 
+                Items = _mapper.Map<List<BookingDto>>(bookings),
+                TotalCount = total,
+                Page = request.Page,
+                PageSize = request.PageSize,
+                TotalPages = (int)Math.Ceiling(total / (double)request.PageSize)
+            };
         }
     }
 }

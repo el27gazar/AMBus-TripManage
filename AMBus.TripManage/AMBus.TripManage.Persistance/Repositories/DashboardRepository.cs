@@ -35,45 +35,47 @@ namespace AMBus.TripManage.Persistance.Repositories
                     .Where(p => p.Status == PaymentStatus.Paid)
                     .SumAsync(p => (decimal?)p.Amount) ?? 0;
 
-                return new DashboardStatsDto(
-                    TotalUsers: totalUsers,
-                    TotalDrivers: totalDrivers,
-                    TotalBuses: totalBuses,
-                    TotalRoutes: totalRoutes,
-                    TotalTrips: totalTrips,
-                    TotalBookings: totalBookings,
-                    TotalRevenue: totalRevenue,
-                    TodayBookings: todayBookings,
-                    ActiveTrips: activeTrips,
-                    PendingBookings: pendingBookings
-                );
+            return new DashboardStatsDto
+            {
+                TotalUsers = totalUsers,
+                TotalDrivers = totalDrivers,
+                TotalBuses = totalBuses,
+                TotalRoutes = totalRoutes,
+                TotalTrips = totalTrips,
+                TotalBookings = totalBookings,
+                TotalRevenue = totalRevenue,
+                TodayBookings = todayBookings,
+                ActiveTrips = activeTrips,
+                PendingBookings = pendingBookings
+            };
             }
 
-            public async Task<IEnumerable<PopularRouteDto>> GetPopularRoutesAsync(int top)
-            {
-                return await _ctx.Trips
-                    .Include(t => t.From)       
-                    .Include(t => t.To)        
-                    .Include(t => t.Bookings)
-                    .Include(t => t.Reviews)
-                    .GroupBy(t => new
-                    {
-                        t.FromId,
-                        t.ToId,
-                        FromName = t.From.Name,
-                        ToName = t.To.Name    
-                    })
-                    .Select(g => new PopularRouteDto(
-                        g.Key.FromId,
-                        g.Key.ToId,
-                        g.Key.FromName,
-                        g.Key.ToName,
-                        g.SelectMany(t => t.Bookings)
+        public async Task<IEnumerable<PopularRouteDto>> GetPopularRoutesAsync(int top)
+        {
+            return await _ctx.Trips
+                .Include(t => t.From)
+                .Include(t => t.To)
+                .Include(t => t.Bookings)
+                .Include(t => t.Reviews)
+                .GroupBy(t => new
+                {
+                    t.FromId,
+                    t.ToId,
+                    FromName = t.From.Name,
+                    ToName = t.To.Name
+                })
+                .Select(g => new PopularRouteDto {
+                        FromId = g.Key.FromId,
+                        ToId = g.Key.ToId,
+                        FromName = g.Key.FromName,
+                        ToName = g.Key.ToName,
+                        BookingsCount = g.SelectMany(t => t.Bookings)
                          .Count(b => b.Status != BookingStatus.Cancelled),
-                        g.SelectMany(t => t.Reviews).Any()
+                        AverageRating = g.SelectMany(t => t.Reviews).Any()
                             ? g.SelectMany(t => t.Reviews).Average(r => r.Rating)
                             : 0
-                    ))
+
+                })
                     .OrderByDescending(r => r.BookingsCount)
                     .Take(top)
                     .ToListAsync();
