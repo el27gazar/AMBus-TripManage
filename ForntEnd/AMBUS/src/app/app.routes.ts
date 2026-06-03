@@ -17,9 +17,26 @@ export const routes: Routes = [
   {path:'user',loadComponent: () => import('./Layouts/user-layout/user-layout').then(m => m.UserLayout)
     ,
     children:[
-      {path:'',redirectTo:'BookTrip',pathMatch:'full'},
+      {path:'',redirectTo:'home',pathMatch:'full'},
+      {path:'home',loadComponent: () => import('./pages/home/home').then(m => m.Home)},
       {path:'BookTrip',loadComponent: () => import('./pages/book-trip/book-trip').then(m => m.BookTrip)},
+      {path:'MyTrips',loadComponent: () => import('./pages/my-trips/my-trips').then(m => m.MyTrips)},
+      {path:'About',loadComponent: () => import('./pages/about/about').then(m => m.About)},
     ]
 
+  },
+  {path:'admin',loadComponent: () => import('./Layouts/admin-layout/admin-layout').then(m => m.AdminLayout),
+    children:[
+      {path:'',redirectTo:'Dashboard',pathMatch:'full'},
+      {path:'Dashboard',loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard)},
+      {path:'userManagement',loadComponent: () => import('./pages/user-manage/user-manage').then(m => m.UserManage)},
+      {path:'BusManagement',loadComponent: () => import('./pages/bus-manage/bus-manage').then(m => m.BusManage)},
+      {path:'RoutesManagement',loadComponent: () => import('./pages/route-manage/route-manage').then(m => m.RouteManage)},
+      {path:'TripManagement',loadComponent: () => import('./pages/trip-manage/trip-manage').then(m => m.TripManage)},
+      {path:'TicketManagement',loadComponent: () => import('./pages/ticket-manage/ticket-manage').then(m => m.TicketManage)},
+      {path:'ReviewManagement',loadComponent: () => import('./pages/review-manage/review-manage').then(m => m.ReviewManage)},
+      {path:'Chats' ,loadComponent: () => import('./pages/chat/chat').then(m => m.Chat)},
+      {path:'Settings',loadComponent: () => import('./pages/settings/settings').then(m => m.Settings)},
+    ]
   }
 ];

@@ -1,1 +1,37 @@
-<p>book-trip works!</p>
+<div class="container-booktrip">
+  <h2>Book Your Bus Journey</h2>
+  <div class="trip">
+    <div class="box">
+      <label for="From">From</label>
+        @if (isLoaded) {
+          <select name="From" id="From">
+            <option disabled hidden>Select City</option>
+
+            @for(item of Routes;track item.id)
+            {
+            <option [attr.value]="item.id">{{item.name}}</option>
+            }
+
+          </select>
+        }
+    </div>
+    <div class="box">
+      <label for="to">To</label>
+          @if (isLoaded) {
+            <select name="To" id="to">
+              <option disabled hidden>Select City</option>
+              @for(route of Routes;track route.id)
+              {
+              <option [attr.value]="route.id">{{route.name}}</option>
+              }
+
+            </select>
+          }
+    </div>
+    <div class="box">
+      <label for="Date">Date</label>
+      <input type="date" id="Date" placeholder="Date">
+    </div>
+  </div>
+  <button >Search Buses</button>
+</div>

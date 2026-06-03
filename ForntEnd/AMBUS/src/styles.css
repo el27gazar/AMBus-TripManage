@@ -62,3 +62,7 @@ body {
     transform: translateX(0);
   }
 }
+
+.logo h1 span {
+  color: var(--hover);
+}

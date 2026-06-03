@@ -1,0 +1,73 @@
+:host {
+  --primaryColor: #1e1e1e;
+  --SeconderColor: #d9d9d9;
+  --ThirdColor: #840303;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+}
+.container h2 {
+  font-size: 50px;
+  font-weight: 900;
+  color: var(--SeconderColor);
+  margin: auto;
+  text-align: center;
+}
+.container h2:after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 6px;
+  background-color: var(--ThirdColor);
+  margin: auto;
+  margin-top: 10px;
+}
+
+.Date {
+  font-size: 25px;
+  font-weight: 900;
+  color: var(--SeconderColor);
+  margin: 10px;
+}
+
+.trips {
+  background-color: var(--SeconderColor);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+}
+ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  list-style: none;
+  font-size: 32px;
+  font-weight: 900;
+  color: #000;
+}
+ul li {
+  color: #000;
+}
+
+button {
+  background-color: var(--ThirdColor);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  color: var(--SeconderColor);
+  font-size: 20px;
+  font-weight: 900;
+  outline: none;
+  cursor: pointer;
+}
+
+button:hover,
+button:hover i {
+  background-color: var(--SeconderColor);
+  color: var(--ThirdColor);
+}

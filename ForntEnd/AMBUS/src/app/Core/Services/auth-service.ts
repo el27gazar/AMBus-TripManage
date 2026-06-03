@@ -18,7 +18,7 @@ export class AuthService {
 
 
   LoginService(Data:ILogin):Observable<any>{
-    return this._httpClient.post(BaseUrl+"/Auth/login",Data);
+    return this._httpClient.post(BaseUrl+"/Auth/login",Data,);
   }
 
   ForgetPasswordService(Data:{Email:string}):Observable<any>{

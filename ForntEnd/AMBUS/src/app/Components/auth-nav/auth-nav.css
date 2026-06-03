@@ -46,8 +46,13 @@ button {
   transition: 0.3s ease;
 }
 .auth:hover,
-button:hover {
+button:hover,
+button:hover i {
   transform: scale(1.1);
+  color: #db1919;
+}
+.active,
+.active i {
   color: #db1919;
 }
 

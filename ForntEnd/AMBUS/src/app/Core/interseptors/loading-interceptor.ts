@@ -5,8 +5,11 @@ import { finalize } from 'rxjs';
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
  const _ngxspinner = inject(NgxSpinnerService);
+   const clonedReq = req.clone({
+    withCredentials: true
+  });
   _ngxspinner.show();
-  return next(req).pipe(finalize(() => {
+  return next(clonedReq).pipe(finalize(() => {
     _ngxspinner.hide();
   }));
 };

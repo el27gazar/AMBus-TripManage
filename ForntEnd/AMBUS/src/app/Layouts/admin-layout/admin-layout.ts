@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-
+import { Sidebar } from "../../pages/sidebar/sidebar";
+import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-admin-layout',
-  imports: [],
+  imports: [Sidebar, RouterOutlet],
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.css',
 })

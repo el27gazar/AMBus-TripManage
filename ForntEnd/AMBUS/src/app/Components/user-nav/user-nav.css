@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Jolly+Lodger&display=swap');
+
+.logo h1 span {
+  font-family: 'Jolly Lodger', system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 50px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+  color: #fff;
+}
+.container {
+  width: 100%;
+  background-color: #1e1e1e;
+  margin-bottom: 20px;
+}
+
+.logo {
+  cursor: pointer;
+}
+
+.navbar-container {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  margin: auto;
+  color: #fff;
+}
+
+.container-list {
+  display: flex;
+  width: 70%;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+ul li {
+  transition: 0.3s ease;
+}
+
+.list ul {
+  list-style: none;
+  display: flex;
+  gap: 40px;
+}
+.list ul li a,
+a,
+button {
+  font-size: 20px;
+  cursor: pointer;
+}
+.list ul li a,
+button,
+a {
+  transition: 0.3s ease;
+}
+.list ul li a:hover,
+button:hover,
+a:hover {
+  color: #db1919;
+}
+.active {
+  color: #db1919;
+}
+
+.list {
+  display: flex;
+  width: 65%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button,
+.list ul li a {
+  background-color: inherit;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+.size {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.menu {
+  display: none;
+  cursor: pointer;
+  font-size: 30px;
+  margin-top: 15px;
+  transition: 0.3s ease;
+}
+.menu:hover,
+.menu:hover i {
+  background-color: #ffffff;
+  font-weight: 900;
+  border-radius: 5px;
+  padding: 2px;
+  color: #db1919;
+}
+
+@media screen and (max-width: 800px) {
+  .container-list {
+    display: none;
+  }
+  .menu {
+    display: block;
+  }
+  .size {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .display {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+  .list ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+  }
+  .list ul li {
+    width: 100%;
+    text-align: center;
+  }
+  .list ul li:hover,
+  .list ul li:hover a {
+    background-color: #fff;
+    color: #db1919;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  .auth {
+    margin-top: 25px;
+  }
+  .auth:hover {
+    width: 300px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #db1919;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+}

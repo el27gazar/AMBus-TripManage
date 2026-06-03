@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Jolly+Lodger&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #fff;
+}
+.logo {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo h1 span {
+  font-family: 'Jolly Lodger', system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 50px;
+}
+
+.conatainer {
+  width: 300px;
+  height: 100%;
+  background-color: #000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  transition: 0.3s ease-in-out;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 25px;
+}
+
+.menu {
+  margin-top: 4px;
+}
+.menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.menu ul li {
+  padding: 10px;
+}
+
+.menu ul li a,
+button {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 20px;
+  padding: 4px;
+  border-radius: 10px;
+  transition: 0.2s ease-in-out;
+}
+
+.menu ul li a:hover,
+.menu ul li a:hover i,
+button:hover,
+button:hover i,
+.active,
+.active i,
+.active span {
+  background-color: #ffffff;
+  color: #000;
+}
+
+.menu ul li a:hover span {
+  color: #1e1e1e;
+}
+
+.bi {
+  font-size: 25px;
+}
+
+.none {
+  display: none;
+}
+
+.width {
+  width: 60px;
+}

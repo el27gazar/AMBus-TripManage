@@ -24,7 +24,7 @@ namespace AMBus.TripManage.Api
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("open", policy =>
-                policy.WithOrigins(builder.Configuration["ApiUrl"] ?? "https://localhost:5005")
+                policy.WithOrigins(builder.Configuration["FrontendUrl"] ?? "https://localhost:5005")
                 .AllowAnyHeader()
                 .SetIsOriginAllowed(_ => true)
                 .AllowAnyMethod()

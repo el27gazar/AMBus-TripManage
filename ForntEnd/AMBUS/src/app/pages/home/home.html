@@ -7,7 +7,7 @@
       <h1>Your Journey Starts Here</h1>
       <p>Book comfortable and affordable bus tickets to destinations<br>across the country. Safe, reliable, and on time.
       </p>
-      <button class="btn-book">Click to book trip</button>
+      <button class="btn-book" [routerLink]="['/user/BookTrip']">Book Now</button>
     </div>
 
     <div class="chat-bubble">
@@ -16,3 +16,10 @@
 
   </div>
 </div>
+
+<app-testimonials></app-testimonials>
+
+<div class="seperator"></div>
+<app-statistics-section></app-statistics-section>
+
+<app-footer></app-footer>

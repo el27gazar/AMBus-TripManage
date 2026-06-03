@@ -1,1 +1,29 @@
-<p>user-nav works!</p>
+<div class="container">
+  <div class="navbar-container">
+    <div class="size">
+    <div class="logo" [routerLink]="['/user/home']">
+      <h1><span>AM</span>BUS</h1>
+    </div>
+
+    <button class="menu" (click)="tooglemenu()">
+      <i  class="bi bi-list"></i>
+    </button>
+  </div>
+
+    <div class="container-list">
+      <div class="list">
+        <ul>
+          <li><a [routerLink]="['/user/home']" [routerLinkActive]="['active']">Home</a></li>
+          <li><a [routerLink]="['/user/BookTrip']" [routerLinkActive]="['active']">BookTrip</a></li>
+          <li><a [routerLink]="['/user/MyTrips']" [routerLinkActive]="['active']">MyTrips</a></li>
+          <li><a [routerLink]="['/user/About']" [routerLinkActive]="['active']">About</a></li>
+        </ul>
+      </div>
+      <div class="auth">
+        <a>Logout</a>
+      </div>
+    </div>
+
+
+  </div>
+</div>
