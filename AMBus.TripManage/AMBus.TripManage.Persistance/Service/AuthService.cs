@@ -68,7 +68,7 @@ namespace AMBus.TripManage.Persistance.Service
 
             await _emailService.SendEmailAsync(
                 user.Email!,
-                "تأكيد البريد الإلكتروني",
+                "Confirm Your Email",
                 EmailTemplates.ConfirmEmail(user.FullName, otpCode));
 
             return new AuthResponseDto(
@@ -84,13 +84,16 @@ namespace AMBus.TripManage.Persistance.Service
         public async Task<AuthResponseDto> LoginAsync(LoginRequestDto loginRequestDto)
         {
             var user = await _userManager.FindByEmailAsync(loginRequestDto.Email)
-                ?? throw new UnauthorizedException("Wrong email or password.");
+                ?? throw new UnauthorizedException("Invalid email or password.");
+
+            if (!user.IsActive)
+                throw new UnauthorizedException("This account has been deleted or deactivated.");
 
             if (!user.EmailConfirmed)
                 throw new UnauthorizedException("Please confirm your email address before logging in.");
 
             if (!await _userManager.CheckPasswordAsync(user, loginRequestDto.Password))
-                throw new UnauthorizedException("Wrong email or password.");
+                throw new UnauthorizedException("Invalid email or password.");
 
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault() ?? "User";
@@ -127,7 +130,7 @@ namespace AMBus.TripManage.Persistance.Service
 
             await _emailService.SendEmailAsync(
                 user.Email!,
-                "إعادة تعيين كلمة المرور",
+                "Reset Password",
                 EmailTemplates.ResetPassword(user.FullName, otpCode));
         }
 
@@ -140,7 +143,7 @@ namespace AMBus.TripManage.Persistance.Service
             if (!isValid)
                 throw new ValidationException(new[]
                 {
-                    new ValidationFailure("OTP", "الرمز غير صحيح أو منتهي الصلاحية.")
+                    new ValidationFailure("OTP", "The code is invalid or has expired.")
                 });
 
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);

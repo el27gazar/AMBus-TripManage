@@ -41,7 +41,7 @@ namespace AMBus.TripManage.Persistance.Data.Configurations
             b.Property(t => t.LastModifiedBy)
              .HasMaxLength(100);
 
-          
+           
         }
     }
 }

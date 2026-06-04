@@ -79,7 +79,14 @@ namespace AMBus.TripManage.Api.Controllers
             [FromBody] CreateBusRequest request)
         {
             if (!Enum.TryParse<BusType>(request.Type, true, out var busType))
-                return BadRequest(new { message = "نوع الباص غير صحيح." });
+                return BadRequest(new { message = "Invalid bus type" });
+
+            var allBuses = await _uow.Buses.GetAllAsync();
+            if (allBuses.Any(b =>
+                b.PlateNumber.Equals(request.PlateNumber,
+                    StringComparison.OrdinalIgnoreCase)))
+                throw new ConflictException(
+                    $"Plate number '{request.PlateNumber}' already exists.");
 
             var bus = new Bus
             {
@@ -114,12 +121,28 @@ namespace AMBus.TripManage.Api.Controllers
         [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Update(
             Guid id,
             [FromBody] UpdateBusRequest request)
         {
             var bus = await _uow.Buses.GetByIdAsync(id)
                 ?? throw new NotFoundException(nameof(Bus), id);
+
+            if (!string.IsNullOrWhiteSpace(request.PlateNumber) &&
+                !request.PlateNumber.Equals(bus.PlateNumber,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                var allBuses = await _uow.Buses.GetAllAsync();
+                if (allBuses.Any(b =>
+                    b.Id != id &&
+                    b.PlateNumber.Equals(request.PlateNumber,
+                        StringComparison.OrdinalIgnoreCase)))
+                    throw new ConflictException(
+                        $"Plate number '{request.PlateNumber}' already in use.");
+
+                bus.PlateNumber = request.PlateNumber;
+            }
 
             bus.Model = request.Model;
             bus.IsActive = request.IsActive;
@@ -143,5 +166,7 @@ namespace AMBus.TripManage.Api.Controllers
             await _uow.SaveChangesAsync();
             return NoContent();
         }
+       
+
     }
 }

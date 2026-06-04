@@ -45,7 +45,7 @@ namespace AMBus.TripManage.Persistance.Service
                     "Aman" => await KioskAsync(auth, orderId, req, AmanId, 24),
                     "Masary" => await KioskAsync(auth, orderId, req, MasaryId, 24),
                     _ => new PaymentInitResult(false, "error", null, null,
-                                        null, null, null, null, "طريقة غير مدعومة.")
+                                        null, null, null, null, "Not Supported")
                 };
             }
             catch (Exception ex)

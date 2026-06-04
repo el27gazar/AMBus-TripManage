@@ -24,5 +24,11 @@ namespace AMBus.TripManage.Persistance.Repositories
             => await _ctx.Drivers
                 .Include(d => d.User)
                 .FirstOrDefaultAsync(d => d.Id == driverId);
+
+        public async Task<Driver?> GetDriverByUserIdAsync(Guid userId)
+            => await _ctx.Drivers
+                .Include(d => d.User)
+                .FirstOrDefaultAsync(d => d.UserId == userId);
+
     }
 }

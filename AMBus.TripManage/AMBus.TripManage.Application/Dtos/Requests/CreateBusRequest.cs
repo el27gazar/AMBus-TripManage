@@ -17,5 +17,7 @@ namespace AMBus.TripManage.Application.Dtos.Requests
     {
         public string Model { get; set; }
         public bool IsActive { get; set; }
+
+        public string PlateNumber { get; set; } = string.Empty;
     }
 }   

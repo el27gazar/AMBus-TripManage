@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AMBus.TripManage.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
+   
     public class DriversController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -23,6 +23,7 @@ namespace AMBus.TripManage.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll([FromQuery] bool? available)
         {
@@ -45,6 +46,7 @@ namespace AMBus.TripManage.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -76,6 +78,7 @@ namespace AMBus.TripManage.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(
@@ -97,7 +100,67 @@ namespace AMBus.TripManage.Api.Controllers
             return Ok(_mapper.Map<DriverDto>(updated));
         }
 
+        [HttpGet("{id:guid}/profile")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetProfile(Guid id)
+        {
+            
+            if (!IsAdmin)
+            {
+                
+                var myDriver = await _uow.Drivers
+                    .GetDriverByUserIdAsync(CurrentUserId);
+
+                if (myDriver is null || myDriver.Id != id)
+                    throw new UnauthorizedException(
+                        "You can only view your own profile.");
+            }
+
+            var driver = await _uow.Drivers.GetDriverWithUserAsync(id)
+                ?? throw new NotFoundException(nameof(Driver), id);
+
+            
+            var allTrips = await _uow.Trips.GetAllAsync();
+            var driverTrips = allTrips
+                .Where(t => t.DriverId == id)
+                .ToList();
+
+            var profile = new
+            {
+                id = driver.Id,
+                fullName = driver.User.FullName,
+                email = driver.User.Email,
+                phoneNumber = driver.User.PhoneNumber,
+                licenseNumber = driver.LicenseNumber,
+                licenseExpiry = driver.LicenseExpiry,
+                emergencyContact = driver.EmergencyContact,
+                isAvailable = driver.IsAvailable,
+                createdDate = driver.CreatedDate,
+
+                // إحصائيات
+                stats = new
+                {
+                    totalTrips = driverTrips.Count,
+                    completedTrips = driverTrips.Count(t =>
+                        t.Status == TripStatus.Completed),
+                    cancelledTrips = driverTrips.Count(t =>
+                        t.Status == TripStatus.Cancelled),
+                    activeTrips = driverTrips.Count(t =>
+                        t.Status == TripStatus.InProgress),
+                    upcomingTrips = driverTrips.Count(t =>
+                        t.Status == TripStatus.Scheduled &&
+                        t.DepartureTime > DateTime.UtcNow)
+                }
+            };
+
+            return Ok(profile);
+        }
+
         [HttpPut("{id:guid}/availability")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateAvailability(
@@ -113,10 +176,11 @@ namespace AMBus.TripManage.Api.Controllers
             _uow.Drivers.Update(driver);
             await _uow.SaveChangesAsync();
 
-            return Ok(new { message = "تم تحديث حالة السائق." });
+            return Ok(new { message = "Status Updated" });
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(Guid id)
@@ -128,6 +192,8 @@ namespace AMBus.TripManage.Api.Controllers
             await _uow.SaveChangesAsync();
             return NoContent();
         }
+
+
     }
 
 }

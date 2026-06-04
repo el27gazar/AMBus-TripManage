@@ -11,9 +11,7 @@ namespace AMBus.TripManage.Application.Features.Tripsf.Queries.GetAllTrips
     {
         public GetAllTripsQueryValidator()
         {
-            RuleFor(x => x.Seats)
-                .GreaterThan(0).WithMessage("عدد المقاعد يجب أن يكون أكبر من 0.")
-                .LessThanOrEqualTo(6).WithMessage("الحد الأقصى 6 مقاعد.");
+           
 
             RuleFor(x => x.Date)
                 .GreaterThanOrEqualTo(DateTime.Today)

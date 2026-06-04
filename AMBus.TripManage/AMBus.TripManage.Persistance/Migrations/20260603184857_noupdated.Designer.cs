@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMBus.TripManage.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260525163733_removeseeddata")]
-    partial class removeseeddata
+    [Migration("20260603184857_noupdated")]
+    partial class noupdated
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.26")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -933,8 +933,8 @@ namespace AMBus.TripManage.Persistance.Migrations
                         {
                             Id = new Guid("cccccccc-0000-0000-0000-000000000001"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "403b05ec-d406-47f1-afbc-642f199f2fb4",
-                            CreatedAt = new DateTime(2026, 5, 25, 16, 37, 31, 780, DateTimeKind.Utc).AddTicks(1159),
+                            ConcurrencyStamp = "7b213cb0-82c7-4910-9b89-082ee2da856c",
+                            CreatedAt = new DateTime(2026, 6, 3, 18, 48, 56, 445, DateTimeKind.Utc).AddTicks(7426),
                             Email = "driver1@ambus.com",
                             EmailConfirmed = false,
                             FullName = "كابتن محمد أحمد",
@@ -948,8 +948,8 @@ namespace AMBus.TripManage.Persistance.Migrations
                         {
                             Id = new Guid("cccccccc-0000-0000-0000-000000000002"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ca2a41c2-388d-4144-b092-8e283b8801d7",
-                            CreatedAt = new DateTime(2026, 5, 25, 16, 37, 31, 780, DateTimeKind.Utc).AddTicks(1166),
+                            ConcurrencyStamp = "69c948c0-0ea3-42d5-880e-7016cadcf094",
+                            CreatedAt = new DateTime(2026, 6, 3, 18, 48, 56, 445, DateTimeKind.Utc).AddTicks(7433),
                             Email = "driver2@ambus.com",
                             EmailConfirmed = false,
                             FullName = "كابتن محمود علي",

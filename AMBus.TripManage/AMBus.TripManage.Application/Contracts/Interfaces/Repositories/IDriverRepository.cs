@@ -11,5 +11,6 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
     {
         Task<IEnumerable<Driver>> GetAvailableDriversAsync();
         Task<Driver?> GetDriverWithUserAsync(Guid driverId);
+        Task<Driver?> GetDriverByUserIdAsync(Guid userId);
     }
 }
