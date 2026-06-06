@@ -43,23 +43,18 @@ namespace AMBus.TripManage.Persistance.Middleware
         {
             var (status, title, errors) = ex switch
             {
-                NotFoundException e => (404, "غير موجود",
+                NotFoundException e => (404, "Not Found",
                     new[] { e.Message }),
-
-                ConflictException e => (409, "تعارض في البيانات",
+                ConflictException e => (409, "Data Conflict",
                     new[] { e.Message }),
-
-                UnauthorizedException e => (401, "غير مصرح",
+                UnauthorizedException e => (401, "Unauthorized",
                     new[] { e.Message }),
-
-                BusinessRuleException e => (422, "قاعدة عمل مخالفة",
+                BusinessRuleException e => (422, "Business Rule Violation",
                     new[] { e.Message }),
-
-                ValidationException e => (400, "خطأ في البيانات",
+                ValidationException e => (400, "Validation Error",
                     e.Errors.Select(x => x.ErrorMessage).ToArray()),
-
-                _ => (500, "خطأ داخلي في الخادم",
-                    new[] { "حدث خطأ غير متوقع. حاول مرة أخرى." })
+                _ => (500, "Internal Server Error",
+                    new[] { "An unexpected error occurred. Please try again." })
             };
 
             ctx.Response.ContentType = "application/json";

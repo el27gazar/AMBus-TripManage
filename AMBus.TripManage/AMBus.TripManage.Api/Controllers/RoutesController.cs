@@ -68,6 +68,10 @@ namespace AMBus.TripManage.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateRouteRequest request)
         {
+            var exists = await _uow.Routes.ExistsWithNameAsync(request.Name);
+            if (exists)
+                throw new ConflictException($"Route with name '{request.Name}' already exists.");
+
             var route = new Route
             {
                 Id = Guid.NewGuid(),
@@ -75,7 +79,7 @@ namespace AMBus.TripManage.Api.Controllers
                 IsActive = true,
                 CreatedDate = DateTime.UtcNow
             };
-
+            
             await _uow.Routes.AddAsync(route);
             await _uow.SaveChangesAsync();
 
@@ -104,7 +108,7 @@ namespace AMBus.TripManage.Api.Controllers
             return Ok(_mapper.Map<RouteDto>(route));
         }
 
-        
+
         [HttpDelete("{id:guid}")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -114,83 +118,16 @@ namespace AMBus.TripManage.Api.Controllers
             var route = await _uow.Routes.GetByIdAsync(id)
                 ?? throw new NotFoundException(nameof(Route), id);
 
+           
+            var hasTrips = await _uow.Routes.HasTripsAsync(id);
+            if (hasTrips)
+                throw new BusinessRuleException(
+           $"Cannot delete route '{route.Name}' because it has existing trips assigned to it. Remove the trips first.");
+
             _uow.Routes.Delete(route);
             await _uow.SaveChangesAsync();
             return NoContent();
         }
 
-        /// <summary>إضافة محطة للمحافظة [Admin]</summary>
-        [HttpPost("{routeId:guid}/stops")]
-        [Authorize(Roles = "Admin")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddStop(Guid routeId, [FromBody] CreateStopRequest request)
-        {
-            var route = await _uow.Routes.GetByIdAsync(routeId)
-                ?? throw new NotFoundException(nameof(Route), routeId);
-
-            var stop = new Stop
-            {
-                Id = Guid.NewGuid(),
-                RouteId = routeId,
-                CityName = request.CityName,
-                StationAddress = request.StationAddress,
-                StopOrder = request.StopOrder,
-                ArrivalOffsetMinutes = request.ArrivalOffsetMinutes,
-                CreatedDate = DateTime.UtcNow
-            };
-
-            route.Stops.Add(stop);
-            _uow.Routes.Update(route);
-            await _uow.SaveChangesAsync();
-
-            return Created(string.Empty, _mapper.Map<StopDto>(stop));
-        }
-
-        /// <summary>تعديل محطة [Admin]</summary>
-        [HttpPut("{routeId:guid}/stops/{stopId:guid}")]
-        [Authorize(Roles = "Admin")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateStop(
-            Guid routeId, Guid stopId, [FromBody] UpdateStopRequest request)
-        {
-            var route = await _uow.Routes.GetRouteWithStopsAsync(routeId)
-                ?? throw new NotFoundException(nameof(Route), routeId);
-
-            var stop = route.Stops.FirstOrDefault(s => s.Id == stopId)
-                ?? throw new NotFoundException(nameof(Stop), stopId);
-
-            stop.CityName = request.CityName;
-            stop.StationAddress = request.StationAddress;
-            stop.StopOrder = request.StopOrder;
-            stop.ArrivalOffsetMinutes = request.ArrivalOffsetMinutes;
-            stop.LastModifiedDate = DateTime.UtcNow;
-
-            _uow.Routes.Update(route);
-            await _uow.SaveChangesAsync();
-
-            return Ok(_mapper.Map<StopDto>(stop));
-        }
-
-        /// <summary>حذف محطة [Admin]</summary>
-        [HttpDelete("{routeId:guid}/stops/{stopId:guid}")]
-        [Authorize(Roles = "Admin")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteStop(Guid routeId, Guid stopId)
-        {
-            var route = await _uow.Routes.GetRouteWithStopsAsync(routeId)
-                ?? throw new NotFoundException(nameof(Route), routeId);
-
-            var stop = route.Stops.FirstOrDefault(s => s.Id == stopId)
-                ?? throw new NotFoundException(nameof(Stop), stopId);
-
-            route.Stops.Remove(stop);
-            _uow.Routes.Update(route);
-            await _uow.SaveChangesAsync();
-
-            return NoContent();
-        }
     }
 }

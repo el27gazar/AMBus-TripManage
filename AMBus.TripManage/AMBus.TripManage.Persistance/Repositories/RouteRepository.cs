@@ -25,13 +25,22 @@ namespace AMBus.TripManage.Persistance.Repositories
                 .Include(r => r.Stops.OrderBy(s => s.StopOrder))
                 .FirstOrDefaultAsync(r => r.Id == routeId);
         }
-
+        public async Task<bool> HasTripsAsync(Guid routeId)
+        {
+           return await _ctx.Trips.AnyAsync(t =>
+              t.FromId == routeId || t.ToId == routeId);
+        }
         public async Task<IEnumerable<Route>> GetAllActiveRoutesAsync()
         {
             return await _ctx.Routes
                 .Where(r => r.IsActive)
                 .OrderBy(r => r.Name)
                 .ToListAsync();
+        }
+        public async Task<bool> ExistsWithNameAsync(string name)
+        {
+           return await _ctx.Routes.AnyAsync(r =>
+               r.Name.ToLower() == name.ToLower());
         }
     }
 }

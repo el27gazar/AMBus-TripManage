@@ -114,6 +114,7 @@ namespace AMBus.TripManage.Persistance
                 options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
             });
 
+            services.AddScoped<TripCompletionJob>();
             return services;
         }
 

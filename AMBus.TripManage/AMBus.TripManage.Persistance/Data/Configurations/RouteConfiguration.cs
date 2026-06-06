@@ -31,6 +31,7 @@ namespace AMBus.TripManage.Persistance.Data.Configurations
             b.Property(t => t.LastModifiedBy)
              .HasMaxLength(100);
 
+
             // Seed Data
             b.HasData(
                 new Route { Id = Guid.Parse("aaaaaaaa-0000-0000-0000-000000000001"), Name = "Cairo", IsActive = true },

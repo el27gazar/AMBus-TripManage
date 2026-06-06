@@ -39,18 +39,17 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
                 ?? throw new NotFoundException(nameof(Trip), request.TripId);
 
             if (trip.Status != TripStatus.Scheduled)
-                throw new BusinessRuleException("لا يمكن الحجز — الرحلة غير متاحة.");
+                throw new BusinessRuleException("Unavailable Trip");
 
             if (trip.AvailableSeats < request.Seats.Count)
                 throw new BusinessRuleException(
-                    $"المقاعد المتاحة ({trip.AvailableSeats}) أقل من المطلوبة.");
-
+                    $"Available seats ({trip.AvailableSeats}) are less than requested.");
             foreach (var s in request.Seats)
             {
                 var taken = await _uow.Bookings
                     .IsSeatAlreadyBookedAsync(s.SeatId, request.TripId);
                 if (taken)
-                    throw new ConflictException("أحد المقاعد محجوز بالفعل.");
+                    throw new ConflictException("One of the seats is already booked.");
             }
 
             var booking = new Booking
@@ -79,7 +78,7 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
             await _uow.Bookings.AddAsync(booking);
             await _uow.SaveChangesAsync();
 
-            // ── إشعار أوتوماتيكي ──────────────────────
+            
             await _notifications.NotifyBookingPendingPaymentAsync(booking.Id);
 
             var created = await _uow.Bookings

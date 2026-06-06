@@ -24,12 +24,14 @@ namespace AMBus.TripManage.Application.Features.Tripsf.Commands.DeleteTrip
                 ?? throw new NotFoundException(nameof(Trip), request.TripId);
 
             if (trip.Status == TripStatus.InProgress)
-                throw new BusinessRuleException("لا يمكن حذف رحلة جارية.");
+                throw new BusinessRuleException("Can`t Remove Inprogress Trip");
 
             var hasBookings = await _uow.Bookings.HasActiveBookingsForTripAsync(request.TripId);
             if (hasBookings)
-                throw new BusinessRuleException("لا يمكن حذف رحلة لها حجوزات نشطة.");
+                throw new BusinessRuleException("Can`t Remove Trip Has Active Bookings ");
 
+            trip.Driver.IsAvailable = true;
+            trip.Bus.IsActive = true;
             _uow.Trips.Delete(trip);
             await _uow.SaveChangesAsync();
 

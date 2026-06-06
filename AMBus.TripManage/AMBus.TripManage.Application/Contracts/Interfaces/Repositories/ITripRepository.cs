@@ -20,5 +20,6 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
 
         Task<IEnumerable<Trip>> GetUpcomingTripsAsync(DateTime from, DateTime until);
 
+        Task<IEnumerable<Trip>> GetExpiredTripsAsync(DateTime now);
     }
 }

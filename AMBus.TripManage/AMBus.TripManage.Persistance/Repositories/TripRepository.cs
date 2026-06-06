@@ -16,14 +16,15 @@ namespace AMBus.TripManage.Persistance.Repositories
 
         public async Task<Trip?> GetTripWithDetailsAsync(Guid tripId)
             => await _ctx.Trips
-                .Include(t => t.From)                               // ✅
-                .Include(t => t.To)                                 // ✅
+                .Include(t => t.From)                               
+                .Include(t => t.To)                                 
                 .Include(t => t.Bus)
                     .ThenInclude(b => b.Seats)
                 .Include(t => t.Driver)
                     .ThenInclude(d => d.User)
                 .Include(t => t.Reviews)
                 .FirstOrDefaultAsync(t => t.Id == tripId);
+     
 
         public async Task<bool> HasBusConflictAsync(
             Guid busId, DateTime departure, DateTime arrival)
@@ -36,8 +37,8 @@ namespace AMBus.TripManage.Persistance.Repositories
         public async Task<IEnumerable<Trip>> GetUpcomingTripsAsync(
             DateTime from, DateTime until)
             => await _ctx.Trips
-                .Include(t => t.From)                               // ✅
-                .Include(t => t.To)                                 // ✅
+                .Include(t => t.From)                               
+                .Include(t => t.To)                                 
                 .Include(t => t.Bus)
                 .Include(t => t.Driver).ThenInclude(d => d.User)
                 .Where(t =>
@@ -82,5 +83,13 @@ namespace AMBus.TripManage.Persistance.Repositories
 
             return (items, total);
         }
+        public async Task<IEnumerable<Trip>> GetExpiredTripsAsync(DateTime now)
+          => await _ctx.Trips
+                .Include(t => t.Driver)
+                .Include(t => t.Bus)
+                .Where(t =>
+                     t.ArrivalTime <= now &&
+                     (t.Status == TripStatus.Scheduled || t.Status == TripStatus.InProgress))
+                .ToListAsync();
     }
 }
