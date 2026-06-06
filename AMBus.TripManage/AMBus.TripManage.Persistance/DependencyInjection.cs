@@ -5,6 +5,7 @@ using AMBus.TripManage.Domain.Entites;
 using AMBus.TripManage.Persistance.Data;
 using AMBus.TripManage.Persistance.Repositories;
 using AMBus.TripManage.Persistance.Service;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -34,7 +35,14 @@ namespace AMBus.TripManage.Persistance
                     configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(
                         "AMBus.TripManage.Persistance")));
+            // Hangfire configuration
+            services.AddHangfire(config => config
+                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UseSqlServerStorage(configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddHangfireServer();
             services.AddHttpContextAccessor();
 
             services

@@ -3,6 +3,8 @@ using AMBus.TripManage.Application;
 using AMBus.TripManage.Persistance;
 using AMBus.TripManage.Persistance.Data;
 using AMBus.TripManage.Persistance.Hubs;
+using AMBus.TripManage.Persistance.Repositories;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -43,6 +45,11 @@ namespace AMBus.TripManage.Api
             app.UseCors("open");
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseHangfireDashboard("/hangfire"); 
+            RecurringJob.AddOrUpdate<TripCompletionJob>(  
+                "complete-expired-trips",
+                job => job.ExecuteAsync(),
+                Cron.Minutely);
             app.MapHub<ChatHub>("/hubs/chat");
             app.MapControllers();
 

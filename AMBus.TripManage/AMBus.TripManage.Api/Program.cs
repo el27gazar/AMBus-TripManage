@@ -9,12 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.ConfiguerService().ConfigurePipeline();
 app.UseGlobalExceptionMiddleware();
 
-app.UseHangfireDashboard();
-
-RecurringJob.AddOrUpdate<TripCompletionJob>(
-    "complete-expired-trips",
-    job => job.ExecuteAsync(),
-    Cron.Minutely);
 
 await app.SeedAsync();
 
