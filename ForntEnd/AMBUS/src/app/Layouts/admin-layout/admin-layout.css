@@ -7,11 +7,9 @@
 
 .side {
   flex-shrink: 2;
-  flex-grow: 1;
 }
 
 .content {
-  /* flex-basis: 80%; */
   flex-shrink: 1;
   flex-grow: 1;
   margin-top: 20px;

@@ -16,16 +16,21 @@ export class Route {
      return this._httpClient.post(BaseUrl+"/Routes",Data);
   }
 
-  GetRouteById(id:number):Observable<any>{
+  GetRouteById(id:string):Observable<any>{
      return this._httpClient.get(BaseUrl+"/Routes/"+id);
   }
 
-  UpdateRoute(id:number,Data:{name:string,isActive:boolean}):Observable<any>{
+  UpdateRoute(id:string,Data:{name:string,isActive:boolean}):Observable<any>{
+    console.log(Data);
+
      return this._httpClient.put(BaseUrl+"/Routes/"+id,Data);
   }
 
-  DeleteRoute(id:number):Observable<any>{
+  DeleteRoute(id:string):Observable<any>{
      return this._httpClient.delete(BaseUrl+"/Routes/"+id);
   }
 
+  Search(Data:{name:string}):Observable<any>{
+     return this._httpClient.get(BaseUrl+"/Routes?name="+Data.name);
+  }
 }

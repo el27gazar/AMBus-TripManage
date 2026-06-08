@@ -14,6 +14,13 @@ export class Bus {
      return this._httpClient.get(BaseUrl+"/Buses/GetAllBuses");
    }
 
+   Search(Data:{type:string,isActive?:boolean}):Observable<any>
+   {
+     if(Data.isActive == null || Data.isActive == undefined ){
+       return this._httpClient.get(BaseUrl+"/Buses?type="+Data.type);
+     }
+     return this._httpClient.get(BaseUrl+"/Buses?type="+Data.type+"&isActive="+Data.isActive);
+   }
    GetBusById(id:string):Observable<any>{
      return this._httpClient.get(BaseUrl+"/Buses/"+id);
    }
@@ -25,5 +32,15 @@ export class Bus {
    DeleteBus(id:string):Observable<any>{
      return this._httpClient.delete(BaseUrl+"/Buses/"+id);
    }
+
+   UpdateBus(id:string, Data:{model:string,isActive:boolean,plateNumber:string}):Observable<any>
+   {
+     return this._httpClient.put(BaseUrl+"/Buses/"+id,Data);
+   }
+
+   GetSeats(id:string):Observable<any>{
+     return this._httpClient.get(BaseUrl+"/Buses/"+id+"/seats");
+   }
+
 
 }

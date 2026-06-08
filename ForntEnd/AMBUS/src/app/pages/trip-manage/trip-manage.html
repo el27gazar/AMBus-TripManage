@@ -1,47 +1,266 @@
 <div class="container">
   <h2>Manage Trips</h2>
-  <div class="search">
-    <form>
-      <div>
-        <input type="text" class="search-input" placeholder="Search User">
-        <select placeholder="isActive">
-          <option value="all">All</option>
-          <option value="true">True</option>
-          <option value="false">False</option>
-        </select>
-      </div>
-      <button type="submit" class="search-button">Search</button>
+  <!-- <div class="search">
+    <form [formGroup]="Formgroup" (submit)="search()">
+      <input type="text" placeholder="Route Name" formControlName="name" />
+      <button type="submit" (click)="search()" class="btn-search">Search</button>
+      <button type="submit" (click)="Create()" class="btn-search">Add</button>
     </form>
-  </div>
-
-
-
+  </div> -->
 
   <table class="user-list">
     <thead>
       <tr>
-        <th>FullName</th>
-        <th>Email</th>
-        <th>PhoneNumber</th>
-        <th>Role</th>
-        <th>isActive</th>
+        <th>From</th>
+        <th>To</th>
+        <th>departureTime</th>
+        <th>arrivalTime</th>
+        <th>status</th>
+        <th>Price</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
+      @for (item of AllTrips; track item.id) {
       <tr>
-        <td>Mohamed Khaled</td>
-        <td>mo7amed.5aled171@gmail.com</td>
-        <td>01015541033</td>
-        <td>ِAdmin</td>
-        <td>True</td>
+        <td>{{item.fromCity}}</td>
+        <td>{{item.toCity}}</td>
+        <td>{{item.departureTime}}</td>
+        <td>{{item.arrivalTime}}</td>
+        <td>{{item.status}}</td>
+        <td>{{item.basePrice}}</td>
         <td>
-          <button class="edit"><i class="bi bi-pencil-fill"></i></button>
-          <button class="delete"><i class="bi bi-trash3-fill"></i></button>
-          <button class="delete"><i class="bi bi-ban"></i></button>
+          <button class="edit" (click)="GetById(item.id)"><i class="bi bi-pencil-fill"></i></button>
+          <button class="delete" (click)="Delete(item.id)"><i class="bi bi-trash3-fill"></i></button>
         </td>
       </tr>
-    </tbody>
+      } @empty {
+      <tr>
+        <td colspan="7">No Trip Found</td>
+      </tr>
+      }
 
+    </tbody>
   </table>
+
+  <div class="toast" id="toastError">
+    <p class="toast-message"> </p>
+  </div>
 </div>
+
+
+<div class="overlay hide"></div>
+<div class="modal edit-modal hide">
+  <h2 class="h-form">  Update Trip </h2>
+  <form id="modalForm" [formGroup]="FromDetails" (submit)="Update()">
+  <div class="display-row">
+      <div class="display-col">
+      <label>From</label>
+      <select formControlName="From">
+        <option disabled hidden selected>Select City</option>
+          <app-select-route></app-select-route>
+      </select>
+      </div>
+    <div class="display-col">
+      <label>To</label>
+        <select formControlName="To" >
+          <option disabled hidden selected>Select City</option>
+          <app-select-route></app-select-route>
+
+        </select>
+      </div>
+  </div>
+
+    <div class="display-col">
+    <label>Departure Time</label>
+    <input type="datetime-local" formControlName="departureTime" />
+    </div>
+
+    <div class="display-col">
+    <label>Arrival Time</label>
+    <input type="datetime-local" formControlName="arrivalTime" />
+    </div>
+
+
+    <div class="display-row">
+
+        <div class="display-col">
+          <label>Bus Type</label>
+          <select formControlName="busType">
+            <option disabled hidden selected>Select BusType</option>
+            <option value="VIP">VIP</option>
+            <option value="Standard">Standard</option>
+            <option value="MiniCoach">MiniCoach</option>
+          </select>
+        </div>
+
+        <div class="display-col">
+          <label>Status</label>
+          <select formControlName="Status">
+            <option disabled hidden selected>Select Status</option>
+            <option value="Scheduled">Scheduled</option>
+            <option value="InProgress">InProgress</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+      <div class="display-col">
+      <label>Driver</label>
+      <select formControlName="driver">
+        <option value="" disabled hidden selected >Select Driver</option>
+        @for(item of AllDrivers;track item.id)
+        {
+         <option [attr.value]="item.id">{{item.fullName}}</option>
+        }@empty{
+          <option disabled>No Driver available</option>
+        }
+      </select>
+    </div>
+    </div>
+
+    <div class="display-row">
+      <div class="display-col">
+        <label>Base Price</label>
+        <input type="number" formControlName="basePrice" />
+      </div>
+
+        <div class="display-col">
+        <label>AvailableSeats</label>
+        <input type="number" formControlName="availableSeats" />
+          </div>
+          <div class="display-col">
+            <label>PlateNumber</label>
+            <input type="text" formControlName="busPlateNumber" />
+          </div>
+
+    </div>
+    <button class="submit-from" type="submit">Submit</button>
+
+  </form>
+  <button class="close-modal" (click)="closeEdit()">X</button>
+</div>
+
+
+<!-- Add modal  -->
+
+
+<div class="modal add-modal hide">
+  <h2 class="h-form"> Add Trip </h2>
+  <form id="modalForm" [formGroup]="Formgroup" (submit)="Create()">
+    <div class="display-row">
+      <div class="display-col">
+        <label>From</label>
+        <select formControlName="fromId">
+          <option value="" disabled hidden selected>Select City</option>
+          <app-select-route></app-select-route>
+        </select>
+        @if(FromAdd.dirty)
+        {
+          @if (FromAdd.hasError('required')) {
+            <p class="Error"> ! Validation error: From Is Required </p>
+          }
+          @if(FromAdd.hasError('notsame')){
+            <p class="Error"> ! Validation error: From and To should be different </p>
+          }
+        }
+      </div>
+      <div class="display-col">
+        <label>To</label>
+        <select formControlName="toId">
+          <option value="" disabled hidden selected>Select City</option>
+          <app-select-route></app-select-route>
+        </select>
+        @if(ToAdd.dirty)
+        {
+          @if (ToAdd.hasError('required')) {
+            <p class="Error"> ! Validation error: To Is Required </p>
+          }
+          @if (ToAdd.hasError('notsame')) {
+            <p class="Error"> ! Validation error: From and To should be different </p>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="display-col">
+      <label>Departure Time</label>
+      <input type="datetime-local" formControlName="departureTime" />
+      @if (departureTimeAdd.dirty) {
+        @if (departureTimeAdd.hasError('required')) {
+          <p class="Error"> ! Validation error: DepartureTime Is Required </p>
+        }
+        @if(departureTimeAdd.hasError('notsame')){
+          <p class="Error"> ! Validation error: can not add old time </p>
+        }
+      }
+    </div>
+
+    <div class="display-col">
+      <label>Arrival Time</label>
+      <input type="datetime-local" formControlName="arrivalTime" />
+      @if (arrivalTimeAdd.dirty) {
+        @if (arrivalTimeAdd.hasError('required')) {
+          <p class="Error"> ! Validation error: ArrivalTime Is Required </p>
+        }
+        @if(arrivalTimeAdd.hasError('notsame'))
+        {
+          <p class="Error"> ! Validation error: ArrivalTime should be greater than DepartureTime </p>
+        }
+
+      }
+    </div>
+    <div class="display-row">
+
+      <div class="display-col">
+        <label>Bus</label>
+        <select formControlName="busId">
+          <option value="" disabled hidden selected>Select Bus</option>
+          @for(item of AllBuses ;track item.id){
+          <option [attr.value]="item.id">{{item.plateNumber}} </option>
+          }@empty{
+            <option disabled>No Bus available</option>
+          }
+        </select>
+        @if (busAdd.dirty) {
+          @if (busAdd.hasError('required')) {
+            <p class="Error"> ! Validation error: Bus Is Required </p>
+          }
+        }
+      </div>
+
+      <div class="display-col">
+        <label>Driver</label>
+        <select formControlName="driverId" >
+          <option value="" disabled hidden selected>Select Driver</option>
+          @for(item of AllDrivers;track item.id)
+          {
+          <option [attr.value]="item.id">{{item.fullName}}</option>
+          }@empty{
+          <option disabled>No Driver available</option>
+          }
+        </select>
+        @if (driverAdd.dirty) {
+          @if (driverAdd.hasError('required')) {
+            <p class="Error"> ! Validation error: Driver Is Required </p>
+          }
+        }
+      </div>
+    </div>
+
+      <div class="display-col">
+        <label>Price</label>
+        <input type="number" formControlName="basePrice" />
+        @if (basePriceAdd.dirty) {
+          @if (basePriceAdd.hasError('required')) {
+            <p class="Error"> ! Validation error: Price Is Required </p>
+          }
+        }
+      </div>
+
+    <button class="submit-from" type="submit">Submit</button>
+
+  </form>
+  <button class="close-modal" (click)="closeAdd()">X</button>
+</div>
+<button class="add" (click)="closeAdd()"><i class="bi bi-plus-lg"></i></button>

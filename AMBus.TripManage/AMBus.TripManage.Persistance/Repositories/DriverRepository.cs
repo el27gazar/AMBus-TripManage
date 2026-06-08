@@ -20,6 +20,13 @@ namespace AMBus.TripManage.Persistance.Repositories
                 .Where(d => d.IsAvailable)
                 .ToListAsync();
 
+        public async Task<IEnumerable<Driver>> GetDriversAsync()
+            => await _ctx.Drivers
+                .Include(d => d.User)
+                .ToListAsync();
+
+
+
         public async Task<Driver?> GetDriverWithUserAsync(Guid driverId)
             => await _ctx.Drivers
                 .Include(d => d.User)

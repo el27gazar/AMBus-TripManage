@@ -1,19 +1,21 @@
 <div class="container">
   <h2>Manage Buses</h2>
   <div class="search">
-    <form>
-        <select placeholder="isActive">
-          <option disabled hidden selected>Select isActive</option>
-          <option value="all">All</option>
+    <form [formGroup]="SearchForm" (submit)="search()">
+        <select placeholder="isActive" formControlName="searchIsActive">
+          <option  disabled hidden selected>Select isActive</option>
+          <option value="">All</option>
           <option value="true">True</option>
           <option value="false">False</option>
         </select>
-        <select placeholder="Type">
-          <option disabled hidden selected>Select Type</option>
-          <option value="all">All</option>
-          <option value="vip">VIP</option>
-          <option value="standard">Standard</option>
+        <select placeholder="Type" formControlName="searchType">
+          <option  disabled hidden selected>Select Type</option>
+          <option value="">All</option>
+          <option value="VIP">VIP</option>
+          <option value="Standard">Standard</option>
+          <option value="MiniCoach">MiniCoach</option>
         </select>
+        <button type="submit" class="btn-search">Search</button>
     </form>
   </div>
 
@@ -42,15 +44,24 @@
                 <button class="delete" (click)="Delete(item.id)"><i class="bi bi-trash3-fill"></i></button>
               </td>
             </tr>
+        }@empty {
+          <tr>
+            <td colspan="6">No Buses Found</td>
+          </tr>
         }
       }
     </tbody>
   </table>
+
+    <div class="toast" id="toastError">
+      <p class="toast-message"> </p>
+    </div>
 </div>
 
 <div class="overlay hide"></div>
 <div class="modal hide">
-  <form [formGroup]="CreateForm" (submit)="submit()">
+  <h2 class="h-form"> Add New Bus </h2>
+  <form id="modalForm" [formGroup]="CreateForm" (submit)="submit()">
    <input type="text" placeholder="PlateNumber" formControlName="plateNumber" />
     @if(plateNumber.dirty){
       @if(plateNumber.getError("required")){
@@ -75,7 +86,13 @@
         <p class="Error"> ! Validation error: TotalSeats must be at most 100 </p>
       }
     }
-   <input type="text" placeholder="Type" formControlName="type" />
+      <select class="select-form"   formControlName="type" >
+        <option value="" disabled hidden selected>Select Type</option>
+        <option value="VIP">VIP</option>
+        <option value="Standard">Standard</option>
+        <option value="MiniCoach">MiniCoach</option>
+      </select>
+
     @if(type.dirty){
       @if(type.getError("required")){
         <p class="Error"> ! Validation error: Type Is Required </p>
@@ -84,7 +101,37 @@
     <button class="submit-from" type="submit">Submit</button>
   </form>
 
-  <button class="close-modal" (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+  <button class="close-modal" (click)="closeModal()">X</button>
 </div>
 
+<div class="modal hide  edit-modal">
+  <h2 class="h-form"> Update Bus </h2>
+  <form id="modalForm" [formGroup]="UpdateForm" (submit)="Update()">
+    <input type="text" placeholder="PlateNumber" formControlName="plateNumber" />
+    @if(plateNumber.dirty){
+    @if(plateNumber.getError("required")){
+    <p class="Error"> ! Validation error: PlateNumber Is Required </p>
+    }
+    }
+    <input type="text" placeholder="Model" formControlName="model" />
+    @if(model.dirty){
+    @if(model.getError("required")){
+    <p class="Error"> ! Validation error: Model Is Required </p>
+    }
+    }
+     <label>isActive</label>
+     <select class="select-form" formControlName="isActive" value="isActive">
+       <option disabled hidden selected>Select isActive</option>
+       <option value="true">True</option>
+       <option value="false">False</option>
+     </select>
+    <button class="submit-from" type="submit">save</button>
+  </form>
+
+  <button class="close-modal" (click)="closeUpdateModal()">X</button>
+</div>
+
+
 <button class="add" (click)="closeModal()"><i class="bi bi-plus-lg"></i></button>
+
+

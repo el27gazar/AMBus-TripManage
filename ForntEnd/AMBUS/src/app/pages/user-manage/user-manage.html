@@ -1,20 +1,17 @@
 <div class="container">
    <h2>Manage Users</h2>
   <div class="search">
-    <form [formGroup]="SearchForm" (submit)="submit()"]>
-      <div>
-        <input type="text" class="search-input" placeholder="Search User" formControlName="SerachInput">
-        <select placeholder="isActive" value="all"  formControlName="SelectValue">
-          <option value="all">All</option>
-          <option value="true">True</option>
-          <option value="false">False</option>
-        </select>
-      </div>
+    <form [formGroup]="SearchForm" (submit)="submit()">
+      <input type="text" class="search-input" placeholder="Search by FullName or Email" formControlName="SerachInput">
+      <select placeholder="IsActive" formControlName="SelectValue">
+        <option value="" disabled  selected>Select IsActive</option>
+        <option value="all">All</option>
+        <option value="true">True</option>
+        <option value="false">False</option>
+      </select>
       <button type="submit" class="search-button">Search</button>
     </form>
   </div>
-
-
 
 
   <table class="user-list">
@@ -29,19 +26,77 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Mohamed Khaled</td>
-        <td>mo7amed.5aled171@gmail.com</td>
-        <td>01015541033</td>
-        <td>ِAdmin</td>
-        <td>True</td>
-        <td>
-          <button class="edit"><i class="bi bi-pencil-fill"></i></button>
-          <button class="delete"><i class="bi bi-trash3-fill"></i></button>
-          <button class="delete"><i class="bi bi-ban"></i></button>
-        </td>
-      </tr>
+        @for(item of AllUsers ; track item.id) {
+          <tr>
+            <td>{{item.fullName}}</td>
+            <td>{{item.email}}</td>
+            <td>{{item.phoneNumber}}</td>
+            <td>{{item.role}}</td>
+            <td>{{item.isActive}}</td>
+            <td>
+              <button class="edit" (click)="Get(item.id)"><i class="bi bi-pencil-fill"></i></button>
+              <button [ngClass]="item.isActive ? 'delete' : 'ban'" (click)="Ban(item.id,item.isActive)" ><i class="bi bi-ban"></i></button>
+            </td>
+          </tr>
+        }@empty{
+          <tr>
+          <td colspan="6">No Users Found</td>
+        </tr>
+      }
     </tbody>
 
   </table>
+
+  <div class="toast" id="toastError">
+    <p class="toast-message"> </p>
+  </div>
+
+  <div class="overlay hide"></div>
+  <div class="modal hide">
+    <form [formGroup]="UpdateForm" (submit)="Update()">
+       <label for="FullName">FullName</label>
+       <input type="text" placeholder="FullName" formControlName="fullName" />
+        @if(fullName.dirty)
+        {
+          @if(fullName.getError("required"))
+          {
+             <p class="Error"> ! Validation error: FullName Is Required </p>
+          }
+          @if(fullName.getError("minlength"))
+          {
+          <p class="Error"> ! Validation error: FullName must be at least 3 characters </p>
+          }
+          @if(fullName.getError("maxlength"))
+          {
+          <p class="Error"> ! Validation error: FullName must be at most 50 characters </p>
+          }
+        }
+       <label for="PhoneNumber">PhoneNumber</label>
+       <input type="phone" placeholder="PhoneNumber" formControlName="phoneNumber" />
+        @if(phoneNumber.dirty)
+        {
+          @if(phoneNumber.getError("required"))
+          {
+             <p class="Error"> ! Validation error: PhoneNumber Is Required </p>
+          }
+          @if(phoneNumber.getError("pattern"))
+          {
+             <p class="Error"> ! Validation error: Invalid PhoneNumber </p>
+          }
+        }
+
+        <label for="role">Role</label>
+        <select placeholder="Role" class="select-role" formControlName="role" value="role">
+          <option value="" disabled  selected>Select Role</option>
+          <option value="Admin">Admin</option>
+          <option value="User">User</option>
+          <option value="Driver">Driver</option>
+        </select>
+
+       <button type="submit" class="search-button">Save</button>
+    </form>
+
+    <button class="close-modal" (click)="closeModal()">X</button>
+  </div>
+
 </div>
