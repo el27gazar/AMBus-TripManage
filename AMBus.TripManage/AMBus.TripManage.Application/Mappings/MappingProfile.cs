@@ -40,7 +40,6 @@ namespace AMBus.TripManage.Application.Mappings
      .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
      .ForMember(dest => dest.EmailConfirmed, opt => opt.MapFrom(src => false))
      .ForMember(dest => dest.SecurityStamp, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
-     // تجاهل الخصائص اللي مش موجودة في DTO
      .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
      .ForMember(dest => dest.NormalizedEmail, opt => opt.Ignore())
      .ForMember(dest => dest.NormalizedUserName, opt => opt.Ignore())
@@ -109,9 +108,9 @@ namespace AMBus.TripManage.Application.Mappings
             // ══════════════════════════════════════════════
 
             CreateMap<Booking, BookingDto>()
-    .ForMember(d => d.UserId, o => o.MapFrom(s => s.User))
+    .ForMember(d => d.UserId, o => o.MapFrom(s => s.UserId))
     .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.FullName))
-    .ForMember(d => d.TripId, o => o.MapFrom(s => s.Trip))
+    .ForMember(d => d.TripId, o => o.MapFrom(s => s.TripId))
     .ForMember(d => d.TripSummary, o => o.MapFrom(s =>
         $"{s.Trip.From.Name} → {s.Trip.To.Name}" +
         $" | {s.Trip.DepartureTime:dd MMM yyyy HH:mm}"))

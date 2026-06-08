@@ -166,6 +166,7 @@ namespace AMBus.TripManage.Persistance.Service
 
         private async Task<Domain.Entites.Booking?> GetBookingWithTripAsync(Guid bookingId)
             => await _ctx.Bookings
+                .Include(b => b.User)
                 .Include(b => b.Trip)
                     .ThenInclude(t => t.From)
                 .Include(b => b.Trip)

@@ -51,5 +51,14 @@ namespace AMBus.TripManage.Api.Controllers
                 new GetUpcomingTripsQuery(hours));
             return Ok(result);
         }
+
+        [HttpGet("Revenue-Chart")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRevenueCharts(
+      [FromQuery] DateTime From, [FromQuery] DateTime To)
+        {
+            var result = await Mediator.Send(new GetRevenueChartQuery(From, To));
+            return Ok(result);
+        }
     }
 }
