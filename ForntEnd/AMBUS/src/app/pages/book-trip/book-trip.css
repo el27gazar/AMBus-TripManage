@@ -60,10 +60,9 @@ select {
   font-size: 15px;
   cursor: pointer;
 }
-.container-booktrip button {
+.container-booktrip .trip button {
   padding: 10px 20px;
   border-radius: 20px;
-  flex-grow: 1;
   outline: none;
   border: none;
   background-color: #db1919;
@@ -82,4 +81,270 @@ select,
 option {
   color: #000;
   cursor: pointer;
+}
+
+.btn-search {
+  width: 200px;
+  margin: auto;
+}
+
+/* **************************** */
+.container-Buses {
+  width: 95%;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.bus {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: #d9d9d9;
+  color: #000;
+  flex-basis: calc(40% -10px);
+  flex-shrink: 1;
+  padding: 10px;
+  border-radius: 10px;
+  gap: 10px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.busnumber {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.type {
+  background-color: #970909;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+}
+.busnumber p {
+  font-size: 20px;
+  font-weight: 900;
+}
+.route {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  justify-content: space-between;
+  gap: 10px;
+}
+.route p {
+  font-size: 20px;
+  font-weight: 900;
+}
+.from {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.from .time {
+  font-size: 25px;
+  font-weight: 900;
+  color: #db1919;
+}
+
+.from .city {
+  font-size: 20px;
+  font-weight: 900;
+  color: #000000;
+}
+.line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.line span {
+  display: block;
+}
+
+.taketime {
+  font-size: 13px;
+  margin-top: -5px;
+  font-weight: 900;
+  color: #000000;
+}
+
+.select {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.price {
+  color: #970909;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.btn-select {
+  padding: 10px 20px;
+  border-radius: 20px;
+  outline: none;
+  border: none;
+  background-color: #1e1e1e;
+  opacity: 0.8;
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn-select:hover {
+  opacity: 1;
+}
+
+@media (max-width: 648px) {
+  .route {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 593px) {
+  .bus {
+    flex-direction: column;
+  }
+  .route {
+    flex-direction: row;
+  }
+}
+
+p {
+  color: #000000;
+}
+
+h3 {
+  color: #fff;
+}
+
+.hide {
+  display: none;
+}
+
+.seats {
+  display: flex;
+  justify-content: flex-between;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 90%;
+  margin: auto;
+}
+
+.seats p {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 900;
+  text-align: right;
+}
+
+.seatlist {
+  display: flex;
+  justify-content: flex-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 90%;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #000;
+}
+
+.selectedSeat {
+  border: 1px solid #fff;
+  padding: 5px;
+  width: 90%;
+  display: flex;
+  justify-content: strat;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: auto;
+}
+
+.available,
+.unavailable {
+  border: 1px solid #fff;
+  padding: 5px;
+  font-size: 25px;
+  padding: 5px;
+  display: inline-block;
+  margin-right: 2px;
+}
+.available {
+  background-color: #006f11;
+  cursor: pointer;
+}
+.unavailable {
+  background-color: #030101;
+}
+
+.selectseat {
+  background-color: #030101;
+  padding: 5px;
+  cursor: not-allowed;
+}
+.unselectseat {
+  background-color: #006f11;
+}
+
+.containerSeat {
+  width: 90%;
+  margin: auto;
+}
+.btns {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-book,
+.btn-back {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 16px 52px;
+  border: 1px solid #fff;
+  border-radius: 50px;
+  color: #fff;
+  background-color: #1e1e1e;
+  cursor: pointer;
+}
+
+.btn-book:hover,
+.btn-back:hover {
+  background-color: #fff;
+  color: #1e1e1e;
+}
+
+.btn-seat {
+  padding: 5px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background-color: #000000;
+  color: #fff;
+  font-size: 15px;
 }

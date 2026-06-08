@@ -66,3 +66,73 @@ body {
 .logo h1 span {
   color: var(--hover);
 }
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  z-index: 10000;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 400px;
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  width: 100%;
+}
+.modal form input {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background-color: #d9d9d9;
+  font-size: 15px;
+  width: 100%;
+  color: #000;
+}
+.modal form button {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #1e1e1e;
+  background-color: #fff;
+  color: #1e1e1e;
+  cursor: pointer;
+}
+
+.hide {
+  display: none;
+}
+
+.close-modal {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  border-radius: 50%;
+  background-color: #bb0808;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 20px;
+}

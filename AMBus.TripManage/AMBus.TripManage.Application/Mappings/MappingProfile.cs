@@ -59,8 +59,10 @@ namespace AMBus.TripManage.Application.Mappings
             //  DRIVER
             // ══════════════════════════════════════════════
 
-            CreateMap<Driver, DriverDto>().ReverseMap();
-
+            CreateMap<Driver, DriverDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ReverseMap(); 
             // ══════════════════════════════════════════════
             //  BUS
             // ══════════════════════════════════════════════

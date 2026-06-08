@@ -34,7 +34,7 @@ namespace AMBus.TripManage.Application.Features.Tripsf.Queries.GetTripSeats
             var bookedSeatIds = await _uow.Bookings
                 .GetBookedSeatIdsForTripAsync(request.TripId);
 
-            return trip.Bus.Seats.Select(s => new SeatAvailabilityDto {
+            return trip.Bus.Seats.OrderBy(x=>x.SeatNumber).Select(s => new SeatAvailabilityDto {
                 SeatId = s.Id,
                 SeatNumber = s.SeatNumber,
                 IsAvailable = !bookedSeatIds.Contains(s.Id)

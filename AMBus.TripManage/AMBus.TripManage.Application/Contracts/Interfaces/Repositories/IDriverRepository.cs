@@ -10,6 +10,7 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
     public interface IDriverRepository : IGenericRepository<Driver>
     {
         Task<IEnumerable<Driver>> GetAvailableDriversAsync();
+        Task<IEnumerable<Driver>> GetDriversAsync();
         Task<Driver?> GetDriverWithUserAsync(Guid driverId);
         Task<Driver?> GetDriverByUserIdAsync(Guid userId);
     }

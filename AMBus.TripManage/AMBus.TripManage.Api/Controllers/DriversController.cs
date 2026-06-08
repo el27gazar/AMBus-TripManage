@@ -29,7 +29,7 @@ namespace AMBus.TripManage.Api.Controllers
         {
             var drivers = available == true
                 ? await _uow.Drivers.GetAvailableDriversAsync()
-                : await _uow.Drivers.GetAllAsync();
+                : await _uow.Drivers.GetDriversAsync();
 
             return Ok(_mapper.Map<IEnumerable<DriverDto>>(drivers));
         }
