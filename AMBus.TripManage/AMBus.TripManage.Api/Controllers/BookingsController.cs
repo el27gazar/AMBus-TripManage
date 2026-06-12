@@ -66,17 +66,19 @@ namespace AMBus.TripManage.Api.Controllers
         [HttpPost]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Create(
-            [FromBody] CreateBookingRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateBookingRequest request)
         {
-            var result = await Mediator.Send(new CreateBookingCommand {
+            var result = await Mediator.Send(new CreateBookingCommand
+            {
                 UserId = CurrentUserId,
                 TripId = request.TripId,
-                Seats = request.Seats});
+                Seats = request.Seats,
+                PaymentMethod = request.PaymentMethod, // أضف ده
+                PhoneNumber = request.PhoneNumber       // أضف ده
+            });
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            return CreatedAtAction(nameof(GetById),
+                new { id = result.Booking.Id }, result);
         }
 
         [HttpPut("{id:guid}/cancel")]

@@ -6,6 +6,7 @@ using AMBus.TripManage.Domain.Entites;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMBus.TripManage.Api.Controllers
@@ -15,11 +16,13 @@ namespace AMBus.TripManage.Api.Controllers
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
-        public DriversController(IUnitOfWork uow, IMapper mapper)
+        public DriversController(IUnitOfWork uow, IMapper mapper, UserManager<User> userManager)
         {
             _uow = uow;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -49,17 +52,41 @@ namespace AMBus.TripManage.Api.Controllers
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Create(
-            [FromBody] CreateDriverRequest request)
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> Create([FromBody] CreateDriverRequest request)
         {
-            var user = await _uow.Users.GetByIdAsync(request.UserId)
-                ?? throw new NotFoundException(nameof(User), request.UserId);
+            
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+            if (existingUser is not null)
+                return Conflict(new { message = $"'{request.Email}' already exists." });
+
+            
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                FullName = request.FullName,
+                Email = request.Email,
+                UserName = request.Email,
+                PhoneNumber = request.PhoneNumber,
+                EmailConfirmed = true, 
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var createResult = await _userManager.CreateAsync(user, request.Password);
+            if (!createResult.Succeeded)
+            {
+                var errors = createResult.Errors.Select(e => e.Description);
+                return BadRequest(new { message = "Failed to create user.", errors });
+            }
+
+            
+            await _userManager.AddToRoleAsync(user, "Driver");
 
             var driver = new Driver
             {
                 Id = Guid.NewGuid(),
-                UserId = request.UserId,
+                UserId = user.Id,
                 LicenseNumber = request.LicenseNumber,
                 LicenseExpiry = request.LicenseExpiry,
                 EmergencyContact = request.EmergencyContact,
@@ -70,7 +97,7 @@ namespace AMBus.TripManage.Api.Controllers
             await _uow.Drivers.AddAsync(driver);
             await _uow.SaveChangesAsync();
 
-            var created = await _uow.Drivers.GetDriverWithUserAsync(driver.Id)!;
+            var created = await _uow.Drivers.GetDriverWithUserAsync(driver.Id);
             return CreatedAtAction(
                 nameof(GetById),
                 new { id = driver.Id },

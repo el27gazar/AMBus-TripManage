@@ -8,8 +8,13 @@ namespace AMBus.TripManage.Application.Dtos.Requests
 {
     public class CreateDriverRequest
     {
-        public Guid UserId { get; set; }
-        public string LicenseNumber { get; set; }
+        
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
+
+        public string LicenseNumber { get; set; } = string.Empty;
         public DateTime LicenseExpiry { get; set; }
         public string? EmergencyContact { get; set; }
     }
