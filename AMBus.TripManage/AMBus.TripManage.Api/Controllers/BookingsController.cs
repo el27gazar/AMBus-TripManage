@@ -15,6 +15,19 @@ namespace AMBus.TripManage.Api.Controllers
     [Authorize]
     public class BookingsController : BaseController
     {
+        [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllBookings(
+    [FromQuery] string? status,
+    [FromQuery] Guid? tripId,
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 20)
+        {
+            var result = await Mediator.Send(
+                new GetAllBookingsQuery(null, null, tripId, page, pageSize));
+            return Ok(result);
+        }
         [HttpGet]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -100,5 +113,6 @@ namespace AMBus.TripManage.Api.Controllers
             var result = await Mediator.Send(new ConfirmBookingCommand(id));
             return Ok(result);
         }
+
     }
 }
