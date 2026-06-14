@@ -28,20 +28,7 @@ namespace AMBus.TripManage.Api.Controllers
                 new GetAllBookingsQuery(null, null, tripId, page, pageSize));
             return Ok(result);
         }
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll(
-            [FromQuery] string? status,
-            [FromQuery] Guid? userId,
-            [FromQuery] Guid? tripId,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 20)
-        {
-            var result = await Mediator.Send(
-                new GetAllBookingsQuery(status, userId, tripId, page, pageSize));
-            return Ok(result);
-        }
+      
 
         [HttpGet("my")]
         [ProducesResponseType(StatusCodes.Status200OK)]
