@@ -16,6 +16,6 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
         public Guid TripId { get; set; }
         public List<SeatRequest> Seats { get; set; } = new();
         public string PaymentMethod { get; set; } = "Card"; // default Card
-        public string? PhoneNumber { get; set; }            // مطلوب للـ wallets
+        public string? PhoneNumber { get; set; }           // wallet payment method
     }
 }

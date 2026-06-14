@@ -30,14 +30,6 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
             {
                 seat.RuleFor(s => s.SeatId)
                     .NotEmpty().WithMessage("رقم المقعد مطلوب.");
-
-                seat.RuleFor(s => s.PassengerName)
-                    .NotEmpty().WithMessage("اسم الراكب مطلوب.")
-                    .MaximumLength(100).WithMessage("الاسم لا يتجاوز 100 حرف.");
-
-                seat.RuleFor(s => s.PassengerIdNumber)
-                    .MaximumLength(20).WithMessage("رقم الهوية لا يتجاوز 20 خانة.")
-                    .When(s => !string.IsNullOrEmpty(s.PassengerIdNumber));
             });
         }
     }

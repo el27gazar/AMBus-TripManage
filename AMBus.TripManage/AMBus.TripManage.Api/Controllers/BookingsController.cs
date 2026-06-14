@@ -73,8 +73,8 @@ namespace AMBus.TripManage.Api.Controllers
                 UserId = CurrentUserId,
                 TripId = request.TripId,
                 Seats = request.Seats,
-                PaymentMethod = request.PaymentMethod, // أضف ده
-                PhoneNumber = request.PhoneNumber       // أضف ده
+                PaymentMethod = request.PaymentMethod, 
+                PhoneNumber = request.PhoneNumber       
             });
 
             return CreatedAtAction(nameof(GetById),

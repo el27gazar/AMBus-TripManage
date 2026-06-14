@@ -7,9 +7,11 @@ using AMBus.TripManage.Application.Exceptions;
 using AMBus.TripManage.Domain.Entites;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using PaymentDto = AMBus.TripManage.Application.Dtos.Payment.PaymentDto;
@@ -22,19 +24,23 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly ISystemNotificationService _notifications;
-        private readonly IPaymentService _paymob; 
+        private readonly IPaymentService _paymob;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public CreateBookingCommandHandler(
             IUnitOfWork uow,
             IMapper mapper,
             ISystemNotificationService notifications,
-            IPaymentService paymob) 
+            IPaymentService paymob,
+            IHttpContextAccessor httpContextAccessor) 
         {
             _uow = uow;
             _mapper = mapper;
             _notifications = notifications;
             _paymob = paymob;
+            _httpContextAccessor = httpContextAccessor;
         }
+
 
         public async Task<BookingWithPaymentDto> Handle(
             CreateBookingCommand request,
@@ -43,6 +49,13 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
            
             var trip = await _uow.Trips.GetTripWithDetailsAsync(request.TripId)
                 ?? throw new NotFoundException(nameof(Trip), request.TripId);
+
+            var user = _httpContextAccessor.HttpContext!.User;
+
+            var passengerName = user.FindFirstValue("FullName")   // أو ClaimTypes.Name
+                             ?? user.FindFirstValue(ClaimTypes.Name);
+
+            var passengerIdNumber = user.FindFirstValue("NationalId"); // Claim اللي بتحطه في التوكن
 
             if (trip.Status != TripStatus.Scheduled)
                 throw new BusinessRuleException("Unavailable Trip");
@@ -72,8 +85,8 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
                 {
                     Id = Guid.NewGuid(),
                     SeatId = s.SeatId,
-                    PassengerName = s.PassengerName,
-                    PassengerIdNumber = s.PassengerIdNumber,
+                    PassengerName = passengerName,
+                    PassengerIdNumber = passengerIdNumber,
                     CreatedDate = DateTime.UtcNow
                 }).ToList()
             };
@@ -89,7 +102,7 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
             var created = await _uow.Bookings
                 .GetBookingWithDetailsAsync(booking.Id) ?? booking;
 
-            var user = await _uow.Users.GetByIdAsync(request.UserId)
+            var passanger = await _uow.Users.GetByIdAsync(request.UserId)
                 ?? throw new NotFoundException(nameof(User), request.UserId);
 
             var paymobResult = await _paymob.InitiatePaymentAsync(
@@ -99,9 +112,8 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
                     Currency: "EGP",
                     Method: request.PaymentMethod,        
                     PhoneNumber: request.PhoneNumber,
-                    CustomerName: user.FullName,
-                    CustomerEmail: user.Email!));
-
+                    CustomerName: passanger.FullName,
+                    CustomerEmail: passanger.Email!));
             var method = Enum.Parse<PaymentMethod>(request.PaymentMethod);
             var isKiosk = request.PaymentMethod is "Fawry" or "Aman" or "Masary";
             var isWallet = request.PaymentMethod is "VodafoneCash" or "OrangeCash" or "EtisalatCash";

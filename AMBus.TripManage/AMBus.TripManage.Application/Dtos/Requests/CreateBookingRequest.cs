@@ -17,7 +17,6 @@ namespace AMBus.TripManage.Application.Dtos.Requests
     public class SeatRequest
     {
         public Guid SeatId { get; set; }
-        public string PassengerName { get; set; } = string.Empty;
-        public string? PassengerIdNumber { get; set; }
+        
     }
 }
