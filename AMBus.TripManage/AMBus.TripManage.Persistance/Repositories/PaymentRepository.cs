@@ -31,13 +31,13 @@ namespace AMBus.TripManage.Persistance.Repositories
             => await _ctx.Payments
                 .Include(p => p.Booking)
                 .FirstOrDefaultAsync(p =>
-                    p.PaymobTransactionId == transactionId ||
+                    p.StripeClientSecret == transactionId ||
                     p.ExternalTransactionId == transactionId);
 
         public async Task<Payment?> GetByOrderIdAsync(string orderId)
             => await _ctx.Payments
                 .Include(p => p.Booking)
-                .FirstOrDefaultAsync(p => p.PaymobOrderId == orderId);
+                .FirstOrDefaultAsync(p => p.ReferenceNumber == orderId);
 
         public async Task<IEnumerable<Payment>> GetPaidInRangeAsync(
             DateTime from, DateTime to)

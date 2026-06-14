@@ -91,15 +91,15 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.InitiatePayme
                 Amount = booking.TotalPrice,
                 Currency = command.Currency,
                 Method = method,
-                Provider = PaymentProvider.Paymob,
+                Provider = PaymentProvider.Stripe,
                 Status = result.Success
                     ? (isKiosk || isWallet
                         ? PaymentStatus.PendingCustomerAction
                         : PaymentStatus.Pending)
                     : PaymentStatus.Failed,
-                PaymobOrderId = result.OrderId,
-                PaymobTransactionId = result.TransactionId,
-                PaymobPaymentToken = result.PaymentToken,
+                StripePaymentIntentId = result.OrderId,
+                StripeClientSecret = result.PaymentToken,
+                ExternalTransactionId = result.TransactionId,
                 WalletMsisdn = isWallet ? command.PhoneNumber : null,
                 WalletRedirectUrl = result.RedirectUrl,
                 FawryReferenceNumber = command.Method == "Fawry"

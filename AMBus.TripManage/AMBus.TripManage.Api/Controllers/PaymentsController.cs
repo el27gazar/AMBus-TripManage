@@ -14,6 +14,7 @@ using AMBus.TripManage.Persistance.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using System.Text.Json;
 
 namespace AMBus.TripManage.Api.Controllers
@@ -110,88 +111,84 @@ namespace AMBus.TripManage.Api.Controllers
         }
     }
 
-    // ── Webhook ───────────────────────────────────────────
     [ApiController]
     [Route("api/payments/webhook")]
     public class PaymentWebhookController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
-        private readonly PaymobPaymentService _paymob;
+        private readonly IConfiguration _config;
         private readonly ISystemNotificationService _notif;
 
         public PaymentWebhookController(
             IUnitOfWork uow,
-            PaymobPaymentService paymob,
+            IConfiguration config,
             ISystemNotificationService notif)
-        { _uow = uow; _paymob = paymob; _notif = notif; }
+        { _uow = uow; _config = config; _notif = notif; }
 
-        [HttpPost("paymob")]
-        public async Task<IActionResult> Callback(
-            [FromQuery] string hmac,
-            [FromBody] JsonElement body)
+        [HttpPost("stripe")]
+        public async Task<IActionResult> StripeCallback()
         {
-            var data = Flatten(body);
-            if (!_paymob.ValidateHmac(hmac, data)) return Unauthorized();
+            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
-            var success = data.GetValueOrDefault("success") == "true";
-            var pending = data.GetValueOrDefault("pending") == "true";
-            var txId = data.GetValueOrDefault("id");
-            var orderId = data.GetValueOrDefault("order");
-
-            if (string.IsNullOrEmpty(txId)) return Ok();
-
-            var payment = await _uow.Payments.GetByOrderIdAsync(orderId ?? "");
-            if (payment is null) return Ok();
-
-            var now = DateTime.UtcNow;
-
-            if (success && !pending)
+            try
             {
-                payment.Status = PaymentStatus.Paid;
-                payment.PaymobTransactionId = txId;
-                payment.ExternalTransactionId = txId;
-                payment.PaidAt = now;
-                payment.LastModifiedBy = "Webhook";
-                payment.LastModifiedDate = now;
-                _uow.Payments.Update(payment);
+                var stripeEvent = EventUtility.ConstructEvent(
+                    json,
+                    Request.Headers["Stripe-Signature"],
+                    _config["Stripe:WebhookSecret"]);
 
-                var booking = payment.Booking;
-                booking.Status = BookingStatus.Confirmed;
-                booking.LastModifiedBy = "Webhook";
-                booking.LastModifiedDate = now;
-                _uow.Bookings.Update(booking);
+                var now = DateTime.UtcNow;
 
-                await _uow.SaveChangesAsync();
+                if (stripeEvent.Type == "payment_intent.succeeded")
+                {
+                    var intent = stripeEvent.Data.Object as PaymentIntent;
+                    if (intent is null) return Ok();
 
-                await _notif.NotifyPaymentReceivedAsync(booking.Id, payment.Amount);
-                await _notif.NotifyBookingConfirmedAsync(booking.Id);
+                    var payment = await _uow.Payments.GetByOrderIdAsync(intent.Id);
+                    if (payment is null) return Ok();
+
+                    payment.Status = PaymentStatus.Paid;
+                    payment.StripeClientSecret = intent.Id;
+                    payment.ExternalTransactionId = intent.Id;
+                    payment.PaidAt = now;
+                    payment.LastModifiedBy = "Webhook";
+                    payment.LastModifiedDate = now;
+                    _uow.Payments.Update(payment);
+
+                    var booking = payment.Booking;
+                    booking.Status = BookingStatus.Confirmed;
+                    booking.LastModifiedBy = "Webhook";
+                    booking.LastModifiedDate = now;
+                    _uow.Bookings.Update(booking);
+
+                    await _uow.SaveChangesAsync();
+
+                    await _notif.NotifyPaymentReceivedAsync(booking.Id, payment.Amount);
+                    await _notif.NotifyBookingConfirmedAsync(booking.Id);
+                }
+                else if (stripeEvent.Type == "payment_intent.payment_failed")
+                {
+                    var intent = stripeEvent.Data.Object as PaymentIntent;
+                    if (intent is null) return Ok();
+
+                    var payment = await _uow.Payments.GetByOrderIdAsync(intent.Id);
+                    if (payment is null) return Ok();
+
+                    payment.Status = PaymentStatus.Failed;
+                    payment.LastModifiedBy = "Webhook";
+                    payment.LastModifiedDate = now;
+                    _uow.Payments.Update(payment);
+                    await _uow.SaveChangesAsync();
+
+                    await _notif.NotifyPaymentFailedAsync(payment.BookingId);
+                }
+
+                return Ok();
             }
-            else if (!pending)
+            catch (StripeException)
             {
-                payment.Status = PaymentStatus.Failed;
-                payment.LastModifiedBy = "Webhook";
-                payment.LastModifiedDate = now;
-                _uow.Payments.Update(payment);
-                await _uow.SaveChangesAsync();
-                await _notif.NotifyPaymentFailedAsync(payment.BookingId);
+                return BadRequest();
             }
-
-            return Ok();
-        }
-
-        private static Dictionary<string, string> Flatten(
-            JsonElement el, string prefix = "")
-        {
-            var r = new Dictionary<string, string>();
-            foreach (var p in el.EnumerateObject())
-            {
-                var k = string.IsNullOrEmpty(prefix) ? p.Name : $"{prefix}.{p.Name}";
-                if (p.Value.ValueKind == JsonValueKind.Object)
-                    foreach (var s in Flatten(p.Value, k)) r[s.Key] = s.Value;
-                else
-                    r[k] = p.Value.ToString();
-            }
-            return r;
         }
     }
 }

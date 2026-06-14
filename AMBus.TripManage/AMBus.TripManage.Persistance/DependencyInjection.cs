@@ -100,15 +100,10 @@ namespace AMBus.TripManage.Persistance
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();
 
-            services.AddHttpClient<PaymobPaymentService>(client =>
-            {
-                client.BaseAddress = new Uri("https://accept.paymob.com");
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-                client.Timeout = TimeSpan.FromSeconds(30);
-            });
+          
 
-            services.AddScoped<IPaymentService, PaymobPaymentService>();
-            services.AddScoped<PaymobPaymentService>();
+            services.AddScoped<IPaymentService, StripePaymentService>();
+           
             services.AddScoped<IPaymentRepository, PaymentRepository>();
 
             services.AddScoped<INotificationSender, NotificationSender>();

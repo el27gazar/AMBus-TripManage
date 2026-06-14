@@ -33,7 +33,7 @@ namespace AMBus.TripManage.Domain.Entites
 
     public enum PaymentProvider
     {
-        Paymob,
+        Stripe,
         Manual
     }
 
@@ -51,10 +51,12 @@ namespace AMBus.TripManage.Domain.Entites
         public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
         public PaymentProvider Provider { get; set; }
 
-        // Paymob
-        [MaxLength(100)] public string? PaymobOrderId { get; set; }
-        [MaxLength(100)] public string? PaymobTransactionId { get; set; }
-        [MaxLength(2000)] public string? PaymobPaymentToken { get; set; }
+        // Stripe
+        [MaxLength(100)] 
+        public string? StripePaymentIntentId { get; set; }  // pi_xxx
+
+        [MaxLength(2000)] 
+        public string? StripeClientSecret { get; set; }
 
         // Fawry
         [MaxLength(100)] public string? FawryReferenceNumber { get; set; }
@@ -67,7 +69,11 @@ namespace AMBus.TripManage.Domain.Entites
         [MaxLength(100)] public string? OtcReferenceNumber { get; set; }
 
         // Generic
-        [MaxLength(100)] public string? ExternalTransactionId { get; set; }
+        [MaxLength(100)] 
+        public string? ExternalTransactionId { get; set; }
+
+        [MaxLength(100)] 
+        public string? ReferenceNumber { get; set; }         
 
         public DateTime? PaidAt { get; set; }
         public DateTime? RefundedAt { get; set; }

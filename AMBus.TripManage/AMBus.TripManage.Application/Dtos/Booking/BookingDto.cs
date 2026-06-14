@@ -1,10 +1,12 @@
-﻿using System;
+﻿using AMBus.TripManage.Application.Dtos.Payment;
+using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AMBus.TripManage.Application.Dtos.BookingDto
+namespace AMBus.TripManage.Application.Dtos.Booking
 {
     public class BookingDto {
      public Guid Id { get; set; }

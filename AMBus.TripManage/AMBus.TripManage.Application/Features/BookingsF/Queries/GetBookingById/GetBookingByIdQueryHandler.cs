@@ -1,6 +1,6 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces;
 using AMBus.TripManage.Application.Dtos;
-using AMBus.TripManage.Application.Dtos.BookingDto;
+using AMBus.TripManage.Application.Dtos.Booking;
 using AMBus.TripManage.Application.Exceptions;
 using AMBus.TripManage.Domain.Entites;
 using AutoMapper;

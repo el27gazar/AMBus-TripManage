@@ -52,7 +52,7 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmPaymen
             if (verify.Success && verify.Status == "succeeded")
             {
                 payment.Status = PaymentStatus.Paid;
-                payment.PaymobTransactionId = command.TransactionId;
+                payment.StripeClientSecret = command.TransactionId;
                 payment.ExternalTransactionId = command.TransactionId;
                 payment.PaidAt = now;
                 payment.LastModifiedBy = uid;

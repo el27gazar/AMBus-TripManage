@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AMBus.TripManage.Application.Dtos.BookingDto
+namespace AMBus.TripManage.Application.Dtos.Booking
 {
     public record BookingWithPaymentDto(
     BookingDto Booking,

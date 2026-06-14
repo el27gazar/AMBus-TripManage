@@ -1,6 +1,6 @@
-﻿using AMBus.TripManage.Application.Dtos;
+﻿using AMBus.TripManage.Application.Dtos.Payment;
 using AMBus.TripManage.Application.Dtos.AuthDto;
-using AMBus.TripManage.Application.Dtos.BookingDto;
+using AMBus.TripManage.Application.Dtos.Booking;
 using AMBus.TripManage.Application.Dtos.BusDto;
 using AMBus.TripManage.Application.Dtos.Chat;
 using AMBus.TripManage.Application.Dtos.DriverDto;
@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AMBus.TripManage.Application.Dtos;
+using PaymentDto = AMBus.TripManage.Application.Dtos.Payment.PaymentDto;
 
 namespace AMBus.TripManage.Application.Mappings
 {
@@ -110,16 +112,16 @@ namespace AMBus.TripManage.Application.Mappings
             // ══════════════════════════════════════════════
 
             CreateMap<Booking, BookingDto>()
-    .ForMember(d => d.UserId, o => o.MapFrom(s => s.UserId))
-    .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.FullName))
-    .ForMember(d => d.TripId, o => o.MapFrom(s => s.TripId))
-    .ForMember(d => d.TripSummary, o => o.MapFrom(s =>
-        $"{s.Trip.From.Name} → {s.Trip.To.Name}" +
-        $" | {s.Trip.DepartureTime:dd MMM yyyy HH:mm}"))
-    .ForMember(d => d.Status, o => o.MapFrom(s => s.Status.ToString()))
-    .ForMember(d => d.BookedAt, o => o.MapFrom(s => s.BookedAt))
-    .ForMember(d => d.Seats, o => o.MapFrom(s => s.BookingSeats));
-
+     .ForMember(d => d.UserId, o => o.MapFrom(s => s.UserId))
+     .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.FullName))
+     .ForMember(d => d.TripId, o => o.MapFrom(s => s.TripId))
+     .ForMember(d => d.TripSummary, o => o.MapFrom(s =>
+         $"{s.Trip.From.Name} → {s.Trip.To.Name}" +
+         $" | {s.Trip.DepartureTime:dd MMM yyyy HH:mm}"))
+     .ForMember(d => d.Status, o => o.MapFrom(s => s.Status.ToString()))
+     .ForMember(d => d.BookedAt, o => o.MapFrom(s => s.BookedAt))
+     .ForMember(d => d.Seats, o => o.MapFrom(s => s.BookingSeats))
+     .ForMember(d => d.Payment, o => o.MapFrom(s => s.Payment));
 
             // ══════════════════════════════════════════════
             //  BOOKING SEAT
@@ -146,7 +148,15 @@ namespace AMBus.TripManage.Application.Mappings
             //  PAYMENT
             // ══════════════════════════════════════════════
 
-            CreateMap<Payment, PaymentDto>().ReverseMap();
+            CreateMap<Payment, PaymentDto>()
+                    .ForMember(d => d.Method, o => o.MapFrom(s => s.Method.ToString()))
+                    .ForMember(d => d.Status, o => o.MapFrom(s => s.Status.ToString()))
+                    .ForMember(d => d.Provider, o => o.MapFrom(s => s.Provider.ToString()))
+                    .ForMember(d => d.PaymentToken, o => o.MapFrom(s => s.StripeClientSecret))
+                    .ForMember(d => d.Amount, o => o.MapFrom(s => s.Amount))
+                    .ForMember(d => d.Currency, o => o.MapFrom(s => s.Currency))
+                    .ReverseMap();
+
 
 
 

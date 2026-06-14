@@ -41,7 +41,7 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
 
             if (payment.Method != PaymentMethod.Cash)
             {
-                var txId = payment.PaymobTransactionId
+                var txId = payment.StripeClientSecret
                         ?? payment.ExternalTransactionId
                         ?? throw new BusinessRuleException(
                             "لا يوجد معرف عملية لهذه الدفعة.");

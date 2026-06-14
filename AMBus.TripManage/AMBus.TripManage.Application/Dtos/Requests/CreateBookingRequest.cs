@@ -1,4 +1,4 @@
-﻿using AMBus.TripManage.Application.Dtos.BookingDto;
+﻿using AMBus.TripManage.Application.Dtos.Booking;
 using System;
 using System.Collections.Generic;
 using System.Linq;

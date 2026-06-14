@@ -1,5 +1,5 @@
 ﻿using AMBus.TripManage.Application.Dtos;
-using AMBus.TripManage.Application.Dtos.BookingDto;
+using AMBus.TripManage.Application.Dtos.Booking;
 using AMBus.TripManage.Application.Dtos.Requests;
 using MediatR;
 using System;

@@ -1,7 +1,7 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces;
 using AMBus.TripManage.Application.Contracts.Interfaces.Services;
 using AMBus.TripManage.Application.Dtos;
-using AMBus.TripManage.Application.Dtos.BookingDto;
+using AMBus.TripManage.Application.Dtos.Booking;
 using AMBus.TripManage.Application.Dtos.Payment;
 using AMBus.TripManage.Application.Exceptions;
 using AMBus.TripManage.Domain.Entites;
@@ -22,13 +22,13 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly ISystemNotificationService _notifications;
-        private readonly IPaymentService _paymob; // أضف ده
+        private readonly IPaymentService _paymob; 
 
         public CreateBookingCommandHandler(
             IUnitOfWork uow,
             IMapper mapper,
             ISystemNotificationService notifications,
-            IPaymentService paymob) // أضف ده
+            IPaymentService paymob) 
         {
             _uow = uow;
             _mapper = mapper;
@@ -40,7 +40,7 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
             CreateBookingCommand request,
             CancellationToken cancellationToken)
         {
-            // ── نفس الكود الموجود بالظبط ──
+           
             var trip = await _uow.Trips.GetTripWithDetailsAsync(request.TripId)
                 ?? throw new NotFoundException(nameof(Trip), request.TripId);
 
@@ -89,7 +89,6 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
             var created = await _uow.Bookings
                 .GetBookingWithDetailsAsync(booking.Id) ?? booking;
 
-            // ── الجديد: ابدأ الـ payment تلقائياً ──
             var user = await _uow.Users.GetByIdAsync(request.UserId)
                 ?? throw new NotFoundException(nameof(User), request.UserId);
 
@@ -98,7 +97,7 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
                     BookingId: booking.Id,
                     Amount: booking.TotalPrice,
                     Currency: "EGP",
-                    Method: request.PaymentMethod,        // "Card" / "VodafoneCash" / etc
+                    Method: request.PaymentMethod,        
                     PhoneNumber: request.PhoneNumber,
                     CustomerName: user.FullName,
                     CustomerEmail: user.Email!));
@@ -116,22 +115,18 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBooking
                 Amount = booking.TotalPrice,
                 Currency = "EGP",
                 Method = method,
-                Provider = PaymentProvider.Paymob,
+                Provider = PaymentProvider.Stripe,
                 Status = paymobResult.Success
-                    ? (isKiosk || isWallet
-                        ? PaymentStatus.PendingCustomerAction
-                        : PaymentStatus.Pending)
-                    : PaymentStatus.Failed,
-                PaymobOrderId = paymobResult.OrderId,
-                PaymobTransactionId = paymobResult.TransactionId,
-                PaymobPaymentToken = paymobResult.PaymentToken,
-                WalletMsisdn = isWallet ? request.PhoneNumber : null,
-                WalletRedirectUrl = paymobResult.RedirectUrl,
-                FawryReferenceNumber = request.PaymentMethod == "Fawry"
-                                         ? paymobResult.ReferenceNumber : null,
-                OtcReferenceNumber = isKiosk && request.PaymentMethod != "Fawry"
-                                         ? paymobResult.ReferenceNumber : null,
+        ? PaymentStatus.Pending
+        : PaymentStatus.Failed,
+
+                // ── Stripe fields ──
+                StripePaymentIntentId = paymobResult.OrderId,      // pi_xxx
+                StripeClientSecret = paymobResult.PaymentToken,     // pi_xxx_secret_xxx
+                ExternalTransactionId = paymobResult.TransactionId,
+                ReferenceNumber = paymobResult.ReferenceNumber,     // للـ Cash
                 ExpiresAt = paymobResult.ExpiresAt,
+
                 CreatedBy = uid,
                 CreatedDate = now,
                 LastModifiedBy = uid,

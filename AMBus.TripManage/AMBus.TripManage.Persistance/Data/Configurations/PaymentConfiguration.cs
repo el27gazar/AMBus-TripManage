@@ -19,9 +19,9 @@ namespace AMBus.TripManage.Persistance.Data.Configurations
             b.Property(x => x.Method).HasConversion<string>().HasMaxLength(30);
             b.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
             b.Property(x => x.Provider).HasConversion<string>().HasMaxLength(20);
-            b.Property(x => x.PaymobOrderId).HasMaxLength(100);
-            b.Property(x => x.PaymobTransactionId).HasMaxLength(100);
-            b.Property(x => x.PaymobPaymentToken).HasMaxLength(2000);
+            b.Property(x => x.StripeClientSecret).HasMaxLength(2000);
+            b.Property(x => x.ReferenceNumber).HasMaxLength(100);
+            b.Property(x => x.StripeClientSecret).HasMaxLength(2000);
             b.Property(x => x.WalletMsisdn).HasMaxLength(20);
             b.Property(x => x.WalletRedirectUrl).HasMaxLength(500);
             b.Property(x => x.FawryReferenceNumber).HasMaxLength(100);
@@ -30,8 +30,8 @@ namespace AMBus.TripManage.Persistance.Data.Configurations
             b.Property(x => x.CreatedBy).HasMaxLength(100);
             b.Property(x => x.LastModifiedBy).HasMaxLength(100);
 
-            b.HasIndex(x => x.PaymobTransactionId);
-            b.HasIndex(x => x.PaymobOrderId);
+            b.HasIndex(x => x.StripeClientSecret);
+            b.HasIndex(x => x.ReferenceNumber);
             b.HasIndex(x => x.FawryReferenceNumber);
 
             b.HasOne(x => x.Booking)
