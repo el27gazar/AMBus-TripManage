@@ -91,5 +91,12 @@ namespace AMBus.TripManage.Persistance.Repositories
                      t.ArrivalTime <= now &&
                      (t.Status == TripStatus.Scheduled || t.Status == TripStatus.InProgress))
                 .ToListAsync();
+
+        //override GetByIdAsync to include Driver and Bus details
+        public async Task<Trip?> GetByIdAsync(Guid id)
+    => await _ctx.Trips
+        .Include(t => t.Driver)
+        .Include(t => t.Bus)
+        .FirstOrDefaultAsync(t => t.Id == id);
     }
 }
