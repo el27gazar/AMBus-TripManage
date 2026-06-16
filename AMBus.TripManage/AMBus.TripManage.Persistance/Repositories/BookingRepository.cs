@@ -116,5 +116,11 @@ namespace AMBus.TripManage.Persistance.Repositories
 
             return (items, total);
         }
+        public async Task<IEnumerable<Booking>> GetBookingsByTripAsync(Guid tripId)
+            => await _ctx.Bookings
+                .Include(b => b.BookingSeats)
+                .ThenInclude(bs => bs.Seat)
+                .Where(b => b.TripId == tripId && b.Status != BookingStatus.Cancelled)
+                .ToListAsync();
     }
 }
