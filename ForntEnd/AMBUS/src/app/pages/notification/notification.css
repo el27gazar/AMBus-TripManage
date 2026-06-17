@@ -1,0 +1,112 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  gap: 10px;
+}
+
+.btn-read {
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  background-color: #900000;
+  font-size: 15px;
+  position: absolute;
+  right: 25px;
+  cursor: pointer;
+}
+
+.container ul {
+  margin-top: 50px;
+  width: 80%;
+  /* margin: auto; */
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+ul li {
+  list-style: none;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px;
+  border-radius: 10px;
+  background-color: #d9d9d9;
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #d9d9d9;
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.body {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button {
+  border: none;
+  outline: none;
+  background-color: transarent;
+  cursor: pointer;
+}
+
+i {
+  color: #900000;
+  background-color: transarent;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.read {
+  opacity: 0.8;
+}
+
+.close {
+  height: 50px;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+  align-content: center;
+}

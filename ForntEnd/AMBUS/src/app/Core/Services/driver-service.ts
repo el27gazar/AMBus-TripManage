@@ -18,6 +18,7 @@ export class DriverService {
   }
 
   Create(Data:{UserId:string,licenseNumber:string,licenseExpiry:Date,emergencyContact:string}): Observable<any> {
+    console.log(Data);
     return this._httpClient.post(BaseUrl+"/Drivers",Data);
   }
 

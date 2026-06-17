@@ -61,7 +61,7 @@ namespace AMBus.TripManage.Api.Controllers
             if (existingUser is not null)
                 return Conflict(new { message = $"'{request.Email}' already exists." });
 
-            
+
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -69,7 +69,7 @@ namespace AMBus.TripManage.Api.Controllers
                 Email = request.Email,
                 UserName = request.Email,
                 PhoneNumber = request.PhoneNumber,
-                EmailConfirmed = true, 
+                EmailConfirmed = true,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -81,7 +81,7 @@ namespace AMBus.TripManage.Api.Controllers
                 return BadRequest(new { message = "Failed to create user.", errors });
             }
 
-            
+
             await _userManager.AddToRoleAsync(user, "Driver");
 
             var driver = new Driver

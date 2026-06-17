@@ -95,6 +95,7 @@
         <div class="selectedSeat">
         <span>Selected Seats: </span>
           @for (item of SelectedSeat; track $index) {
+
           <button class="btn-seat" (click)="delete(item)">{{item.seatNumber}}</button>
           }@empty {
             <p>No Seats Selected</p>
@@ -104,7 +105,7 @@
 
     </div>
       <div class="btns">
-        <button class="btn-book" type="button" (click)="Book()">Book</button>
+        <button class="btn-book" type="button" (click)="CheckBook()">Book</button>
         <button class="btn-back" type="button" (click)="toogle()">Back</button>
       </div>
     </div>
@@ -116,50 +117,41 @@
 
 </div>
 
-<div class="overlay hide"></div>
-<!-- <div class="modal hide">
-  <form [formGroup]="UpdateForm" (submit)="Update()">
-    <label for="FullName">FullName</label>
-    <input type="text" placeholder="FullName" formControlName="fullName" />
-    @if(fullName.dirty)
-    {
-    @if(fullName.getError("required"))
-    {
-    <p class="Error"> ! Validation error: FullName Is Required </p>
-    }
-    @if(fullName.getError("minlength"))
-    {
-    <p class="Error"> ! Validation error: FullName must be at least 3 characters </p>
-    }
-    @if(fullName.getError("maxlength"))
-    {
-    <p class="Error"> ! Validation error: FullName must be at most 50 characters </p>
-    }
-    }
-    <label for="PhoneNumber">PhoneNumber</label>
-    <input type="phone" placeholder="PhoneNumber" formControlName="phoneNumber" />
-    @if(phoneNumber.dirty)
-    {
-    @if(phoneNumber.getError("required"))
-    {
-    <p class="Error"> ! Validation error: PhoneNumber Is Required </p>
-    }
-    @if(phoneNumber.getError("pattern"))
-    {
-    <p class="Error"> ! Validation error: Invalid PhoneNumber </p>
-    }
-    }
+<div class="overlay hide "></div>
 
-    <label for="role">Role</label>
-    <select placeholder="Role" class="select-role" formControlName="role" value="role">
-      <option value="" disabled selected>Select Role</option>
-      <option value="Admin">Admin</option>
-      <option value="User">User</option>
-      <option value="Driver">Driver</option>
-    </select>
 
-    <button type="submit" class="search-button">Save</button>
+
+<div class="modal hide">
+  @if(MyData != null && tripData != null) {
+  <form [formGroup]="FormBook" (submit)="Book()">
+     <label>Name</label>
+     <input type="text" placeholder="Name" [value]="MyData.fullName" disabled/>
+     <label>Email</label>
+     <input type="text" placeholder="Email" [value]="MyData.email" disabled/>
+     <label>PhoneNumber</label>
+     <input type="text" placeholder="PhoneNumber" [value]="MyData.phoneNumber" formControlName="PhoneNumber"/>
+     <div class="row">
+      <div class="col">
+     <label>From</label>
+     <input type="text" placeholder="From" [value]="tripData.fromCity" disabled/>
+    </div>
+    <div class="col">
+     <label>To</label>
+     <input type="text" placeholder="To" [value]="tripData.toCity" disabled/>
+    </div>
+    </div>
+     <label>Seats</label>
+     <div class="seatlist">
+      @for (item of SelectedSeat; track $index) {
+        <label class="seatNumberLabel">{{item.seatNumber}}</label>
+      }
+     </div>
+      <label>TotalBrice</label>
+      <input type="text" placeholder="TotalBrice" [value]="tripData.basePrice * SelectedSeat.length" disabled/>
+
+    <button type="submit" class="search-button">Confirm</button>
   </form>
-
+}
   <button class="close-modal" (click)="closeModal()">X</button>
-</div> -->
+</div>
+

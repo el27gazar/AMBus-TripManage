@@ -66,8 +66,66 @@ button {
   cursor: pointer;
 }
 
+.disapled {
+  background-color: transparent;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  color: var(--ThirdColor);
+  font-size: 20px;
+  font-weight: 900;
+  outline: none;
+  cursor: not-allowed;
+}
+
 button:hover,
 button:hover i {
   background-color: var(--SeconderColor);
   color: var(--ThirdColor);
+}
+
+.modal {
+  overflow-y: scroll;
+  color: #000;
+}
+.modal label,
+.modal input,
+.modal p {
+  color: #000;
+}
+
+.ticket p {
+  text-align: center;
+  margin-bottom: 10px;
+  background-color: var(--SeconderColor);
+}
+
+.ticket {
+  border: 1px solid #000;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.display-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.btn-Close {
+  background-color: var(--ThirdColor);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  color: var(--SeconderColor);
+  font-size: 20px;
+  font-weight: 900;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  margin: auto;
+  display: block;
 }

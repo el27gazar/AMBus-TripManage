@@ -1,0 +1,22 @@
+<div class="container" >
+  <button class="btn-read" (click)="MakeAllRead()" [disabled]="AllNotifications.length<=0">Read All Notifications</button>
+  <ul>
+      @for (item of AllNotifications; track $index) {
+        <li (click)="open(item.id)" [class.read]="item.isRead" id="{{item.id}}" class="  close">
+            <div class="header">
+                  {{item.type}}
+                  <button (click)="delete(item.id)"><i class="bi bi-trash"></i></button>
+            </div>
+            <div class="body">
+               {{item.message}}
+            </div>
+        </li>
+      }@empty {
+        <p>No Notifications</p>
+      }
+  </ul>
+
+  <div class="toast" id="toastError">
+    <p class="toast-message"> </p>
+  </div>
+</div>

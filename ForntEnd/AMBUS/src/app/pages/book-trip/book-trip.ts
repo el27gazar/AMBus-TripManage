@@ -3,8 +3,9 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit, viewChild, ViewEnc
 import { TripService } from '../../Core/Services/trip-service';
 import { DatePipe, CommonModule } from '@angular/common';
 import { GlobalService } from '../../Core/Services/global-service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Route } from '../../Core/Services/route';
+import { User } from '../../Core/Services/user';
 
 @Component({
   selector: 'app-book-trip',
@@ -22,12 +23,26 @@ export class BookTrip implements OnInit,AfterViewInit {
   toId!:FormControl;
   date!:FormControl;
 
-  FormSearch!:FormGroup;
+  tripId!:string;
+
+FormSearch!:FormGroup;
+FormBook !:FormGroup;
+tripid!:FormControl;
+seats!:FormControl;
+phoneNumber!:FormControl;
+tripData:any;
+
+MyData:any;
+
 
   initFormControl(){
     this.fromId = new FormControl('');
     this.toId = new FormControl('');
     this.date = new FormControl('');
+    this.tripid = new FormControl('',[Validators.required]);
+    this.phoneNumber = new FormControl('',[Validators.required,Validators.pattern('[0-9]{11}')]);
+    this.seats = new FormControl('',[Validators.required]);
+
   }
 
   initFormGroup(){
@@ -36,15 +51,23 @@ export class BookTrip implements OnInit,AfterViewInit {
       toId: this.toId,
       date: this.date
     });
+
+    this.FormBook = new FormGroup({
+      tripId: this.tripid,
+      PhoneNumber: this.phoneNumber,
+      seats: this.seats
+    })
   }
 
   constructor(private _route:Route,
     private _cd:ChangeDetectorRef,
      private _trip:TripService,
-    private _toast:GlobalService){
+    private _toast:GlobalService,
+    private _userService:User){
     this.initFormControl();
     this.initFormGroup();
     this.GetAllTrips();
+
   }
 
      ngOnInit() {
@@ -85,8 +108,10 @@ export class BookTrip implements OnInit,AfterViewInit {
    }
 
    SelectSeat(id:string){
+    this.tripId = id;
      this._trip.GetSeats(id).subscribe({
        next:(res)=>{
+        // console.log(res);
          this.AllSeats = [...res];
          this._cd.markForCheck();
        }
@@ -120,10 +145,48 @@ export class BookTrip implements OnInit,AfterViewInit {
      document.getElementsByClassName("containerSeat")[0].classList.toggle("hide");
    }
 
-   
 
-   Book(){
+
+   CheckBook(){
+       if(this.SelectedSeat.length <=0)
+       {
+        this._toast.showToaster("Please Select Seats");
+        return;
+       }
+
+       this._userService.GetProfile().subscribe({
+       next:(res)=>{
+         this.MyData = res;
+         this.FormBook.get("PhoneNumber")?.setValue( this.MyData.phoneNumber);
+         this._cd.markForCheck();
+       }
+     })
+     this._trip.GetById(this.tripId).subscribe({
+       next:(res)=>{
+         this.tripData = res;
+         this._cd.markForCheck();
+       }
+     })
+
+   this.closeModal();
 
    }
 
+   Book(){
+     this.FormBook.get("tripId")?.setValue(this.tripId);
+     this._trip.Create(this.FormBook.value).subscribe({
+       next:(res)=>{
+         this._toast.showToaster("Booked Successfully");
+       },
+       error:(err)=>{
+         this._toast.showToaster(err.error.errors[0]);
+       }
+     });
+
+   }
+
+closeModal(){
+  document.getElementsByClassName('modal')[0].classList.toggle("hide");
+  document.getElementsByClassName('overlay')[0].classList.toggle("hide");
+}
 }

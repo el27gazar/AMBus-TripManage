@@ -10,6 +10,8 @@
         <option value="false">False</option>
       </select>
       <button type="submit" class="search-button">Search</button>
+      <button class="search-button" (click)="OpenModal()"> Add Driver</button>
+
     </form>
   </div>
 
@@ -34,8 +36,12 @@
             <td>{{item.role}}</td>
             <td>{{item.isActive}}</td>
             <td>
-              <button class="edit" (click)="Get(item.id)"><i class="bi bi-pencil-fill"></i></button>
-              <button [ngClass]="item.isActive ? 'delete' : 'ban'" (click)="Ban(item.id,item.isActive)" ><i class="bi bi-ban"></i></button>
+              @if(item.role == "Driver"){
+                 <button class="edit" (click)="getDriver(item.id)"><i class="bi bi-pencil-fill"></i></button>
+              }@else{
+                <button class="edit" (click)="Get(item.id)"><i class="bi bi-pencil-fill"></i></button>
+              }
+              <button [ngClass]="item.isActive ? 'delete' : 'ban'" (click)="Ban(item,item.isActive)" ><i class="bi bi-ban"></i></button>
             </td>
           </tr>
         }@empty{
@@ -90,13 +96,143 @@
           <option value="" disabled  selected>Select Role</option>
           <option value="Admin">Admin</option>
           <option value="User">User</option>
-          <option value="Driver">Driver</option>
+          <!-- <option value="Driver">Driver</option> -->
         </select>
 
-       <button type="submit" class="search-button">Save</button>
+        <button type="submit" class="search-button" >Save</button>
     </form>
 
     <button class="close-modal" (click)="closeModal()">X</button>
   </div>
+
+
+  <div class="modal modal-driver hide">
+    <form [formGroup]="DriverForm" (submit)="UpdateDriver()">
+      <label for="licenseNumber">licenseNumber</label>
+      <input type="text" placeholder="licenseNumber" formControlName="licenseNumber" />
+      @if(licenseNumber.dirty)
+      {
+        @if(licenseNumber.getError("required"))
+        {
+        <p class="Error"> ! Validation error: licenseNumber Is Required </p>
+        }
+      }
+      <label for="licenseExpiry">licenseExpiry</label>
+      <input type="datetime-local" placeholder="licenseExpiry" formControlName="licenseExpiry" />
+      @if(licenseExpiry.dirty)
+      {
+      @if(licenseExpiry.getError("required"))
+      {
+      <p class="Error"> ! Validation error: PhoneNumber Is Required </p>
+      }
+      }
+
+      <label for="emergencyContact">emergencyContact</label>
+      <input type="text" placeholder="emergencyContact" formControlName="emergencyContact" />
+      @if(emergencyContact.dirty)
+      {
+        @if(emergencyContact.getError("required"))
+        {
+        <p class="Error"> ! Validation error: PhoneNumber Is Required </p>
+        }
+        @if(emergencyContact.getError("pattern"))
+        {
+        <p class="Error"> ! Validation error: Invalid PhoneNumber </p>
+        }
+      }
+
+      <button type="submit" class="search-button">Save</button>
+    </form>
+
+    <button class="close-modal" (click)="closeDriverModal()">X</button>
+  </div>
+
+
+
+  <div class="modal modal-AddDriver hide">
+    <form [formGroup]="AddForm" (submit)="AddDriver()">
+      <input type="text" placeholder="FullName" formControlName="fullName" />
+      @if(fullName.dirty)
+      {
+      @if(fullName.getError("required"))
+      {
+      <p class="Error"> ! Validation error: FullName Is Required </p>
+      }
+      @if(fullName.getError("minlength"))
+      {
+      <p class="Error"> ! Validation error: FullName must be at least 3 characters </p>
+      }
+      @if(fullName.getError("maxlength"))
+      {
+      <p class="Error"> ! Validation error: FullName must be at most 50 characters </p>
+      }
+      }
+      <input type="text" placeholder="Email" formControlName="email" />
+      @if(Email.dirty)
+      {
+      @if(Email.getError("required"))
+      {
+      <p class="Error"> ! Validation error: FullName Is Required </p>
+      }
+      }
+      <input type="phone" placeholder="PhoneNumber" formControlName="phoneNumber" />
+      @if(phoneNumber.dirty)
+      {
+      @if(phoneNumber.getError("required"))
+      {
+      <p class="Error"> ! Validation error: PhoneNumber Is Required </p>
+      }
+      @if(phoneNumber.getError("pattern"))
+      {
+      <p class="Error"> ! Validation error: Invalid PhoneNumber </p>
+      }
+      }
+      <input type="text" placeholder="licenseNumber" formControlName="licenseNumber" />
+      @if(licenseNumber.dirty)
+      {
+      @if(licenseNumber.getError("required"))
+      {
+      <p class="Error"> ! Validation error: licenseNumber Is Required </p>
+      }
+      }
+      <label for="licenseExpiry">licenseExpiry</label>
+      <input type="datetime-local" placeholder="licenseExpiry" formControlName="licenseExpiry" />
+      @if(licenseExpiry.dirty)
+      {
+      @if(licenseExpiry.getError("required"))
+      {
+      <p class="Error"> ! Validation error: PhoneNumber Is Required </p>
+      }
+      }
+
+      <input type="text" placeholder="emergencyContact" formControlName="emergencyContact" />
+      @if(emergencyContact.dirty)
+      {
+      @if(emergencyContact.getError("required"))
+      {
+      <p class="Error"> ! Validation error: emergencyContact Is Required </p>
+      }
+      @if(emergencyContact.getError("pattern"))
+      {
+      <p class="Error"> ! Validation error: Invalid emergencyContact </p>
+      }
+      }
+      <input type="text" placeholder="Password" formControlName="password" />
+      @if (Password.dirty) {
+         @if(Password.getError('required'))
+         {
+          <p class="Error"> ! Validation error: Password Is Required </p>
+         }
+         @if(Password.getError('minlength'))
+         {
+          <p class="Error"> ! Validation error: Password must be at least 8 characters </p>
+         }
+      }
+      <button type="submit" class="search-button">Save</button>
+    </form>
+
+    <button class="close-modal" (click)="OpenModal()">X</button>
+  </div>
+
 
 </div>
