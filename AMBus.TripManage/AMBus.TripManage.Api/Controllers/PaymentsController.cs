@@ -1,6 +1,7 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces;
 using AMBus.TripManage.Application.Contracts.Interfaces.Services;
 using AMBus.TripManage.Application.Dtos.Payment.Requests;
+using AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookingCommands;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.CancelPendingPayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmCashPayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmPayment;
@@ -11,6 +12,7 @@ using AMBus.TripManage.Application.Features.PaymentsF.Queries.GetPaymentByBookin
 using AMBus.TripManage.Application.Features.PaymentsF.Queries.GetPaymentById;
 using AMBus.TripManage.Domain.Entites;
 using AMBus.TripManage.Persistance.Service;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -113,7 +115,7 @@ namespace AMBus.TripManage.Api.Controllers
 
     [ApiController]
     [Route("api/payments/webhook")]
-    public class PaymentWebhookController : ControllerBase
+    public class PaymentWebhookController : BaseController
     {
         private readonly IUnitOfWork _uow;
         private readonly IConfiguration _config;
@@ -125,7 +127,7 @@ namespace AMBus.TripManage.Api.Controllers
             ISystemNotificationService notif)
         { _uow = uow; _config = config; _notif = notif; }
 
-        [HttpPost("webhook/stripe")]
+        [HttpPost("stripe")]
         public async Task<IActionResult> StripeCallback()
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
@@ -135,26 +137,17 @@ namespace AMBus.TripManage.Api.Controllers
 
             try
             {
-                var stripeEvent = EventUtility.ConstructEvent(
-                    json, signature, _config["Stripe:WebhookSecret"]);
+                var stripeEvent = EventUtility.ConstructEvent(json, signature, _config["Stripe:WebhookSecret"]);
 
                 if (stripeEvent.Type == "checkout.session.completed")
                 {
                     var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
-                    if (session is null) return Ok();
+                    if (session?.PaymentStatus != "paid") return Ok();
 
-                    var payment = await _uow.Payments.GetByExternalTransactionAsync(session.Id);
-                    if (payment is null) return Ok();
-
-                    payment.Status = PaymentStatus.Paid;
-                    payment.PaidAt = DateTime.UtcNow;
-                    payment.ExternalTransactionId = session.PaymentIntentId;
-
-                    var booking = await _uow.Bookings.GetByIdAsync(payment.BookingId);
-                    if (booking != null)
-                        booking.Status = BookingStatus.Confirmed;
-
-                    await _uow.SaveChangesAsync();
+                    await Mediator.Send(new ConfirmBookingFromStripeCommand(
+                        SessionId: session.Id,
+                        PaymentIntentId: session.PaymentIntentId,
+                        Metadata: session.Metadata));
                 }
 
                 return Ok();

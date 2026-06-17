@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AMBus.TripManage.Application.Contracts.Interfaces.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,13 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Services
             Task<PaymentInitResult> InitiatePaymentAsync(InitiatePaymentRequest req);
             Task<VerifyPaymentResult> VerifyPaymentAsync(string transactionId, string provider);
             Task<RefundResult> RefundAsync(string transactionId, string provider, decimal amount, string reason);
-        }
+            Task<CheckoutResult> CreateCheckoutSessionAsync(CreateCheckoutRequest req);   
+    }
+
+    public record CheckoutResult(bool Success, string? CheckoutUrl, string? SessionId, string? Error);
+    public record CreateCheckoutRequest(
+            decimal Amount, string Currency, string CustomerEmail,
+            string CustomerName, Dictionary<string, string> Metadata);
 
     public record InitiatePaymentRequest(
        Guid BookingId,

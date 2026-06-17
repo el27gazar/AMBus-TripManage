@@ -9,5 +9,7 @@ using System.Threading.Tasks;
 
 namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookingCommands
 {
-    public record ConfirmBookingCommand(Guid BookingId) : IRequest<BookingDto>;
+    public record ConfirmBookingFromStripeCommand(
+        string SessionId, string PaymentIntentId, IDictionary<string, string> Metadata
+    ) : IRequest<Unit>;
 }

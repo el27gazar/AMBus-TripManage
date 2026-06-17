@@ -1,4 +1,5 @@
-﻿using AMBus.TripManage.Application.Contracts.Interfaces.Services;
+﻿using AMBus.TripManage.Application.Contracts.Interfaces.Repositories;
+using AMBus.TripManage.Application.Contracts.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using Stripe;
 
@@ -15,7 +16,47 @@ namespace AMBus.TripManage.Persistance.Service
             _config = config;
             StripeConfiguration.ApiKey = SecretKey;
         }
+        public async Task<CheckoutResult> CreateCheckoutSessionAsync(CreateCheckoutRequest req)
+        {
+            try
+            {
+                var options = new Stripe.Checkout.SessionCreateOptions
+                {
+                    PaymentMethodTypes = new List<string> { "card" },
+                    LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
+            {
+                new()
+                {
+                    PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
+                    {
+                        Currency = req.Currency.ToLower(),
+                        UnitAmount = (long)(req.Amount * 100),
+                        ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = "حجز رحلة - AMBus"
+                        }
+                    },
+                    Quantity = 1
+                }
+            },
+                    Mode = "payment",
+                    SuccessUrl = $"{_config["App:FrontendUrl"]}/booking-success?session_id={{CHECKOUT_SESSION_ID}}",
+                    CancelUrl = $"{_config["App:FrontendUrl"]}/booking-cancelled",
+                    CustomerEmail = req.CustomerEmail,
+                    Metadata = req.Metadata,            // ✅ بيانات الحجز كاملة هنا
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(30) // أقصى وقت مسموح به من Stripe
+                };
 
+                var service = new Stripe.Checkout.SessionService();
+                var session = await service.CreateAsync(options);
+
+                return new CheckoutResult(true, session.Url, session.Id, null);
+            }
+            catch (StripeException ex)
+            {
+                return new CheckoutResult(false, null, null, ex.Message);
+            }
+        }
         public async Task<PaymentInitResult> InitiatePaymentAsync(InitiatePaymentRequest req)
         {
             try

@@ -19,8 +19,12 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
         Task<IEnumerable<Payment>> GetPaidInRangeAsync(DateTime from, DateTime to);
         Task<(IEnumerable<Payment> Items, int Total, PaymentSummaryDto Summary)>
             GetPagedAsync(PaymentFilter filter);
-    }
 
+        
+
+      
+    }
+   
     public class PaymentFilter
     {
         public string? Method { get; init; }

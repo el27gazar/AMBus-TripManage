@@ -65,20 +65,14 @@ namespace AMBus.TripManage.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] CreateBookingRequest request)
         {
-            var result = await Mediator.Send(new CreateBookingCommand
-            {
-                UserId = CurrentUserId,
-                TripId = request.TripId,
-                Seats = request.Seats,
-                PaymentMethod = request.PaymentMethod, 
-                PhoneNumber = request.PhoneNumber       
-            });
+            var result = await Mediator.Send(new InitiateBookingPaymentCommand(
+                CurrentUserId, request.TripId, request.Seats,
+                request.PaymentMethod, request.PhoneNumber));
 
-            return CreatedAtAction(nameof(GetById),
-                new { id = result.Booking.Id }, result);
+            return Ok(result);  // مش CreatedAtAction لأن مفيش booking لسه (لو كارت)
         }
 
         [HttpPut("{id:guid}/cancel")]
@@ -91,15 +85,15 @@ namespace AMBus.TripManage.Api.Controllers
             return Ok(new { message = "تم إلغاء الحجز بنجاح." });
         }
 
-        [HttpPut("{id:guid}/confirm")]
-        [Authorize(Roles = "Admin")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> Confirm(Guid id)
-        {
-            var result = await Mediator.Send(new ConfirmBookingCommand(id));
-            return Ok(result);
-        }
+        //[HttpPut("{id:guid}/confirm")]
+        //[Authorize(Roles = "Admin")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        //public async Task<IActionResult> Confirm(Guid id)
+        //{
+        //    var result = await Mediator.Send(new ConfirmBookingFromStripeCommand(id));
+        //    return Ok(result);
+        //}
 
     }
 }
