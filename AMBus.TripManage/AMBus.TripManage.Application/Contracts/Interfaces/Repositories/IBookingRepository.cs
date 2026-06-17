@@ -23,5 +23,7 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
 
         Task<IEnumerable<Booking>> GetBookingsByTripAsync(Guid tripId);
 
+
+
     }
 }

@@ -16,8 +16,7 @@ namespace AMBus.TripManage.Persistance.Service
             StripeConfiguration.ApiKey = SecretKey;
         }
 
-        public async Task<PaymentInitResult> InitiatePaymentAsync(
-            InitiatePaymentRequest req)
+        public async Task<PaymentInitResult> InitiatePaymentAsync(InitiatePaymentRequest req)
         {
             try
             {
@@ -27,33 +26,47 @@ namespace AMBus.TripManage.Persistance.Service
                         req.BookingId.ToString(), null, null,
                         null, null);
 
-                // إنشاء PaymentIntent
-                var options = new PaymentIntentCreateOptions
+                var options = new Stripe.Checkout.SessionCreateOptions
                 {
-                    Amount = (long)(req.Amount * 100), // cents
-                    Currency = req.Currency.ToLower(),
                     PaymentMethodTypes = new List<string> { "card" },
-                    Metadata = new Dictionary<string, string>
+                    LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
+            {
+                new Stripe.Checkout.SessionLineItemOptions
+                {
+                    PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
                     {
-                        { "bookingId", req.BookingId.ToString() },
-                        { "customerEmail", req.CustomerEmail },
-                        { "customerName", req.CustomerName }
+                        Currency = req.Currency.ToLower(),
+                        UnitAmount = (long)(req.Amount * 100),
+                        ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = $"حجز رحلة - {req.BookingId}"
+                        }
                     },
-                    Description = $"Booking {req.BookingId}",
-                    ReceiptEmail = req.CustomerEmail
+                    Quantity = 1
+                }
+            },
+                    Mode = "payment",
+                    SuccessUrl = $"{_config["App:FrontendUrl"]}/booking-success?bookingId={req.BookingId}&session_id={{CHECKOUT_SESSION_ID}}",
+                    CancelUrl = $"{_config["App:FrontendUrl"]}/booking-cancelled?bookingId={req.BookingId}",
+                    CustomerEmail = req.CustomerEmail,
+                    Metadata = new Dictionary<string, string>
+            {
+                { "bookingId", req.BookingId.ToString() },
+                { "customerName", req.CustomerName }
+            }
                 };
 
-                var service = new PaymentIntentService();
-                var intent = await service.CreateAsync(options);
+                var service = new Stripe.Checkout.SessionService();
+                var session = await service.CreateAsync(options);
 
                 return new PaymentInitResult(
                     Success: true,
-                    Action: "stripe_intent",
-                    PaymentToken: intent.ClientSecret, // الـ frontend هيستخدمه
-                    RedirectUrl: null,
+                    Action: "redirect",
+                    PaymentToken: session.Id,            
+                    RedirectUrl: session.Url,             
                     ReferenceNumber: null,
-                    OrderId: intent.Id,
-                    TransactionId: intent.Id,
+                    OrderId: session.PaymentIntentId,
+                    TransactionId: session.Id,
                     ExpiresAt: DateTime.UtcNow.AddHours(1),
                     Error: null);
             }
@@ -64,7 +77,6 @@ namespace AMBus.TripManage.Persistance.Service
                     null, null, null, null, ex.Message);
             }
         }
-
         public async Task<VerifyPaymentResult> VerifyPaymentAsync(
             string transactionId, string provider)
         {

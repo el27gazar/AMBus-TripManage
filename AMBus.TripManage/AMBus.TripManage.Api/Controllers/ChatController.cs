@@ -2,9 +2,11 @@
 using AMBus.TripManage.Application.Features.ChatF.Commands.AssignAdmin;
 using AMBus.TripManage.Application.Features.ChatF.Commands.CloseConversation;
 using AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversation;
+using AMBus.TripManage.Application.Features.ChatF.Commands.SendMessage;
 using AMBus.TripManage.Application.Features.ChatF.Queries.GetAllConversations;
 using AMBus.TripManage.Application.Features.ChatF.Queries.GetMessages;
 using AMBus.TripManage.Application.Features.ChatF.Queries.GetMyConversations;
+using AMBus.TripManage.Domain.Entites;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -71,26 +73,27 @@ namespace AMBus.TripManage.Api.Controllers
             return Created(string.Empty, result);
         }
 
-     
-        //[HttpPost("{id:guid}/messages")]
-        //[ProducesResponseType(StatusCodes.Status201Created)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //public async Task<IActionResult> SendMessage(
-        //    Guid id,
-        //    [FromBody] SendMessageRequest request)
-        //{
-        //    var result = await Mediator.Send(
-        //        new SendMessageCommand(
-        //            id,
-        //            CurrentUserId,
-        //            request.Content,
-        //            IsAdmin));
 
-        //    return Created(string.Empty, result);
-        //}
+        [HttpPost("{id:guid}/messages")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> SendMessage(
+            Guid id,
+            [FromBody] SendMessageRequest request)
+        {
+            var result = await Mediator.Send(
+                new SendMessageCommand {
+                    ConversationId = id.ToString(),
+                    Content = request.Content,
+                    CurrentUserId = CurrentUserId
+                    //UserId = CurrentUserId.ToString()
+                });
 
-       
+            return Created(string.Empty, result);
+        }
+
+
         [HttpPut("{id:guid}/assign")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]

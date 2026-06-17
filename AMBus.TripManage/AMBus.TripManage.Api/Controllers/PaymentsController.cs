@@ -24,7 +24,7 @@ namespace AMBus.TripManage.Api.Controllers
     {
         // POST /api/payments/initiate  [User]
         [HttpPost("initiate")]
-        [Authorize(Roles = "User")]
+        [Authorize]
         public async Task<IActionResult> Initiate([FromBody] InitiateRequest req)
         {
             var result = await Mediator.Send(new InitiatePaymentCommand(
@@ -36,7 +36,7 @@ namespace AMBus.TripManage.Api.Controllers
 
         // POST /api/payments/confirm  [User]
         [HttpPost("confirm")]
-        [Authorize(Roles = "User")]
+        [Authorize]
         public async Task<IActionResult> Confirm([FromBody] ConfirmRequest req)
         {
             var result = await Mediator.Send(
@@ -125,69 +125,43 @@ namespace AMBus.TripManage.Api.Controllers
             ISystemNotificationService notif)
         { _uow = uow; _config = config; _notif = notif; }
 
-        [HttpPost("stripe")]
+        [HttpPost("webhook/stripe")]
         public async Task<IActionResult> StripeCallback()
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 
+            if (!Request.Headers.TryGetValue("Stripe-Signature", out var signature))
+                return BadRequest(new { error = "Missing Stripe-Signature header." });
+
             try
             {
                 var stripeEvent = EventUtility.ConstructEvent(
-                    json,
-                    Request.Headers["Stripe-Signature"],
-                    _config["Stripe:WebhookSecret"]);
+                    json, signature, _config["Stripe:WebhookSecret"]);
 
-                var now = DateTime.UtcNow;
-
-                if (stripeEvent.Type == "payment_intent.succeeded")
+                if (stripeEvent.Type == "checkout.session.completed")
                 {
-                    var intent = stripeEvent.Data.Object as PaymentIntent;
-                    if (intent is null) return Ok();
+                    var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
+                    if (session is null) return Ok();
 
-                    var payment = await _uow.Payments.GetByOrderIdAsync(intent.Id);
+                    var payment = await _uow.Payments.GetByExternalTransactionAsync(session.Id);
                     if (payment is null) return Ok();
 
                     payment.Status = PaymentStatus.Paid;
-                    payment.StripeClientSecret = intent.Id;
-                    payment.ExternalTransactionId = intent.Id;
-                    payment.PaidAt = now;
-                    payment.LastModifiedBy = "Webhook";
-                    payment.LastModifiedDate = now;
-                    _uow.Payments.Update(payment);
+                    payment.PaidAt = DateTime.UtcNow;
+                    payment.ExternalTransactionId = session.PaymentIntentId;
 
-                    var booking = payment.Booking;
-                    booking.Status = BookingStatus.Confirmed;
-                    booking.LastModifiedBy = "Webhook";
-                    booking.LastModifiedDate = now;
-                    _uow.Bookings.Update(booking);
+                    var booking = await _uow.Bookings.GetByIdAsync(payment.BookingId);
+                    if (booking != null)
+                        booking.Status = BookingStatus.Confirmed;
 
                     await _uow.SaveChangesAsync();
-
-                    await _notif.NotifyPaymentReceivedAsync(booking.Id, payment.Amount);
-                    await _notif.NotifyBookingConfirmedAsync(booking.Id);
-                }
-                else if (stripeEvent.Type == "payment_intent.payment_failed")
-                {
-                    var intent = stripeEvent.Data.Object as PaymentIntent;
-                    if (intent is null) return Ok();
-
-                    var payment = await _uow.Payments.GetByOrderIdAsync(intent.Id);
-                    if (payment is null) return Ok();
-
-                    payment.Status = PaymentStatus.Failed;
-                    payment.LastModifiedBy = "Webhook";
-                    payment.LastModifiedDate = now;
-                    _uow.Payments.Update(payment);
-                    await _uow.SaveChangesAsync();
-
-                    await _notif.NotifyPaymentFailedAsync(payment.BookingId);
                 }
 
                 return Ok();
             }
-            catch (StripeException)
+            catch (StripeException ex)
             {
-                return BadRequest();
+                return BadRequest(new { error = ex.Message });
             }
         }
     }

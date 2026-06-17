@@ -1,4 +1,5 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces;
+using AMBus.TripManage.Application.Contracts.Interfaces.Services;
 using AMBus.TripManage.Application.Dtos;
 using AMBus.TripManage.Application.Dtos.Booking;
 using AMBus.TripManage.Application.Exceptions;
@@ -18,11 +19,13 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookin
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly ISystemNotificationService _Notification;
 
-        public ConfirmBookingCommandHandler(IUnitOfWork uow, IMapper mapper)
+        public ConfirmBookingCommandHandler(IUnitOfWork uow, IMapper mapper,ISystemNotificationService notificationService)
         {
             _uow = uow;
             _mapper = mapper;
+            _Notification = notificationService;
         }
 
         public async Task<BookingDto> Handle(
@@ -37,6 +40,8 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookin
 
             booking.Status = BookingStatus.Confirmed;
             booking.LastModifiedDate = DateTime.UtcNow;
+
+            await _Notification.NotifyBookingConfirmedAsync(bookingId: booking.Id);
 
             _uow.Bookings.Update(booking);
             await _uow.SaveChangesAsync();
