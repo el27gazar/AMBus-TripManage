@@ -4,6 +4,7 @@ using AMBus.TripManage.Application.Features.AuthF.Commands.ChangePasswordCommand
 using AMBus.TripManage.Application.Features.AuthF.Commands.ConfirmEmail;
 using AMBus.TripManage.Application.Features.AuthF.Commands.ForgotPasswordCommands;
 using AMBus.TripManage.Application.Features.AuthF.Commands.Login;
+using AMBus.TripManage.Application.Features.AuthF.Commands.Logout;
 using AMBus.TripManage.Application.Features.AuthF.Commands.RegisterCommands;
 using AMBus.TripManage.Application.Features.AuthF.Commands.ResendConfirmation;
 using AMBus.TripManage.Application.Features.AuthF.Commands.ResetPasswordCommands;
@@ -105,6 +106,16 @@ namespace AMBus.TripManage.Api.Controllers
         {
             await Mediator.Send(command);
             return Ok(new { message = "تم إرسال رابط التأكيد مرة أخرى. يرجى التحقق من بريدك الإلكتروني." });
+        }
+
+
+        [HttpPost("logout")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Logout()
+        {
+            await Mediator.Send(new LogoutCommand(CurrentUserId));
+            return Ok(new { message = "تم تسجيل الخروج بنجاح." });
         }
     }
 }
