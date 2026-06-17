@@ -1,8 +1,10 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces;
 using AMBus.TripManage.Application.Dtos;
+using AMBus.TripManage.Application.Dtos.AuthDto;
 using AMBus.TripManage.Application.Dtos.Booking;
 using AMBus.TripManage.Application.Dtos.Requests;
 using AMBus.TripManage.Application.Exceptions;
+using AMBus.TripManage.Application.Features.AuthF.Commands.AddAdminCommands;
 using AMBus.TripManage.Domain.Entites;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -247,6 +249,16 @@ namespace AMBus.TripManage.Api.Controllers
                 pageSize,
                 totalPages = (int)Math.Ceiling(total / (double)pageSize)
             });
+        }
+
+        [HttpPost("add-admin")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> AddAdmin([FromBody] AddAdminRequest request)
+        {
+            var result = await Mediator.Send(new AddAdminCommand(request));
+            return CreatedAtAction(nameof(GetById), new { id = result.UserId }, result);
         }
     }
 }

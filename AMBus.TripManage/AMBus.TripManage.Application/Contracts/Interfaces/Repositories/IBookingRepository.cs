@@ -20,5 +20,8 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
         Task<(IEnumerable<Booking> Items, int Total)> GetAllBookingsPagedAsync(
             string? status, Guid? userId, Guid? tripId, int page, int pageSize);
         Task<bool> HasCompletedBookingForTripAsync(Guid userId, Guid tripId);
+
+        Task<IEnumerable<Booking>> GetBookingsByTripAsync(Guid tripId);
+
     }
 }

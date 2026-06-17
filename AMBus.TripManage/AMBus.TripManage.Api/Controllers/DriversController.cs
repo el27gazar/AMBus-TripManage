@@ -2,6 +2,7 @@
 using AMBus.TripManage.Application.Dtos.DriverDto;
 using AMBus.TripManage.Application.Dtos.Requests;
 using AMBus.TripManage.Application.Exceptions;
+using AMBus.TripManage.Application.Features.DriverF.Queries;
 using AMBus.TripManage.Domain.Entites;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -220,6 +221,19 @@ namespace AMBus.TripManage.Api.Controllers
             return NoContent();
         }
 
+        [HttpGet("{id:guid}/trip/{tripId:guid}/manifest")]
+        [Authorize(Roles = "Driver,Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetTripManifest(Guid id, Guid tripId)
+        {
+            var pdfBytes = await Mediator.Send(
+                new GetDriverTripManifestQuery(tripId, CurrentUserId));
+
+            return File(pdfBytes, "application/pdf",
+                $"manifest-trip-{tripId:N}.pdf");
+        }
 
     }
 

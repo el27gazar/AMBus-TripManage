@@ -108,6 +108,7 @@ namespace AMBus.TripManage.Persistance
 
             services.AddScoped<INotificationSender, NotificationSender>();
             services.AddScoped<ISystemNotificationService, SystemNotificationService>();
+            services.AddScoped<IPdfService, PdfService>();
             services.AddScoped<IChatRepository, ChatRepository>();
             services.AddSignalR(options =>
             {
