@@ -1,0 +1,86 @@
+<div class="container">
+  <h2>Manage Books</h2>
+  <!-- <div class="search">
+    <form [formGroup]="Formgroup" (submit)="search()">
+      <input type="text" placeholder="Route Name" formControlName="name" />
+      <button type="submit" (click)="search()" class="btn-search">Search</button>
+      <button type="submit" (click)="Create()" class="btn-search">Add</button>
+    </form>
+  </div> -->
+
+  <table class="user-list">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Trip</th>
+        <th>Status</th>
+        <th>TotalBrice</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+         @for (item of AllBook; track item.id) {
+          <tr>
+             <td>{{item.userName}}</td>
+             <td>{{item.tripSummary}}</td>
+             <td>{{item.status}}</td>
+             <td>{{item.totalPrice}}</td>
+             <td>
+               <button class="delete" (click)="OpenDetail(item.id)">Details</button>
+             </td>
+          </tr>
+         }@empty {
+          <td colspan="6">No Book Found</td>
+         }
+    </tbody>
+  </table>
+
+  <div class="toast" id="toastError">
+    <p class="toast-message"> </p>
+  </div>
+</div>
+
+
+<div class="overlay hide"></div>
+<div class="modal  hide">
+  <h2 class="h-form">  Book Details</h2>
+  <div class="display">
+    <div class="display-row">
+      <div class="display-col">
+        <label>UserName</label>
+         <p>{{DetailBook.userName}}</p>
+      </div>
+    </div>
+      <label>Trip</label>
+        <p>{{DetailBook.tripSummary}}</p>
+            <div class="display-col">
+            <label>Status</label>
+            <p>{{DetailBook.status}}</p>
+          </div>
+          <div class="display-col">
+            <label>Total Price</label>
+            <p>{{DetailBook.totalPrice}}</p>
+          </div>
+
+        <div class="display-col">
+          <label>Booked Time</label>
+          <p>{{DetailBook.bookedAt | date:'fullDate'}}</p>
+        </div>
+
+      <div class="display-col">
+        <label>Payment Method</label>
+        <p>{{DetailBook.payment.method}}</p>
+      </div>
+      <div class="display-col">
+        <label>Payment Status</label>
+        <p>{{DetailBook.payment.status}}</p>
+      </div>
+</div>
+  <div class="btns">
+    <button (click)="Cancel(DetailBook.id)">Cancel</button>
+    <button (click)="Confirm(DetailBook.id)" >Confirm</button>
+  </div>
+  <button class="close-modal" (click)="CloseModal()">X</button>
+
+</div>
+

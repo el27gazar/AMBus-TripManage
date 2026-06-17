@@ -56,7 +56,7 @@ namespace AMBus.TripManage.Api.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "User")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(
@@ -71,7 +71,7 @@ namespace AMBus.TripManage.Api.Controllers
             return Created(string.Empty, result);
         }
 
-     
+
         //[HttpPost("{id:guid}/messages")]
         //[ProducesResponseType(StatusCodes.Status201Created)]
         //[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -90,7 +90,7 @@ namespace AMBus.TripManage.Api.Controllers
         //    return Created(string.Empty, result);
         //}
 
-       
+
         [HttpPut("{id:guid}/assign")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]

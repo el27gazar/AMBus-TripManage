@@ -15,12 +15,13 @@
         <ul>
           <li><a [routerLink]="['/user/home']" [routerLinkActive]="['active']">Home</a></li>
           <li><a [routerLink]="['/user/BookTrip']" [routerLinkActive]="['active']">BookTrip</a></li>
-          <li><a [routerLink]="['/user/MyTrips']" [routerLinkActive]="['active']">MyTrips</a></li>
-          <li><a [routerLink]="['/user/About']" [routerLinkActive]="['active']">About</a></li>
+          <li><a [routerLink]="['/user/MyTrips']" [routerLinkActive]="['active']">MyBooks</a></li>
+          <!-- <li><a [routerLink]="['/user/About']" [routerLinkActive]="['active']">About</a></li> -->
+          <li><a class="notify" [routerLink]="['/user/Notification']" [routerLinkActive]="['active']">notification</a></li>
         </ul>
       </div>
       <div class="auth">
-        <a>Logout</a>
+        <a   [routerLink]="['/login']" (click)="logout()" >Logout</a>
       </div>
     </div>
 

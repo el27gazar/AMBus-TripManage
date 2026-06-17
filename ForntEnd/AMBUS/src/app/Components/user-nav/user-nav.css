@@ -38,7 +38,7 @@ a {
 
 .container-list {
   display: flex;
-  width: 70%;
+  width: 69%;
   justify-content: space-between;
   align-items: center;
   margin-top: 15px;
@@ -105,6 +105,16 @@ button,
   font-weight: 900;
   border-radius: 5px;
   padding: 2px;
+  color: #db1919;
+}
+.notify {
+  cursor: pointer;
+  margin-top: 15px;
+  margin-right: 20px;
+  transition: 0.3s ease;
+  color: #fff;
+}
+.notify:hover {
   color: #db1919;
 }
 

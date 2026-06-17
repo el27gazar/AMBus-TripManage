@@ -1,83 +1,52 @@
 <div class="container">
   <h2>Your Journey History</h2>
+  @for (item of MyBooking; track $index) {
   <div class="content">
-    <p class="Date">Dec,2025</p>
+    <p class="Date">{{item.bookedAt | date:'fullDate'}}</p>
     <div class="trips">
       <ul>
-        <li>#123456</li>
-        <li>minia</li>
-        <li>→</li>
-        <li>cairo</li>
-        <li>10:00 Am</li>
+        <li>{{item.tripSummary}}</li>
+        <li>{{item.status}}</li>
+        <li>{{item.totalPrice}}</li>
+        @if (item.status=="Confirmed") {
         <li>
-          <button>Ticket</button>
-          <button><i class="bi bi-trash"></i></button>
+          <button  (click)="GetTicket(item.id)">Ticket</button>
         </li>
-
+}
       </ul>
     </div>
   </div>
-  <div class="content">
-    <p class="Date">Dec,2025</p>
-    <div class="trips">
-      <ul>
-        <li>#123456</li>
-        <li>minia</li>
-        <li>→</li>
-        <li>cairo</li>
-        <li>10:00 Am</li>
-        <li>
-          <button>Ticket</button>
-          <button><i class="bi bi-trash"></i></button>
-        </li>
-
-      </ul>
-    </div>
-  </div>
-  <div class="content">
-    <p class="Date">Dec,2025</p>
-    <div class="trips">
-      <ul>
-        <li>#123456</li>
-        <li>minia</li>
-        <li>→</li>
-        <li>cairo</li>
-        <li>10:00 Am</li>
-        <li>
-          <button>Ticket</button>
-          <button><i class="bi bi-trash"></i></button>
-        </li>
-
-      </ul>
-    </div>
-    <div class="trips">
-      <ul>
-        <li>#123456</li>
-        <li>minia</li>
-        <li>→</li>
-        <li>cairo</li>
-        <li>10:00 Am</li>
-        <li>
-          <button>Ticket</button>
-          <button><i class="bi bi-trash"></i></button>
-        </li>
-
-      </ul>
-    </div>
-    <div class="trips">
-      <ul>
-        <li>#123456</li>
-        <li>minia</li>
-        <li>→</li>
-        <li>cairo</li>
-        <li>10:00 Am</li>
-        <li>
-          <button>Ticket</button>
-          <button><i class="bi bi-trash"></i></button>
-        </li>
-
-      </ul>
-    </div>
-
-  </div>
+  }@empty {
+    <p>No exit Bookings</p>
+  }
 </div>
+
+<div class="overlay hide"></div>
+<div class="modal hide">
+  @if(TicketData != null) {
+
+  @for (item of TicketData.passengers; track $index) {
+  <div class="ticket">
+     <p># {{TicketData.qrCode}} - {{TicketData.busType}}</p>
+     <div class="display-row">
+     <label>From</label>
+     <input type="text" placeholder="From" [value]="TicketData.fromCity" disabled/>
+     </div>
+    <div class="display-row">
+     <label>To</label>
+     <input type="text" placeholder="To" [value]="TicketData.toCity" disabled/>
+     </div>
+    <div class="display-row">
+     <label>Departure Time</label>
+     <input type="datetime-local" placeholder="Departure Time" [value]="TicketData.departureTime" disabled/>
+     </div>
+    <div class="display-row">
+     <label>Seat Number</label>
+     <input type="text" placeholder="Seat Number" [value]="item.seatNumber" disabled/>
+  </div>
+  </div>
+  }
+  }
+  <button class="btn-Close" (click)="closeModal()">Close</button>
+</div>
+

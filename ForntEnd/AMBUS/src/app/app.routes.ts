@@ -1,3 +1,4 @@
+import { Notification } from './pages/notification/notification';
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
@@ -22,6 +23,7 @@ export const routes: Routes = [
       {path:'BookTrip',loadComponent: () => import('./pages/book-trip/book-trip').then(m => m.BookTrip)},
       {path:'MyTrips',loadComponent: () => import('./pages/my-trips/my-trips').then(m => m.MyTrips)},
       {path:'About',loadComponent: () => import('./pages/about/about').then(m => m.About)},
+      {path:'Notification',loadComponent: () => import('./pages/notification/notification').then(m => m.Notification)},
     ]
 
   },
@@ -33,7 +35,7 @@ export const routes: Routes = [
       {path:'BusManagement',loadComponent: () => import('./pages/bus-manage/bus-manage').then(m => m.BusManage)},
       {path:'RoutesManagement',loadComponent: () => import('./pages/route-manage/route-manage').then(m => m.RouteManage)},
       {path:'TripManagement',loadComponent: () => import('./pages/trip-manage/trip-manage').then(m => m.TripManage)},
-      {path:'TicketManagement',loadComponent: () => import('./pages/ticket-manage/ticket-manage').then(m => m.TicketManage)},
+      {path:'BookManagement',loadComponent: () => import('./pages/book-management/book-management').then(m => m.BookManagement)},
       {path:'ReviewManagement',loadComponent: () => import('./pages/review-manage/review-manage').then(m => m.ReviewManage)},
       {path:'Chats' ,loadComponent: () => import('./pages/chat/chat').then(m => m.Chat)},
       {path:'Settings',loadComponent: () => import('./pages/settings/settings').then(m => m.Settings)},

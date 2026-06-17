@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AMBus.TripManage.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260613233454_stripepayment")]
-    partial class stripepayment
+    [Migration("20260617114326_initaial")]
+    partial class initaial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2079,8 +2079,8 @@ namespace AMBus.TripManage.Persistance.Migrations
                         {
                             Id = new Guid("cccccccc-0000-0000-0000-000000000001"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b10e9e7b-0c8e-4875-b160-616218dcc637",
-                            CreatedAt = new DateTime(2026, 6, 13, 23, 34, 51, 595, DateTimeKind.Utc).AddTicks(4266),
+                            ConcurrencyStamp = "7c715229-fa5a-4357-9abf-c0371f6240b0",
+                            CreatedAt = new DateTime(2026, 6, 17, 11, 43, 25, 916, DateTimeKind.Utc).AddTicks(957),
                             Email = "driver1@ambus.com",
                             EmailConfirmed = false,
                             FullName = "كابتن محمد أحمد",
@@ -2094,8 +2094,8 @@ namespace AMBus.TripManage.Persistance.Migrations
                         {
                             Id = new Guid("cccccccc-0000-0000-0000-000000000002"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "668f2226-8429-48a7-9797-c8a5d76a65cc",
-                            CreatedAt = new DateTime(2026, 6, 13, 23, 34, 51, 595, DateTimeKind.Utc).AddTicks(4273),
+                            ConcurrencyStamp = "d23f8b66-9a0b-4b8c-8906-2573aff57270",
+                            CreatedAt = new DateTime(2026, 6, 17, 11, 43, 25, 916, DateTimeKind.Utc).AddTicks(966),
                             Email = "driver2@ambus.com",
                             EmailConfirmed = false,
                             FullName = "كابتن محمود علي",
