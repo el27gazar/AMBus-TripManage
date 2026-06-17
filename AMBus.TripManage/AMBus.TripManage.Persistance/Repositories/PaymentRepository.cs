@@ -34,6 +34,12 @@ namespace AMBus.TripManage.Persistance.Repositories
                     p.StripeClientSecret == transactionId ||
                     p.ExternalTransactionId == transactionId);
 
+        public async Task<Payment?> GetByExternalTransactionAsync(string externalTransactionId)
+    => await _ctx.Payments
+        .FirstOrDefaultAsync(p =>
+            p.ExternalTransactionId == externalTransactionId ||
+            p.StripeClientSecret == externalTransactionId);
+
         public async Task<Payment?> GetByOrderIdAsync(string orderId)
             => await _ctx.Payments
                 .Include(p => p.Booking)
