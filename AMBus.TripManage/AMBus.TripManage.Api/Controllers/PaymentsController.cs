@@ -4,6 +4,7 @@ using AMBus.TripManage.Application.Dtos.Payment.Requests;
 using AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookingCommands;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.CancelPendingPayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmCashPayment;
+using AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmStripePayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.InitiatePayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Queries.GetAllPayments;
@@ -143,10 +144,20 @@ namespace AMBus.TripManage.Api.Controllers
                     var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
                     if (session?.PaymentStatus != "paid") return Ok();
 
-                    await Mediator.Send(new ConfirmBookingFromStripeCommand(
-                        SessionId: session.Id,
-                        PaymentIntentId: session.PaymentIntentId,
-                        Metadata: session.Metadata));
+                    if (session.Metadata != null && session.Metadata.ContainsKey("tripId"))
+                    {
+                        await Mediator.Send(new ConfirmBookingFromStripeCommand(
+                            SessionId: session.Id,
+                            PaymentIntentId: session.PaymentIntentId,
+                            Metadata: session.Metadata));
+                    }
+                    else
+                    {
+                        await Mediator.Send(new ConfirmStripePaymentCommand(
+                            SessionId: session.Id,
+                            PaymentIntentId: session.PaymentIntentId,
+                            Metadata: session.Metadata));
+                    }
                 }
 
                 return Ok();
