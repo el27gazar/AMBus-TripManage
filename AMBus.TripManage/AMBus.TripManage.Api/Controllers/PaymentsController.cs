@@ -87,6 +87,16 @@ namespace AMBus.TripManage.Api.Controllers
                 ? NotFound(new { message = "لا توجد دفعة لهذا الحجز بعد." })
                 : Ok(result);
         }
+        //post/api/payment/confirm-stripe
+        [HttpPost("confirm-stripe")]
+        public async Task<IActionResult> ConfirmStripe([FromBody] ConfirmStripePaymentCommand req)
+        {
+            var result = await Mediator.Send(new ConfirmStripePaymentCommand(
+                SessionId: req.SessionId,
+                PaymentIntentId: req.PaymentIntentId,
+                Metadata: req.Metadata));
+            return Ok(result);
+        }
 
         // GET /api/payments  [Admin]
         [HttpGet]

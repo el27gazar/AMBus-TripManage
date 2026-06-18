@@ -54,7 +54,7 @@ using AMBus.TripManage.Domain.Entites;
                 PassengerName: passenger.FullName,
                 PhoneNumber: request.PhoneNumber);
 
-            // ───── الكاش: حجز فوري Pending، يتأكد لاحقًا من الإدارة ─────
+            //cash
             if (request.PaymentMethod == "Cash")
             {
                 var booking = await CreatePendingBookingAsync(
@@ -116,11 +116,11 @@ using AMBus.TripManage.Domain.Entites;
             var uid = payload.UserId.ToString();
 
             var booking = new Booking
-            {
+            { 
                 Id = Guid.NewGuid(),
                 TripId = payload.TripId,
                 UserId = payload.UserId,
-                Status = BookingStatus.Pending,
+                Status = BookingStatus.Completed,
                 TotalPrice = payload.TotalPrice,
                 BookedAt = now,
                 QrCode = Guid.NewGuid().ToString("N")[..12].ToUpper(),

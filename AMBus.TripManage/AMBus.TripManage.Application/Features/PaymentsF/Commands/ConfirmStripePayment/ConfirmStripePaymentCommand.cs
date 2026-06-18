@@ -11,4 +11,11 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmStripe
           string SessionId,
           string PaymentIntentId,
           Dictionary<string, string> Metadata) : IRequest<Unit>;
+
+    public class ConfirmStripePaymentRequest
+    {
+        public string SessionId { get; set; }
+        public string PaymentIntentId { get; set; }
+        public string Metadata { get; set; }
+    }
 }
