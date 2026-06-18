@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversation
 {
     public class CreateConversationCommandHandler
-         : IRequestHandler<CreateConversationCommand, ConversationDto>
+          : IRequestHandler<CreateConversationCommand, ConversationDto>
     {
         private readonly IChatRepository _chatRepo;
         private readonly IMapper _mapper;
@@ -28,10 +28,14 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversatio
             CreateConversationCommand command,
             CancellationToken cancellationToken)
         {
+            
+            var existing = await _chatRepo.GetOpenConversationByUserAsync(command.UserId);
+            if (existing is not null)
+                return _mapper.Map<ConversationDto>(existing);
+
             var now = DateTime.UtcNow;
             var uid = command.UserId.ToString();
 
-            // إنشاء المحادثة
             var conversation = new ChatConversation
             {
                 Id = Guid.NewGuid(),
@@ -44,7 +48,6 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversatio
                 LastModifiedDate = now
             };
 
-            // إضافة الرسالة الأولى
             var firstMsg = new ChatMessage
             {
                 Id = Guid.NewGuid(),
@@ -66,4 +69,4 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversatio
             return _mapper.Map<ConversationDto>(conversation);
         }
     }
-}
+    }

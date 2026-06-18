@@ -18,6 +18,7 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
         Task<int> GetTotalConversationsCountAsync(string? status);
         Task AddConversationAsync(ChatConversation conversation);
 
+        Task<ChatConversation?> GetOpenConversationByUserAsync(Guid userId);
         // Messages
         Task<IEnumerable<ChatMessage>> GetMessagesAsync(
             Guid conversationId, int page, int pageSize);

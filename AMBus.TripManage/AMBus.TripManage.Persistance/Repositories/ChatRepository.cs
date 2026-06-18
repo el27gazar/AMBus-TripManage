@@ -21,7 +21,11 @@ namespace AMBus.TripManage.Persistance.Repositories
                 .Include(c => c.User)
                 .Include(c => c.Admin)
                 .FirstOrDefaultAsync(c => c.Id == id);
-
+        public async Task<ChatConversation?> GetOpenConversationByUserAsync(Guid userId)
+    => await _ctx.ChatConversations
+        .Where(c => c.UserId == userId && c.Status == ConversationStatus.Open)
+        .OrderByDescending(c => c.CreatedDate)
+        .FirstOrDefaultAsync();
         public async Task<ChatConversation?> GetConversationWithMessagesAsync(Guid id)
             => await _ctx.ChatConversations
                 .Include(c => c.User)
