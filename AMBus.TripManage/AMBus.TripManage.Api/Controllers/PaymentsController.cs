@@ -4,7 +4,6 @@ using AMBus.TripManage.Application.Dtos.Payment.Requests;
 using AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookingCommands;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.CancelPendingPayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmCashPayment;
-using AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmPayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.InitiatePayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Queries.GetAllPayments;
@@ -36,16 +35,7 @@ namespace AMBus.TripManage.Api.Controllers
             return result.Success ? StatusCode(201, result) : StatusCode(402, result);
         }
 
-        // POST /api/payments/confirm  [User]
-        [HttpPost("confirm")]
-        [Authorize]
-        public async Task<IActionResult> Confirm([FromBody] ConfirmRequest req)
-        {
-            var result = await Mediator.Send(
-                new ConfirmPaymentCommand(req.TransactionId, CurrentUserId));
-            return result.Success ? Ok(result) : StatusCode(402, result);
-        }
-
+       
         // POST /api/payments/{id}/confirm-cash  [Admin]
         [HttpPost("{id:guid}/confirm-cash")]
         [Authorize(Roles = "Admin")]
@@ -127,6 +117,15 @@ namespace AMBus.TripManage.Api.Controllers
             ISystemNotificationService notif)
         { _uow = uow; _config = config; _notif = notif; }
 
+        private readonly ILogger<PaymentWebhookController> _logger;
+
+        public PaymentWebhookController(
+            IUnitOfWork uow,
+            IConfiguration config,
+            ISystemNotificationService notif,
+            ILogger<PaymentWebhookController> logger)
+        { _uow = uow; _config = config; _notif = notif; _logger = logger; }
+
         [HttpPost("stripe")]
         public async Task<IActionResult> StripeCallback()
         {
@@ -154,7 +153,13 @@ namespace AMBus.TripManage.Api.Controllers
             }
             catch (StripeException ex)
             {
+                _logger.LogError(ex, "Stripe signature/event parsing failed.");
                 return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unhandled error while processing Stripe webhook.");
+                return StatusCode(500, new { error = "Internal error processing webhook." });
             }
         }
     }

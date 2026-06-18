@@ -20,7 +20,7 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.InitiatePayme
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly IPaymentService _paymob;
-
+                                    
         public InitiatePaymentCommandHandler(
             IUnitOfWork uow, IMapper mapper, IPaymentService paymob)
         { _uow = uow; _mapper = mapper; _paymob = paymob; }

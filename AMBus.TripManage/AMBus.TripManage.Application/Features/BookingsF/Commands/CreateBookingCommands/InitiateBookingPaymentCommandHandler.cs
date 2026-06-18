@@ -25,7 +25,6 @@ using AMBus.TripManage.Domain.Entites;
             public async Task<InitiateBookingPaymentResultDto> Handle(
                 InitiateBookingPaymentCommand request, CancellationToken ct)
             {
-                // 1) تحقق من الرحلة
                 var trip = await _uow.Trips.GetTripWithDetailsAsync(request.TripId)
                     ?? throw new NotFoundException(nameof(Trip), request.TripId);
 
@@ -35,7 +34,6 @@ using AMBus.TripManage.Domain.Entites;
                 if (trip.AvailableSeats < request.Seats.Count)
                     throw new BusinessRuleException("لا يوجد عدد مقاعد كافٍ.");
 
-                // 2) تحقق من توفر كل مقعد (تحقق أولي، التحقق الحاسم وقت الـ Webhook)
                 foreach (var s in request.Seats)
                 {
                     var taken = await _uow.Bookings.IsSeatAlreadyBookedAsync(s.SeatId, request.TripId);
@@ -48,7 +46,6 @@ using AMBus.TripManage.Domain.Entites;
 
                 var totalPrice = trip.BasePrice * request.Seats.Count;
 
-                // بيانات الحجز المطلوب - بتتخزن في Stripe Metadata لحد ما الدفع ينجح
                 var bookingPayload = new PendingBookingPayload(
                     TripId: request.TripId,
                     UserId: request.UserId,
@@ -58,7 +55,6 @@ using AMBus.TripManage.Domain.Entites;
                    
                     PhoneNumber: request.PhoneNumber);
 
-                // --- الكاش بيفضل يعمل Booking فوري لأنه مش معلق على بوابة دفع خارجية ---
                 if (request.PaymentMethod == "Cash")
                 {
                     var booking = await CreateConfirmedOrPendingBookingAsync(
@@ -73,7 +69,6 @@ using AMBus.TripManage.Domain.Entites;
                         booking.Id);
                 }
 
-                // --- الكارت: مفيش Booking خالص دلوقتي ---
                 var checkoutResult = await _paymentService.CreateCheckoutSessionAsync(
                     new CreateCheckoutRequest(
                         Amount: totalPrice,

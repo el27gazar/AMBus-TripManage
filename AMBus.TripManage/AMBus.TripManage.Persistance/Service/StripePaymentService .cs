@@ -43,8 +43,8 @@ namespace AMBus.TripManage.Persistance.Service
                     SuccessUrl = $"{_config["App:FrontendUrl"]}/booking-success?session_id={{CHECKOUT_SESSION_ID}}",
                     CancelUrl = $"{_config["App:FrontendUrl"]}/booking-cancelled",
                     CustomerEmail = req.CustomerEmail,
-                    Metadata = req.Metadata,            // ✅ بيانات الحجز كاملة هنا
-                    ExpiresAt = DateTime.UtcNow.AddMinutes(30) // أقصى وقت مسموح به من Stripe
+                    Metadata = req.Metadata,            
+                    ExpiresAt = DateTime.UtcNow.AddMinutes(30) 
                 };
 
                 var service = new Stripe.Checkout.SessionService();

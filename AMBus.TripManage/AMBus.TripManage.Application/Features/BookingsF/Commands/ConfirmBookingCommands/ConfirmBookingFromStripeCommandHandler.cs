@@ -8,6 +8,7 @@ using AutoMapper;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookin
 {
 
     public class ConfirmBookingFromStripeCommandHandler
-        : IRequestHandler<ConfirmBookingFromStripeCommand, Unit>
+         : IRequestHandler<ConfirmBookingFromStripeCommand, Unit>
     {
         private readonly IUnitOfWork _uow;
 
@@ -28,21 +29,29 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookin
             var existingPayment = await _uow.Payments.GetByExternalTransactionAsync(request.SessionId);
             if (existingPayment != null) return Unit.Value;
 
-            var tripId = Guid.Parse(request.Metadata["tripId"]);
-            var userId = Guid.Parse(request.Metadata["userId"]);
-            var seatIds = request.Metadata["seatIds"].Split(',').Select(Guid.Parse).ToList();
-            var totalPrice = decimal.Parse(request.Metadata["totalPrice"]);
-            var passengerName = request.Metadata["passengerName"];
-            var passengerIdNumber = request.Metadata["passengerIdNumber"];
+            // قراءة آمنة للـ Metadata بدل الـ indexer المباشر
+            if (!request.Metadata.TryGetValue("tripId", out var tripIdStr) ||
+                !request.Metadata.TryGetValue("userId", out var userIdStr) ||
+                !request.Metadata.TryGetValue("seatIds", out var seatIdsStr) ||
+                !request.Metadata.TryGetValue("totalPrice", out var totalPriceStr) ||
+                !request.Metadata.TryGetValue("passengerName", out var passengerName))
+            {
+                throw new BusinessRuleException(
+                    "بيانات الحجز ناقصة في الـ Metadata القادمة من Stripe Webhook.");
+            }
 
-            // ✅ التحقق الحاسم - هل المقاعد لسه فاضية فعلاً وقت الدفع؟
+            request.Metadata.TryGetValue("phoneNumber", out var phoneNumber);
+
+            var tripId = Guid.Parse(tripIdStr);
+            var userId = Guid.Parse(userIdStr);
+            var seatIds = seatIdsStr.Split(',').Select(Guid.Parse).ToList();
+            var totalPrice = decimal.Parse(totalPriceStr, CultureInfo.InvariantCulture);
+
             foreach (var seatId in seatIds)
             {
                 var taken = await _uow.Bookings.IsSeatAlreadyBookedAsync(seatId, tripId);
                 if (taken)
                 {
-                    // المقعد اتحجز من حد تاني في نفس اللحظة - لازم استرداد فوري
-                    // (يُنصأ بإضافة منطق Refund هنا تلقائياً)
                     throw new ConflictException("تم حجز أحد المقاعد بالفعل من مستخدم آخر، سيتم استرداد المبلغ.");
                 }
             }
@@ -58,7 +67,7 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookin
                 Id = Guid.NewGuid(),
                 TripId = tripId,
                 UserId = userId,
-                Status = BookingStatus.Confirmed,   // ✅ مؤكد مباشرة لأن الدفع نجح فعلاً
+                Status = BookingStatus.Confirmed,
                 TotalPrice = totalPrice,
                 BookedAt = now,
                 QrCode = Guid.NewGuid().ToString("N")[..12].ToUpper(),
@@ -67,7 +76,6 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookin
                     Id = Guid.NewGuid(),
                     SeatId = seatId,
                     PassengerName = passengerName,
-                    PassengerIdNumber = passengerIdNumber,
                     CreatedDate = now
                 }).ToList(),
                 CreatedBy = uid,
@@ -105,4 +113,5 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookin
             return Unit.Value;
         }
     }
+
 }
