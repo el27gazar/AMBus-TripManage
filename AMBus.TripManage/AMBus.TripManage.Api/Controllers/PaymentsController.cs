@@ -1,6 +1,7 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces;
 using AMBus.TripManage.Application.Contracts.Interfaces.Services;
 using AMBus.TripManage.Application.Dtos.Payment.Requests;
+using AMBus.TripManage.Application.Features.BookingsF.Commands.CancelExpiredBookingPayment;
 using AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookingCommands;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.CancelPendingPayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmCashPayment;
@@ -139,25 +140,27 @@ namespace AMBus.TripManage.Api.Controllers
             {
                 var stripeEvent = EventUtility.ConstructEvent(json, signature, _config["Stripe:WebhookSecret"]);
 
-                if (stripeEvent.Type == "checkout.session.completed")
+                switch (stripeEvent.Type)
                 {
-                    var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
-                    if (session?.PaymentStatus != "paid") return Ok();
-
-                    if (session.Metadata != null && session.Metadata.ContainsKey("tripId"))
-                    {
-                        await Mediator.Send(new ConfirmBookingFromStripeCommand(
-                            SessionId: session.Id,
-                            PaymentIntentId: session.PaymentIntentId,
-                            Metadata: session.Metadata));
-                    }
-                    else
-                    {
-                        await Mediator.Send(new ConfirmStripePaymentCommand(
-                            SessionId: session.Id,
-                            PaymentIntentId: session.PaymentIntentId,
-                            Metadata: session.Metadata));
-                    }
+                    case "checkout.session.completed":
+                        {
+                            var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
+                            if (session?.PaymentStatus == "paid")
+                            {
+                                await Mediator.Send(new ConfirmStripePaymentCommand(
+                                    SessionId: session.Id,
+                                    PaymentIntentId: session.PaymentIntentId,
+                                    Metadata: session.Metadata));
+                            }
+                            break;
+                        }
+                    case "checkout.session.expired":
+                        {
+                            var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
+                            if (session != null)
+                                await Mediator.Send(new CancelExpiredBookingPaymentCommand(session.Id));
+                            break;
+                        }
                 }
 
                 return Ok();
