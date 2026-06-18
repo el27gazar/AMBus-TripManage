@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { BookTrip } from '../../Core/Services/book-trip';
+import { BookTripService } from '../../Core/Services/book-trip';
 import { CommonModule } from '@angular/common';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { GlobalService } from '../../Core/Services/global-service';
@@ -14,7 +14,7 @@ export class MyTrips {
 
   MyBooking:any[]=[];
   TicketData:any;
-   constructor(private _bookService:BookTrip,
+   constructor(private _bookService:BookTripService,
      private _cd:ChangeDetectorRef,
      private _toast:GlobalService
    ) {}

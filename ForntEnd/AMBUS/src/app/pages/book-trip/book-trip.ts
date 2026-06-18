@@ -6,10 +6,12 @@ import { GlobalService } from '../../Core/Services/global-service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Route } from '../../Core/Services/route';
 import { User } from '../../Core/Services/user';
+import { BookTripService } from '../../Core/Services/book-trip';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-book-trip',
-  imports: [ReactiveFormsModule, DatePipe, CommonModule],
+  imports: [ReactiveFormsModule, DatePipe, CommonModule, RouterOutlet],
   templateUrl: './book-trip.html',
   styleUrl: './book-trip.css',
 })
@@ -63,7 +65,8 @@ MyData:any;
     private _cd:ChangeDetectorRef,
      private _trip:TripService,
     private _toast:GlobalService,
-    private _userService:User){
+    private _userService:User,
+     private _book:BookTripService){
     this.initFormControl();
     this.initFormGroup();
     this.GetAllTrips();
@@ -145,8 +148,6 @@ MyData:any;
      document.getElementsByClassName("containerSeat")[0].classList.toggle("hide");
    }
 
-
-
    CheckBook(){
        if(this.SelectedSeat.length <=0)
        {
@@ -167,16 +168,18 @@ MyData:any;
          this._cd.markForCheck();
        }
      })
-
    this.closeModal();
 
    }
 
+
    Book(){
      this.FormBook.get("tripId")?.setValue(this.tripId);
-     this._trip.Create(this.FormBook.value).subscribe({
+     this.FormBook.get("phoneNumber")?.setValue(this.MyData.phoneNumber);
+     this.FormBook.get("seats")?.setValue(this.SelectedSeat.map(({seatNumber,isAvailable,...res})=>res));
+     this._book.Create(this.FormBook.value).subscribe({
        next:(res)=>{
-         this._toast.showToaster("Booked Successfully");
+         location.href= res.checkoutUrl;
        },
        error:(err)=>{
          this._toast.showToaster(err.error.errors[0]);

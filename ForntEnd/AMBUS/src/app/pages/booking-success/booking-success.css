@@ -1,0 +1,30 @@
+.modal div {
+  width: 100%;
+  text-align: center;
+  font-size: 50px;
+  margin-bottom: 10px;
+  color: #970909;
+}
+
+.modal div i {
+  color: #0b9709;
+  font-size: 100px;
+}
+
+h2 {
+  color: #000;
+  text-align: center;
+}
+
+button {
+  margin: auto;
+  display: block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background-color: #970909;
+  color: #fff;
+  cursor: pointer;
+}
