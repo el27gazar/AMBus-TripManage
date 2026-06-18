@@ -1,8 +1,6 @@
 <div class="hero-wrapper">
   <div class="hero-card">
-
     <img class="hero-bg" src="assets/images/train.jpg" alt="AM Bus on highway" />
-
     <div class="hero-content">
       <h1>Your Journey Starts Here</h1>
       <p>Book comfortable and affordable bus tickets to destinations<br>across the country. Safe, reliable, and on time.
@@ -10,11 +8,33 @@
       <button class="btn-book" [routerLink]="['/user/BookTrip']">Book Now</button>
     </div>
 
-    <div class="chat-bubble">
-      <i class="bi-chat"></i>
-    </div>
+
 
   </div>
+    @if(isloggedIn){
+    <div class="chat-bubble" (click)="OpenConv()">
+      <i class="bi-chat"></i>
+    </div>
+    <div class="chat hide">
+
+      <ul>
+        @for (item of AllMessage; track $index) {
+          @if (item.senderId == userId) {
+        <li ><i class="bi bi-person-fill"></i> {{item.content}}</li>
+        }@else{
+        <li class="message"> {{item.content}} <i class="bi bi-person-fill right"></i> </li>
+        }
+      }
+      </ul>
+      <div class="send">
+        <input type="text" placeholder="Message" [(ngModel)]="message" />
+        <button (click)="Send()"><i class="bi bi-send-fill"></i></button>
+      </div>
+      <button class="close-modal" (click)="closeModal()">X</button>
+    </div>
+
+    }
+
 </div>
 
 <app-testimonials></app-testimonials>

@@ -1,1 +1,31 @@
-<p>chat works!</p>
+<div class="container">
+  <h2>Manage Chats</h2>
+  <ul>
+    @for (item of AllConversation; track $index) {
+      <li (click)="chat(item.id)">
+        {{item.userName}}
+        @if (item.unreadCount>0) {
+          <span>{{item.unreadCount}}</span>
+        }
+      </li>
+    }
+  </ul>
+</div>
+
+<div class="chat hide">
+
+  <ul>
+    @for (item of AllMessage; track $index) {
+    @if (item.senderId == userId) {
+    <li><i class="bi bi-person-fill"></i> {{item.content}}</li>
+    }@else{
+    <li class="message"> {{item.content}} <i class="bi bi-person-fill right"></i> </li>
+    }
+    }
+  </ul>
+  <div class="send">
+    <input type="text" placeholder="Message" [(ngModel)]="message" />
+    <button (click)="Send()"><i class="bi bi-send-fill"></i></button>
+  </div>
+  <button class="close-modal" (click)="closeModal()">X</button>
+</div>

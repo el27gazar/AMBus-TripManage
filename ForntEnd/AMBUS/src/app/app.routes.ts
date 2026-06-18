@@ -20,7 +20,10 @@ export const routes: Routes = [
     children:[
       {path:'',redirectTo:'home',pathMatch:'full'},
       {path:'home',loadComponent: () => import('./pages/home/home').then(m => m.Home)},
-      {path:'BookTrip',loadComponent: () => import('./pages/book-trip/book-trip').then(m => m.BookTrip)},
+      {path:'BookTrip',loadComponent: () => import('./pages/book-trip/book-trip').then(m => m.BookTrip),
+      },
+      {path:'booking-success',loadComponent: () => import('./pages/booking-success/booking-success').then(m => m.BookingSuccess)}
+      ,
       {path:'MyTrips',loadComponent: () => import('./pages/my-trips/my-trips').then(m => m.MyTrips)},
       {path:'About',loadComponent: () => import('./pages/about/about').then(m => m.About)},
       {path:'Notification',loadComponent: () => import('./pages/notification/notification').then(m => m.Notification)},

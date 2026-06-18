@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class BookTrip {
+export class BookTripService {
 
   constructor(private _httpClient:HttpClient) { }
 
@@ -16,7 +16,7 @@ export class BookTrip {
   }
 
   Create(Data:{tripId:string,seats:[{seatId:string}],phoneNumber:string}):Observable<any>{
-  return this._httpClient.post(BaseUrl+"/Bookings",Data);
+  return this._httpClient.post(BaseUrl+"/Bookings",{tripId:Data.tripId,seats:Data.seats,PhoneNumber:Data.phoneNumber,paymentMethod:"Card"});
 }
 
 GetMyBook(status?:boolean):Observable<any>{

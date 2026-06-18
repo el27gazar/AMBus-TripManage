@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { BookTrip } from '../../Core/Services/book-trip';
+import { BookTripService } from '../../Core/Services/book-trip';
 import { GlobalService } from '../../Core/Services/global-service';
 import { CommonModule } from '@angular/common';
 
@@ -27,7 +27,7 @@ DetailBook={
   }
 }
 
-  constructor(private _bookService:BookTrip ,
+  constructor(private _bookService:BookTripService ,
                private _cd:ChangeDetectorRef,
                private _toast:GlobalService
   ) {

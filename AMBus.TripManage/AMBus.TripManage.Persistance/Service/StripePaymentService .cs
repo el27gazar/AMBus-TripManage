@@ -40,7 +40,7 @@ namespace AMBus.TripManage.Persistance.Service
                 }
             },
                     Mode = "payment",
-                    SuccessUrl = $"{_config["App:FrontendUrl"]}/booking-success?session_id={{CHECKOUT_SESSION_ID}}",
+                    SuccessUrl = $"{_config["App:FrontendUrl"]}/user/booking-success?session_id={{CHECKOUT_SESSION_ID}}",
                     CancelUrl = $"{_config["App:FrontendUrl"]}/booking-cancelled",
                     CustomerEmail = req.CustomerEmail,
                     Metadata = req.Metadata,            
