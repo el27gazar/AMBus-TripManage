@@ -12,7 +12,6 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.SendMessage
     {
         public string ConversationId { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
-        //public string UserId { get; set; } = string.Empty;
         public Guid CurrentUserId { get; set; }
         public string CurrentUserName { get; set; } = string.Empty;
         public bool IsAdmin { get; set; }
