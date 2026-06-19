@@ -12,10 +12,10 @@
 
   </div>
     @if(isloggedIn){
-    <div class="chat-bubble" (click)="OpenConv()">
+    <!-- <div class="chat-bubble" >
       <i class="bi-chat"></i>
-    </div>
-    <div class="chat hide">
+    </div> -->
+    <!-- <div class="chat hide">
 
       <ul>
         @for (item of AllMessage; track $index) {
@@ -31,7 +31,7 @@
         <button (click)="Send()"><i class="bi bi-send-fill"></i></button>
       </div>
       <button class="close-modal" (click)="closeModal()">X</button>
-    </div>
+    </div> -->
 
     }
 
@@ -42,4 +42,4 @@
 <div class="seperator"></div>
 <app-statistics-section></app-statistics-section>
 
-<app-footer></app-footer>
+<!-- <app-footer></app-footer> -->

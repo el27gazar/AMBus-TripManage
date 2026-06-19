@@ -1,5 +1,5 @@
 import { ChatService } from './../../Core/Services/chat-service';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { Testimonials } from "../testimonials/testimonials";
 import { StatisticsSection } from "../statistics-section/statistics-section";
@@ -9,11 +9,11 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, Testimonials, StatisticsSection, Footer,FormsModule],
-  templateUrl: './home.html',
+  imports: [RouterLink, Testimonials, StatisticsSection, FormsModule],
+  templateUrl:'./home.html',
   styleUrl: './home.css',
 })
-export class Home {
+export class Home implements OnInit {
 isloggedIn: boolean = false;
 userId:string="";
 message:string="";
@@ -25,6 +25,12 @@ AllMessage:any[]=[]
     this.LoggedIn();
    }
 
+
+   async ngOnInit() {
+
+
+
+   }
   LoggedIn() {
      this.userService.GetProfile().subscribe({
        next:(res) =>{
@@ -36,34 +42,34 @@ AllMessage:any[]=[]
 
   }
 
-  OpenConv(){
-    this._chatservice.OpenConversation().subscribe({
-      next:(res) =>{
-        this.id = res.id
-        this.closeModal();
-        this.GetAllChat(res.id);
-      }
-    });
-  }
+  // OpenConv(){
+  //   this._chatservice.OpenConversation().subscribe({
+  //     next:(res) =>{
+  //       this.id = res.id
+  //       this.closeModal();
+  //       this.GetAllChat(res.id);
+  //     }
+  //   });
+  // }
 
-  GetAllChat(id:string){
-    this._chatservice.GetAllChat(id).subscribe({
-      next:(res) =>{
-        this.AllMessage = [...res.items];
-        this._cd.markForCheck();
-      }
-    });
-  }
+  // GetAllChat(id:string){
+  //   this._chatservice.GetAllChat(id).subscribe({
+  //     next:(res) =>{
+  //       this.AllMessage = [...res.items];
+  //       this._cd.markForCheck();
+  //     }
+  //   });
+  // }
 
-  Send(){
-    console.log(this.message);
-    if(this.message == "") return;
-    this._chatservice.sendMessage(this.id,this.message).subscribe({
-      next:(res) =>{
-        this.GetAllChat(this.id);
-      }
-    });
-  }
+  // Send(){
+  //   console.log(this.message);
+  //   if(this.message == "") return;
+  //   this._chatservice.sendMessage(this.id,this.message).subscribe({
+  //     next:(res) =>{
+  //       this.GetAllChat(this.id);
+  //     }
+  //   });
+  // }
 
   closeModal(){
     document.getElementsByClassName('chat')[0].classList.toggle("hide");

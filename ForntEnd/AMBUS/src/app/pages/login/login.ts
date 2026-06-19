@@ -46,7 +46,14 @@ export class Login {
     LoginService(Data:ILogin):void{
       this._authService.LoginService(Data).subscribe({
         next:(res)=>{
-          this._router.navigate(['user/BookTrip']);
+          var role = res.role;
+          if(role === 'Admin'){
+            this._router.navigateByUrl('/admin');
+          }else if(role === 'Driver'){
+            this._router.navigate(['driver']);
+          }else{
+            this._router.navigate(['user/BookTrip']);
+          }
         },
         error:(err)=>{
           document.getElementsByClassName("toast-message")[0].innerHTML = err.error.errors[0];
