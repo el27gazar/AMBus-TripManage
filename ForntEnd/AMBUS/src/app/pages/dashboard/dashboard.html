@@ -16,5 +16,45 @@
 
     </div>
 
+    <!-- <div class="revenue">
+       <h3>Revenue</h3>
+       <form [formGroup]="formRevenue" >
+        <div class="display-row">
+           <div class="display-col">
+              <label>From Date</label>
+              <input type="datetime-local"  formControlName="from"/>
+           </div>
+          <div class="display-col">
+            <label>To Date</label>
+            <input type="datetime-local" formControlName="to"/>
+          </div>
+        </div>
+        <button class="btn-submit" type="submit">Get Revenue</button>
+       </form>
 
+       <p class="totalrevenue">Revenue = </p>
+
+    </div> -->
+
+    <div class="revenue">
+      <h3>Popular Routes</h3>
+      <hr>
+      <table>
+        <tr>
+          <th>From</th>
+          <th>To</th>
+          <th>Count of Booking</th>
+          <th>Rate</th>
+        </tr>
+        @for(item of AllPopular;track $index){
+          <tr>
+            <td>{{item.fromName}}</td>
+            <td>{{item.toName}}</td>
+            <td>{{item.bookingsCount}}</td>
+            <td>{{item.averageRating}}</td>
+          </tr>
+        }
+
+      </table>
+    </div>
 </div>

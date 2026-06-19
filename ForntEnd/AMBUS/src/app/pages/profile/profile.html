@@ -1,0 +1,87 @@
+<div class="container">
+  <div class="user-img">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1YM3dx3reFLZOUbvkGRZJ5PQDbMo76y6E52Y_aALrXA&s" alt="user" />
+  </div>
+
+  <div class="container-data">
+  <div class="data">
+    <form [formGroup]="FormData" (submit)="Update()">
+     <div class="display-row">
+       <label>UserName</label>
+       <input type="text" placeholder="UserName" formControlName="fullName"/>
+      </div>
+      @if(fullName.dirty){
+        @if (fullName.getError("required")) {
+         <p class="error">Full Name is Required</p>
+        }
+        @if(fullName.getError('minLength')){
+         <p class="error">must length at least 3 char</p>
+        }
+         @if(fullName.getError('maxLength')){
+         <p class="error">must length at most 50 char</p>
+         }
+      }
+    <div class="display-row">
+      <label>Email</label>
+      <input type="text" placeholder="Email" [value]="MyData.email" disabled />
+    </div>
+
+    <div class="display-row">
+      <label>PhoneNumber</label>
+      <input type="text" placeholder="PhoneNumber" formControlName="phoneNumber" />
+    </div>
+    @if(phoneNumber.dirty){
+      @if(phoneNumber.getError('required')){
+        <p class="error">Phone Number is required</p>
+      }
+      @if(phoneNumber.getError("pattern")){
+        <p class="error">Invalid phone Number</p>
+      }
+    }
+
+    <button class="submit-from" type="submit">save</button>
+    </form>
+  </div>
+
+    <div class="data">
+      <form [formGroup]="FormChangePassword" (submit)="changePassword()">
+      <div class="display-row">
+        <label>Current Password</label>
+        <input type="password" placeholder="Current Password" formControlName="currentPassword"/>
+      </div>
+      @if(currentPassword.dirty){
+        @if(currentPassword.getError('required')){
+          <p class="error">Current Password Is required</p>
+        }
+      }
+      <div class="display-row">
+        <label>New Password</label>
+        <input type="password" placeholder="New Password" formControlName="newPassword"/>
+      </div>
+      @if(newPassword.dirty){
+        @if(newPassword.getError("required")){
+          <p class="error"> enter new Password</p>
+        }
+        @if(newPassword.getError("pattern")){
+        <p class="error"> Invalid Password</p>
+        }
+      }
+      <div class="display-row">
+        <label>Confirm Password</label>
+        <input type="password" placeholder="Confirm Password" formControlName="confirmPassword" />
+      </div>
+      @if(confirmPassword.dirty){
+        @if(confirmPassword.getError("notSame")){
+          <p class="error">not match password</p>
+        }
+      }
+      <button class="submit-from" type="submit">save</button>
+    </form>
+    </div>
+    </div>
+</div>
+
+
+<div class="toast" id="toastError">
+  <p class="toast-message"> </p>
+</div>

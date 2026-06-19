@@ -16,9 +16,19 @@ export class DashboardService {
     return this._httpClient.get(BaseUrl+"/Dashboard/stats");
   }
 
-  GetRevenue():Observable<any>
+  GetRevenue(from?:Date,to?:Date):Observable<any>
   {
-    return this._httpClient.get(BaseUrl+"/Dashboard/revenue");
+    if(from == null || from ==undefined && to == null || to ==undefined){
+       return this._httpClient.get(BaseUrl+"/Dashboard/revenue?groupBy=month");
+    }else if(from == null || from ==undefined){
+       return this._httpClient.get(BaseUrl+"/Dashboard/revenue?to="+to+"&groupBy=month");
+
+    }else if(to == null || to ==undefined){
+       return this._httpClient.get(BaseUrl+"/Dashboard/revenue?from="+from+"&groupBy=month");
+
+    }else{
+    return this._httpClient.get(BaseUrl+"/Dashboard/revenue?from="+from+"&to="+to+"&groupBy=month");
+  }
   }
 
   GetPouplerRoutes():Observable<any>

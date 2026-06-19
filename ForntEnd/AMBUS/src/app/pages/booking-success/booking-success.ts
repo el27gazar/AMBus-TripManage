@@ -17,4 +17,11 @@ export class BookingSuccess {
     console.log(sessionId);
   });
 }
+
+CloseModal(){
+  document.getElementsByClassName('overlay')[0].classList.toggle("hide");
+  document.getElementsByClassName('modal')[0].classList.toggle("hide");
+  location.href = "user/MyTrips";
+}
+
 }

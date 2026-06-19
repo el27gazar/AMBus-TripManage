@@ -24,16 +24,20 @@
             <li>
                 <a [routerLink]="['BookManagement']" [routerLinkActive]="['active']"> <i class="bi bi-ticket-detailed"></i> <span>Book Management</span></a>
             </li>
-            <li>
+            <!-- <li>
                 <a [routerLink]="['ReviewManagement']" [routerLinkActive]="['active']"> <i class="bi bi-chat-left-heart-fill"></i> <span>Review Management</span></a>
             </li>
             <li>
                 <a [routerLink]="['Chats']" [routerLinkActive]="['active']"> <i class="bi bi-chat-dots-fill"></i> <span>Chat </span></a>
-            </li>
-            <li>
+            </li> -->
+            <!-- <li>
                 <a [routerLink]="['Settings']" [routerLinkActive]="['active']"> <i class="bi bi-gear-fill"></i> <span>Settings </span></a>
-            </li>
+            </li> -->
 
+          <li class="logout">
+            <a (click)="logout()"> <i class="bi bi-box-arrow-left"></i> <span>Logout
+              </span></a>
+          </li>
           </ul>
         </div>
 
