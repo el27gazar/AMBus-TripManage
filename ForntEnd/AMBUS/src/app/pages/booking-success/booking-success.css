@@ -28,3 +28,8 @@ button {
   color: #fff;
   cursor: pointer;
 }
+
+.hide {
+  display: none;
+  
+}

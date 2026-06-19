@@ -1,6 +1,7 @@
 import { NgClass } from '@angular/common';
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from "@angular/router";
+import { AuthService } from '../../Core/Services/auth-service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,6 +12,8 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 export class Sidebar implements OnInit {
 
   show:boolean = true;
+
+  _authservise = inject(AuthService);
 
   ngOnInit(){
      if(localStorage.getItem("show") == "false"){
@@ -24,6 +27,15 @@ export class Sidebar implements OnInit {
 
   }
 
+
+  logout(){
+   this._authservise.Logout().subscribe({
+    next:(res)=>{
+      location.href="/login";
+      localStorage.removeItem("role");
+    },
+   });
+  }
 
 
   menu(){

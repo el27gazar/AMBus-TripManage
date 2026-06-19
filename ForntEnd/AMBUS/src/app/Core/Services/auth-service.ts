@@ -33,14 +33,17 @@ export class AuthService {
     return this._httpClient.post(BaseUrl+"/Auth/change-password",Data);
   }
 
-    ConfirmEmailService(Data:{Email:string,Token:string}):Observable<any>{
+  ConfirmEmailService(Data:{Email:string,Token:string}):Observable<any>{
     console.log(Data);
     return this._httpClient.post(BaseUrl+"/Auth/confirm-email"+"?Email="+Data.Email+"&Token="+Data.Token,"");
   }
 
   ResendConfirmationService(Data:{Email:string}):Observable<any>{
     return this._httpClient.post(BaseUrl+"/Auth/resend-confirmation",Data);
+  }
 
+  Logout():Observable<any>{
+    return this._httpClient.post(BaseUrl+"/Auth/logout","");
   }
 
 
