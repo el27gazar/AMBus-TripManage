@@ -21,7 +21,15 @@
         </ul>
       </div>
       <div class="auth">
-        <a   [routerLink]="['/login']" (click)="logout()" >Logout</a>
+        <!-- <a   [routerLink]="['/login']" (click)="logout()" >Logout</a> -->
+      <div class="user-menu">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1YM3dx3reFLZOUbvkGRZJ5PQDbMo76y6E52Y_aALrXA&s" class="user-img" (click)="isOpen = !isOpen">
+        <div class="menuLogout" *ngIf="isOpen">
+          <a routerLink="/user/profile" (click)="!isOpen">Profile</a>
+          <button (click)="logout()">Logout</button>
+        </div>
+      </div>
+
       </div>
     </div>
 

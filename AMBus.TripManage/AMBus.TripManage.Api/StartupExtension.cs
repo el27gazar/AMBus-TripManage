@@ -52,6 +52,7 @@ namespace AMBus.TripManage.Api
                 Cron.Minutely);
             app.MapHub<ChatHub>("/hubs/chat");
             app.MapControllers();
+            app.MapFallbackToFile("index.html");
 
 
             return app;

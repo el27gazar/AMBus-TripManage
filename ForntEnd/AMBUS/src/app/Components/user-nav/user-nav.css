@@ -169,3 +169,43 @@ button,
     transition: 0.3s ease;
   }
 }
+
+.user-menu {
+  position: relative;
+}
+
+.user-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.menuLogout {
+  position: absolute;
+  right: 0;
+  top: 55px;
+  background: white;
+  min-width: 150px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 10000;
+}
+
+.menuLogout a,
+.menuLogout button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  border: none;
+  background: none;
+  color: #db1919;
+  cursor: pointer;
+}
+
+.menuLogout a:hover,
+.menuLogout button:hover {
+  background: #aba7a7;
+}

@@ -98,7 +98,7 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookin
                 Method = PaymentMethod.Card,
                 Provider = PaymentProvider.Stripe,
                 Status = PaymentStatus.Paid,
-                PaidAt = now,
+                PaidAt = DateTime.UtcNow,
                 ExternalTransactionId = request.SessionId,
                 StripePaymentIntentId = request.PaymentIntentId,
                 CreatedBy = uid,
@@ -107,10 +107,18 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookin
                 LastModifiedDate = now
             };
 
-            await _uow.Payments.AddAsync(payment);
-            await _uow.SaveChangesAsync();
+            if (payment.Status == PaymentStatus.Paid)
+            {
+                await _uow.Payments.AddAsync(payment);
+                await _uow.SaveChangesAsync();
+            }
+            else
+            {
 
-            return Unit.Value;
+            }
+
+
+                return Unit.Value;
         }
     }
 
