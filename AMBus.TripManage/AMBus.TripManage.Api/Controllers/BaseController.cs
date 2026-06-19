@@ -29,6 +29,9 @@ namespace AMBus.TripManage.Api.Controllers
         protected bool IsAdmin =>
             CurrentUserRole.Equals("Admin",
                 StringComparison.OrdinalIgnoreCase);
+
+        protected string CurrentUserName =>
+            User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
     }
 
 }
