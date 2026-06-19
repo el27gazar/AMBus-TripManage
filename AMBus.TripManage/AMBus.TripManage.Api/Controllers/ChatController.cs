@@ -87,8 +87,8 @@ namespace AMBus.TripManage.Api.Controllers
                     ConversationId = id.ToString(),
                     Content = request.Content,
                     CurrentUserId = CurrentUserId,
-                    IsAdmin=IsAdmin,
-                    CurrentUserName= CurrentUserName
+                     IsAdmin = IsAdmin,                    
+                    CurrentUserName = CurrentUserName
                 });
 
             return Created(string.Empty, result);

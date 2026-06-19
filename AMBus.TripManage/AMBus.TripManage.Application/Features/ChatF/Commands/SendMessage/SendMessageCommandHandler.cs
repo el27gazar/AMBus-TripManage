@@ -37,7 +37,7 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.SendMessage
                 throw new KeyNotFoundException("المحادثة غير موجودة.");
 
             // التحقق من الصلاحية (الأدمن يرسل لأي حد، المستخدم يرسل لمحادثته فقط)
-            if(!request.IsAdmin && conv.UserId != request.CurrentUserId)
+            if (!request.IsAdmin && conv.UserId != request.CurrentUserId)
                 throw new UnauthorizedAccessException("ليس لديك صلاحية لإرسال رسالة في هذه المحادثة.");
 
             if (conv.Status == ConversationStatus.Closed)
@@ -45,7 +45,6 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.SendMessage
 
             var now = DateTime.UtcNow;
 
-            // 2. إنشاء كائن الرسالة الجديدة
             var message = new ChatMessage
             {
                 Id = Guid.NewGuid(),
