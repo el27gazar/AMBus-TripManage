@@ -122,7 +122,7 @@ using AMBus.TripManage.Domain.Entites;
                 UserId = payload.UserId,
                 Status = BookingStatus.Pending,
                 TotalPrice = payload.TotalPrice,
-                BookedAt = now,
+                
                 QrCode = Guid.NewGuid().ToString("N")[..12].ToUpper(),
                 BookingSeats = payload.SeatIds.Select(seatId => new BookingSeat
                 {

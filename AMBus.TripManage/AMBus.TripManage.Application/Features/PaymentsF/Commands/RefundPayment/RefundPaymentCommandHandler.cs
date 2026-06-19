@@ -39,42 +39,47 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
             if (payment.Status != PaymentStatus.Paid)
                 throw new BusinessRuleException("لا يمكن استرداد دفعة غير مكتملة.");
 
+            var booking = payment.Booking;
+
+            // ───── الشرط الجديد: مينفعش Refund إلا قبل انطلاق الرحلة بساعة على الأقل ─────
+            var trip = await _uow.Trips.GetByIdAsync(booking.TripId)
+                ?? throw new NotFoundException(nameof(Trip), booking.TripId);
+
+            var timeUntilDeparture = trip.DepartureTime - DateTime.UtcNow;
+
+            if (timeUntilDeparture <= TimeSpan.FromHours(1))
+                throw new BusinessRuleException(
+                    "لا يمكن استرداد المبلغ خلال أقل من ساعة على انطلاق الرحلة.");
+            // ──────────────────────────────────────────────────────────────────
+
             if (payment.Method != PaymentMethod.Cash)
             {
                 var txId = payment.StripeClientSecret
                         ?? payment.ExternalTransactionId
                         ?? throw new BusinessRuleException(
                             "لا يوجد معرف عملية لهذه الدفعة.");
-
                 var refund = await _paymob.RefundAsync(
                     txId, "Paymob", payment.Amount, command.Reason);
-
                 if (!refund.Success)
                     throw new BusinessRuleException($"فشل الاسترداد: {refund.Error}");
             }
 
             var now = DateTime.UtcNow;
             var uid = command.AdminId.ToString();
-
             payment.Status = PaymentStatus.Refunded;
             payment.RefundedAt = now;
             payment.LastModifiedBy = uid;
             payment.LastModifiedDate = now;
             _uow.Payments.Update(payment);
 
-            var booking = payment.Booking;
             booking.Status = BookingStatus.Cancelled;
             booking.LastModifiedBy = uid;
             booking.LastModifiedDate = now;
 
-            var trip = await _uow.Trips.GetByIdAsync(booking.TripId);
-            if (trip is not null)
-            {
-                trip.AvailableSeats += booking.BookingSeats?.Count ?? 0;
-                trip.LastModifiedBy = uid;
-                trip.LastModifiedDate = now;
-                _uow.Trips.Update(trip);
-            }
+            trip.AvailableSeats += booking.BookingSeats?.Count ?? 0;
+            trip.LastModifiedBy = uid;
+            trip.LastModifiedDate = now;
+            _uow.Trips.Update(trip);
 
             _uow.Bookings.Update(booking);
             await _uow.SaveChangesAsync();
