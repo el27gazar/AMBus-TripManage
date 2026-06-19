@@ -88,3 +88,23 @@ button:hover i,
 .width {
   width: 60px;
 }
+
+.logout {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #db1919;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.logout a {
+  background-color: transparent;
+}
+
+.logout:hover,
+.logout a:hover {
+  background-color: #db1919;
+  opacity: 1;
+}

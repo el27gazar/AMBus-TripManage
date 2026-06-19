@@ -153,6 +153,7 @@ using AMBus.TripManage.Domain.Entites;
                 Amount = payload.TotalPrice,
                 Currency = "EGP",
                 Method = method,
+                PaidAt= DateTime.UtcNow,
                 Provider = provider,
                 Status = status,
                 CreatedBy = uid,
