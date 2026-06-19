@@ -14,6 +14,9 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
         Task<IEnumerable<Review>> GetUserReviewsAsync(Guid userId);
 
         Task<(IEnumerable<Review> Items, int Total, double AvgRating)>
-            GetTripReviewsPagedAsync(Guid tripId, int? rating, int page, int pageSize);
+        GetTripReviewsPagedAsync(Guid tripId, int? rating, int page, int pageSize);
+        Task<(List<Review> Items, int TotalCount)> GetAllWithFiltersAsync(
+    int? rating, Guid? tripId, Guid? userId,
+    DateTime? from, DateTime? to, int page, int pageSize);
     }
 }

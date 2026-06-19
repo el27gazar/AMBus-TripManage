@@ -59,5 +59,40 @@ namespace AMBus.TripManage.Persistance.Repositories
 
             return (items, total, avg);
         }
+
+        public async Task<(List<Review> Items, int TotalCount)> GetAllWithFiltersAsync(
+    int? rating, Guid? tripId, Guid? userId,
+    DateTime? from, DateTime? to, int page, int pageSize)
+        {
+            var query = _ctx.Reviews
+                .Include(r => r.User)
+                .Include(r => r.Trip)
+                .AsQueryable();
+
+            if (rating.HasValue)
+                query = query.Where(r => r.Rating == rating.Value);
+
+            if (tripId.HasValue)
+                query = query.Where(r => r.TripId == tripId.Value);
+
+            if (userId.HasValue)
+                query = query.Where(r => r.UserId == userId.Value);
+
+            if (from.HasValue)
+                query = query.Where(r => r.CreatedAt >= from.Value);
+
+            if (to.HasValue)
+                query = query.Where(r => r.CreatedAt <= to.Value);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(r => r.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
     }
 }

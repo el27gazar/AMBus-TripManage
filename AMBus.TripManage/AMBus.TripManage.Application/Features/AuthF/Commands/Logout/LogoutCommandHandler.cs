@@ -24,7 +24,6 @@ namespace AMBus.TripManage.Application.Features.AuthF.Commands.Logout
 
             
             user.Tokens = null;
-            user.CreatedAt = DateTime.UtcNow;
 
             _uow.Users.Update(user);
             await _uow.SaveChangesAsync();

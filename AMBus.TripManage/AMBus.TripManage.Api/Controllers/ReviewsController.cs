@@ -2,6 +2,7 @@
 using AMBus.TripManage.Application.Features.ReviewsF.Commands.CreateReview;
 using AMBus.TripManage.Application.Features.ReviewsF.Commands.DeleteReview;
 using AMBus.TripManage.Application.Features.ReviewsF.Commands.UpdateReview;
+using AMBus.TripManage.Application.Features.ReviewsF.Queries.GetAllReviews;
 using AMBus.TripManage.Application.Features.ReviewsF.Queries.GetMyReviews;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -40,7 +41,7 @@ namespace AMBus.TripManage.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [Authorize]
+        [Authorize(Roles ="User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -67,6 +68,28 @@ namespace AMBus.TripManage.Api.Controllers
             await Mediator.Send(
                 new DeleteReviewCommand(id, CurrentUserId, IsAdmin));
             return NoContent();
+        }
+
+
+        //GET /api/Reviews?page=1&pageSize=20
+       // GET /api/Reviews? rating = 5
+        // GET /api/Reviews? tripId = { tripId }
+        //تقدر تستعملها كبحث
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll(
+    [FromQuery] int? rating,
+    [FromQuery] Guid? tripId,
+    [FromQuery] Guid? userId,
+    [FromQuery] DateTime? from,
+    [FromQuery] DateTime? to,
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 20)
+        {
+            var result = await Mediator.Send(
+                new GetAllReviewsQuery(rating, tripId, userId, from, to, page, pageSize));
+            return Ok(result);
         }
     }
 }

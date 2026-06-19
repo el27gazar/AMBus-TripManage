@@ -98,5 +98,31 @@ namespace AMBus.TripManage.Persistance.Repositories
         .Include(t => t.Driver)
         .Include(t => t.Bus)
         .FirstOrDefaultAsync(t => t.Id == id);
+
+
+        public async Task<IEnumerable<Trip>> GetTripsByDriverAsync(Guid driverId, string? status)
+        {
+            var query = _ctx.Trips
+                .Include(t => t.From)
+                .Include(t => t.To)
+                .Include(t => t.Bus)
+                .Include(t => t.Driver).ThenInclude(d => d.User)
+                .Where(t => t.DriverId == driverId)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                if (Enum.TryParse<TripStatus>(status, ignoreCase: true, out var parsedStatus))
+                    query = query.Where(t => t.Status == parsedStatus);
+                else if (status.Equals("Upcoming", StringComparison.OrdinalIgnoreCase))
+                    query = query.Where(t =>
+                        t.Status == TripStatus.Scheduled &&
+                        t.DepartureTime > DateTime.UtcNow);
+            }
+
+            return await query
+                .OrderByDescending(t => t.DepartureTime)
+                .ToListAsync();
+        }
     }
 }

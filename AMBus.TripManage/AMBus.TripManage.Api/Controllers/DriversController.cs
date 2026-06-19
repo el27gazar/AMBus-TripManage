@@ -3,6 +3,7 @@ using AMBus.TripManage.Application.Dtos.DriverDto;
 using AMBus.TripManage.Application.Dtos.Requests;
 using AMBus.TripManage.Application.Exceptions;
 using AMBus.TripManage.Application.Features.DriverF.Queries;
+using AMBus.TripManage.Application.Features.DriverF.Queries.GetDriverTrips;
 using AMBus.TripManage.Domain.Entites;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -221,12 +222,27 @@ namespace AMBus.TripManage.Api.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id:guid}/trip/{tripId:guid}/manifest")]
-        [Authorize(Roles = "Driver,Admin")]
+        [HttpGet("my-trips")]
+        [Authorize(Roles = "Driver")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetMyTrips([FromQuery] string? status)
+        {
+            var driver = await _uow.Drivers.GetDriverByUserIdAsync(CurrentUserId)
+                ?? throw new NotFoundException(nameof(Driver), CurrentUserId);
+
+            var trips = await Mediator.Send(
+                new GetDriverTripsQuery(driver.Id, status));
+
+            return Ok(trips);
+        }
+
+        [HttpGet("my-trips/{tripId:guid}/manifest")]
+        [Authorize(Roles = "Driver")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetTripManifest(Guid id, Guid tripId)
+        public async Task<IActionResult> GetTripManifest(Guid tripId)
         {
             var pdfBytes = await Mediator.Send(
                 new GetDriverTripManifestQuery(tripId, CurrentUserId));

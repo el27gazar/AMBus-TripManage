@@ -115,6 +115,16 @@ namespace AMBus.TripManage.Api.Controllers
         public async Task<IActionResult> Logout()
         {
             await Mediator.Send(new LogoutCommand(CurrentUserId));
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            };
+
+            Response.Cookies.Delete("jwt_token", cookieOptions);
+
             return Ok(new { message = "تم تسجيل الخروج بنجاح." });
         }
     }

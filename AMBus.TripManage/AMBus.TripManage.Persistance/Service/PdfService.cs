@@ -23,7 +23,8 @@ namespace AMBus.TripManage.Persistance.Service
         public byte[] GenerateTripManifest(Trip trip, IEnumerable<Booking> bookings)
         {
             using var ms = new MemoryStream();
-            var writer = new PdfWriter(ms);
+            var writerProperties = new WriterProperties().UseSmartMode();
+            var writer = new PdfWriter(ms, new WriterProperties());
             var pdf = new PdfDocument(writer);
             var doc = new Document(pdf, PageSize.A4);
 
