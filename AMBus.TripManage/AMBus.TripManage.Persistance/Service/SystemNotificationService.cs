@@ -98,15 +98,16 @@ namespace AMBus.TripManage.Persistance.Service
         public async Task NotifyRefundProcessedAsync(Guid bookingId, decimal amount)
         {
             var booking = await _ctx.Bookings
+                .Include(b => b.User)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
+
             if (booking is null) return;
 
             await _sender.SendAsync(
                 booking.User.Id,
                 NotificationType.PaymentReceived,
-                $"💵 تم إرجاع {amount} جنيه | سيصلك خلال 3-5 أيام عمل.");
+                $"شكراً | سيصلك خلال 3-5 أيام عمل {amount} جنيه | تم إرجاع");
         }
-
         public async Task NotifyTripStartedAsync(Guid tripId)
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,

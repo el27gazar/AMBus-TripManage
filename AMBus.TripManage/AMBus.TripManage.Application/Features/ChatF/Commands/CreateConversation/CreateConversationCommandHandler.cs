@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversation
 {
     public class CreateConversationCommandHandler
-          : IRequestHandler<CreateConversationCommand, ConversationDto>
+           : IRequestHandler<CreateConversationCommand, ConversationDto>
     {
         private readonly IChatRepository _chatRepo;
         private readonly IMapper _mapper;
@@ -28,13 +28,42 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversatio
             CreateConversationCommand command,
             CancellationToken cancellationToken)
         {
-            
-            var existing = await _chatRepo.GetOpenConversationByUserAsync(command.UserId);
-            if (existing is not null)
-                return _mapper.Map<ConversationDto>(existing);
+            var existing = await _chatRepo.GetActiveConversationByUserAsync(command.UserId);
 
-            var now = DateTime.UtcNow;
-            var uid = command.UserId.ToString();
+            if (existing is not null)
+            {
+                if (!string.IsNullOrWhiteSpace(command.FirstMessage))
+                {
+                    var now = DateTime.UtcNow;
+                    var uid = command.UserId.ToString();
+
+                    var newMessage = new ChatMessage
+                    {
+                        Id = Guid.NewGuid(),
+                        ConversationId = existing.Id,
+                        SenderId = command.UserId,
+                        Content = command.FirstMessage.Trim(),
+                        IsRead = false,
+                        CreatedBy = uid,
+                        CreatedDate = now,
+                        LastModifiedBy = uid,
+                        LastModifiedDate = now
+                    };
+
+                    await _chatRepo.AddMessageAsync(newMessage);
+
+                    existing.LastModifiedDate = now;
+                    existing.LastModifiedBy = uid;
+
+                    await _chatRepo.SaveChangesAsync();
+                }
+
+                return _mapper.Map<ConversationDto>(existing);
+            }
+
+            // ───── مفيش محادثة نشطة: نعمل محادثة جديدة مع الرسالة الأولى ─────
+            var nowNew = DateTime.UtcNow;
+            var uidNew = command.UserId.ToString();
 
             var conversation = new ChatConversation
             {
@@ -42,10 +71,10 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversatio
                 UserId = command.UserId,
                 Subject = command.Subject,
                 Status = ConversationStatus.Open,
-                CreatedBy = uid,
-                CreatedDate = now,
-                LastModifiedBy = uid,
-                LastModifiedDate = now
+                CreatedBy = uidNew,
+                CreatedDate = nowNew,
+                LastModifiedBy = uidNew,
+                LastModifiedDate = nowNew
             };
 
             var firstMsg = new ChatMessage
@@ -55,18 +84,17 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversatio
                 SenderId = command.UserId,
                 Content = command.FirstMessage,
                 IsRead = false,
-                CreatedBy = uid,
-                CreatedDate = now,
-                LastModifiedBy = uid,
-                LastModifiedDate = now
+                CreatedBy = uidNew,
+                CreatedDate = nowNew,
+                LastModifiedBy = uidNew,
+                LastModifiedDate = nowNew
             };
 
             conversation.Messages.Add(firstMsg);
-
             await _chatRepo.AddConversationAsync(conversation);
             await _chatRepo.SaveChangesAsync();
 
             return _mapper.Map<ConversationDto>(conversation);
         }
     }
-    }
+}
