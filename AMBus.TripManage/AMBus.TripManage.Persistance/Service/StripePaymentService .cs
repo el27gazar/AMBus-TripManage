@@ -1,5 +1,6 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces.Repositories;
 using AMBus.TripManage.Application.Contracts.Interfaces.Services;
+using AMBus.TripManage.Application.Dtos.Payment.Requests;
 using Microsoft.Extensions.Configuration;
 using Stripe;
 
@@ -116,6 +117,27 @@ namespace AMBus.TripManage.Persistance.Service
                 return new PaymentInitResult(
                     false, "error", null, null,
                     null, null, null, null, ex.Message);
+            }
+        }
+        public async Task<CheckoutVerificationResult> VerifyCheckoutSessionAsync(string sessionId)
+        {
+            try
+            {
+                var service = new Stripe.Checkout.SessionService();
+                var session = await service.GetAsync(sessionId);
+
+                return new CheckoutVerificationResult(
+                    Success: true,
+                    Status: session.PaymentStatus,   // "paid" / "unpaid" / "no_payment_required"
+                    PaymentIntentId: session.PaymentIntentId,
+                    Metadata: session.Metadata is null
+                        ? null
+                        : new Dictionary<string, string>(session.Metadata),
+                    Error: null);
+            }
+            catch (StripeException ex)
+            {
+                return new CheckoutVerificationResult(false, "error", null, null, ex.Message);
             }
         }
         public async Task<VerifyPaymentResult> VerifyPaymentAsync(

@@ -27,24 +27,14 @@ namespace AMBus.TripManage.Persistance.Repositories
                     .ThenInclude(b => b.BookingSeats)
                 .FirstOrDefaultAsync(p => p.Id == paymentId);
 
-        public async Task<Payment?> GetByTransactionIdAsync(string transactionId)
-            => await _ctx.Payments
-                .Include(p => p.Booking)
-                .FirstOrDefaultAsync(p =>
-                    p.StripeClientSecret == transactionId ||
-                    p.ExternalTransactionId == transactionId);
-
+       
         public async Task<Payment?> GetByExternalTransactionAsync(string externalTransactionId)
     => await _ctx.Payments
         .FirstOrDefaultAsync(p =>
             p.ExternalTransactionId == externalTransactionId ||
             p.StripeClientSecret == externalTransactionId);
 
-        public async Task<Payment?> GetByOrderIdAsync(string orderId)
-            => await _ctx.Payments
-                .Include(p => p.Booking)
-                .FirstOrDefaultAsync(p => p.ReferenceNumber == orderId);
-
+       
         public async Task<IEnumerable<Payment>> GetPaidInRangeAsync(
             DateTime from, DateTime to)
             => await _ctx.Payments
@@ -101,6 +91,17 @@ namespace AMBus.TripManage.Persistance.Repositories
                 .ToListAsync();
 
             return (items, total, summary);
+        }
+
+        public async Task<List<Payment>> GetExpiredPendingPaymentsAsync(DateTime cutoffDate)
+        {
+            return await _ctx.Payments
+                .Include(p => p.Booking)
+                    .ThenInclude(b => b.BookingSeats)
+                .Where(p => p.Status == PaymentStatus.Pending
+                         && p.Method == PaymentMethod.Card
+                         && p.CreatedDate <= cutoffDate)
+                .ToListAsync();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AMBus.TripManage.Application.Dtos.Requests;
 using AMBus.TripManage.Application.Features.BookingsF.Commands.CancelBooking;
-using AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookingCommands;
 using AMBus.TripManage.Application.Features.BookingsF.Commands.CreateBookingCommands;
 using AMBus.TripManage.Application.Features.BookingsF.Queries.GetAllBookings;
 using AMBus.TripManage.Application.Features.BookingsF.Queries.GetBookingById;

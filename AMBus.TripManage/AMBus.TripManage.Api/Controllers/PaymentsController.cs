@@ -1,13 +1,11 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces;
 using AMBus.TripManage.Application.Contracts.Interfaces.Services;
 using AMBus.TripManage.Application.Dtos.Payment.Requests;
-using AMBus.TripManage.Application.Features.BookingsF.Commands.CancelExpiredBookingPayment;
-using AMBus.TripManage.Application.Features.BookingsF.Commands.ConfirmBookingCommands;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.CancelPendingPayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmCashPayment;
-using AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmStripePayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.InitiatePayment;
 using AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment;
+using AMBus.TripManage.Application.Features.PaymentsF.Commands.VarifyStripe;
 using AMBus.TripManage.Application.Features.PaymentsF.Queries.GetAllPayments;
 using AMBus.TripManage.Application.Features.PaymentsF.Queries.GetPaymentByBooking;
 using AMBus.TripManage.Application.Features.PaymentsF.Queries.GetPaymentById;
@@ -37,7 +35,6 @@ namespace AMBus.TripManage.Api.Controllers
             return result.Success ? StatusCode(201, result) : StatusCode(402, result);
         }
 
-       
         // POST /api/payments/{id}/confirm-cash  [Admin]
         [HttpPost("{id:guid}/confirm-cash")]
         [Authorize(Roles = "Admin")]
@@ -87,15 +84,15 @@ namespace AMBus.TripManage.Api.Controllers
                 ? NotFound(new { message = "لا توجد دفعة لهذا الحجز بعد." })
                 : Ok(result);
         }
-        //post/api/payment/confirm-stripe
-        [HttpPost("confirm-stripe")]
-        public async Task<IActionResult> ConfirmStripe([FromBody] ConfirmStripePaymentCommand req)
+
+        // GET /api/payments/verify-session?sessionId=  [User]
+        [HttpGet("verify-session")]
+        [Authorize]
+        public async Task<IActionResult> VerifySession([FromQuery] string sessionId)
         {
-            var result = await Mediator.Send(new ConfirmStripePaymentCommand(
-                SessionId: req.SessionId,
-                PaymentIntentId: req.PaymentIntentId,
-                Metadata: req.Metadata));
-            return Ok(result);
+            var result = await Mediator.Send(
+                new VerifyAndConfirmStripeSessionCommand(sessionId, CurrentUserId));
+            return result.Success ? Ok(result) : StatusCode(402, result);
         }
 
         // GET /api/payments  [Admin]
@@ -112,79 +109,6 @@ namespace AMBus.TripManage.Api.Controllers
             var result = await Mediator.Send(
                 new GetAllPaymentsQuery(method, status, from, to, page, pageSize));
             return Ok(result);
-        }
-    }
-
-    [ApiController]
-    [Route("api/payments/webhook")]
-    public class PaymentWebhookController : BaseController
-    {
-        private readonly IUnitOfWork _uow;
-        private readonly IConfiguration _config;
-        private readonly ISystemNotificationService _notif;
-
-        public PaymentWebhookController(
-            IUnitOfWork uow,
-            IConfiguration config,
-            ISystemNotificationService notif)
-        { _uow = uow; _config = config; _notif = notif; }
-
-        private readonly ILogger<PaymentWebhookController> _logger;
-
-        public PaymentWebhookController(
-            IUnitOfWork uow,
-            IConfiguration config,
-            ISystemNotificationService notif,
-            ILogger<PaymentWebhookController> logger)
-        { _uow = uow; _config = config; _notif = notif; _logger = logger; }
-
-        [HttpPost("stripe")]
-        public async Task<IActionResult> StripeCallback()
-        {
-            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-
-            if (!Request.Headers.TryGetValue("Stripe-Signature", out var signature))
-                return BadRequest(new { error = "Missing Stripe-Signature header." });
-
-            try
-            {
-                var stripeEvent = EventUtility.ConstructEvent(json, signature, _config["Stripe:WebhookSecret"]);
-
-                switch (stripeEvent.Type)
-                {
-                    case "checkout.session.completed":
-                        {
-                            var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
-                            if (session?.PaymentStatus == "paid")
-                            {
-                                await Mediator.Send(new ConfirmStripePaymentCommand(
-                                    SessionId: session.Id,
-                                    PaymentIntentId: session.PaymentIntentId,
-                                    Metadata: session.Metadata));
-                            }
-                            break;
-                        }
-                    case "checkout.session.expired":
-                        {
-                            var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
-                            if (session != null)
-                                await Mediator.Send(new CancelExpiredBookingPaymentCommand(session.Id));
-                            break;
-                        }
-                }
-
-                return Ok();
-            }
-            catch (StripeException ex)
-            {
-                _logger.LogError(ex, "Stripe signature/event parsing failed.");
-                return BadRequest(new { error = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unhandled error while processing Stripe webhook.");
-                return StatusCode(500, new { error = "Internal error processing webhook." });
-            }
         }
     }
 }

@@ -50,6 +50,11 @@ namespace AMBus.TripManage.Api
                 "complete-expired-trips",
                 job => job.ExecuteAsync(),
                 Cron.Minutely);
+
+            RecurringJob.AddOrUpdate<CleanupExpiredCardPaymentsJob>(
+                "cleanup-expired-card-payments",
+                 job => job.RunAsync(),
+                Cron.MinuteInterval(5));
             app.MapHub<ChatHub>("/hubs/chat");
             app.MapControllers();
             app.MapFallbackToFile("index.html");

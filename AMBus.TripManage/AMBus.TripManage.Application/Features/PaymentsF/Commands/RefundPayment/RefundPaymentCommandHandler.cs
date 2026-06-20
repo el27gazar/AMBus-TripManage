@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
 {
     public class RefundPaymentCommandHandler
-           : IRequestHandler<RefundPaymentCommand, PaymentResultDto>
+             : IRequestHandler<RefundPaymentCommand, PaymentResultDto>
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
@@ -41,7 +41,6 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
 
             var booking = payment.Booking;
 
-            // ───── الشرط الجديد: مينفعش Refund إلا قبل انطلاق الرحلة بساعة على الأقل ─────
             var trip = await _uow.Trips.GetByIdAsync(booking.TripId)
                 ?? throw new NotFoundException(nameof(Trip), booking.TripId);
 
@@ -50,16 +49,17 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
             if (timeUntilDeparture <= TimeSpan.FromHours(1))
                 throw new BusinessRuleException(
                     "لا يمكن استرداد المبلغ خلال أقل من ساعة على انطلاق الرحلة.");
-            // ──────────────────────────────────────────────────────────────────
 
             if (payment.Method != PaymentMethod.Cash)
             {
-                var txId = payment.StripeClientSecret
-                        ?? payment.ExternalTransactionId
+                // لازم PaymentIntent ID الحقيقي (pi_...) - مش Session ID
+                var txId = payment.StripePaymentIntentId
                         ?? throw new BusinessRuleException(
-                            "لا يوجد معرف عملية لهذه الدفعة.");
+                            "لا يوجد معرف عملية Stripe صالح لهذه الدفعة.");
+
                 var refund = await _paymob.RefundAsync(
-                    txId, "Paymob", payment.Amount, command.Reason);
+                    txId, "Stripe", payment.Amount, command.Reason);
+
                 if (!refund.Success)
                     throw new BusinessRuleException($"فشل الاسترداد: {refund.Error}");
             }
@@ -90,4 +90,4 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
                 _mapper.Map<PaymentDto>(payment));
         }
     }
-}
+    }

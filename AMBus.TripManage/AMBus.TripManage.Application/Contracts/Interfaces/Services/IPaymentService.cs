@@ -1,4 +1,5 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces.Repositories;
+using AMBus.TripManage.Application.Dtos.Payment.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Services
    
         public interface IPaymentService
         {
-            Task<PaymentInitResult> InitiatePaymentAsync(InitiatePaymentRequest req);
+        Task<CheckoutVerificationResult> VerifyCheckoutSessionAsync(string sessionId);
+        Task<PaymentInitResult> InitiatePaymentAsync(InitiatePaymentRequest req);
             Task<VerifyPaymentResult> VerifyPaymentAsync(string transactionId, string provider);
             Task<RefundResult> RefundAsync(string transactionId, string provider, decimal amount, string reason);
             Task<CheckoutResult> CreateCheckoutSessionAsync(CreateCheckoutRequest req);   

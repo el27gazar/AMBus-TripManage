@@ -41,20 +41,23 @@ namespace AMBus.TripManage.Application.Features.BookingsF.Commands.CancelBooking
             if (booking.Status == BookingStatus.Completed)
                 throw new BusinessRuleException("لا يمكن إلغاء حجز مكتمل.");
 
+            if (booking.Status == BookingStatus.Confirmed)
+                throw new BusinessRuleException(
+                    "هذا الحجز مدفوع بالفعل. لإلغائه، استخدم خاصية استرداد المبلغ (Refund) بدل الإلغاء المباشر.");
+
             booking.Status = BookingStatus.Cancelled;
             booking.LastModifiedDate = DateTime.UtcNow;
 
             var trip = await _uow.Trips.GetByIdAsync(booking.TripId)
-                ?? throw new NotFoundException(nameof(Trip), booking.Trip);
+                ?? throw new NotFoundException(nameof(Trip), booking.TripId);
 
             trip.AvailableSeats += booking.BookingSeats.Count;
             trip.LastModifiedDate = DateTime.UtcNow;
-
             _uow.Trips.Update(trip);
+
             _uow.Bookings.Update(booking);
             await _uow.SaveChangesAsync();
 
-            // ── إشعار أوتوماتيكي ──────────────────────
             await _notifications.NotifyBookingCancelledAsync(
                 booking.Id, request.UserId);
 

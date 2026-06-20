@@ -12,17 +12,15 @@ namespace AMBus.TripManage.Application.Contracts.Interfaces.Repositories
     {
         Task<Payment?> GetByBookingAsync(Guid bookingId);
         Task<Payment?> GetWithBookingAsync(Guid paymentId);
-        Task<Payment?> GetByTransactionIdAsync(string transactionId);
 
         Task<Payment?> GetByExternalTransactionAsync(string externalTransactionId);
-        Task<Payment?> GetByOrderIdAsync(string orderId);
         Task<IEnumerable<Payment>> GetPaidInRangeAsync(DateTime from, DateTime to);
         Task<(IEnumerable<Payment> Items, int Total, PaymentSummaryDto Summary)>
             GetPagedAsync(PaymentFilter filter);
 
-        
+        Task<List<Payment>> GetExpiredPendingPaymentsAsync(DateTime cutoffDate);
 
-      
+
     }
    
     public class PaymentFilter

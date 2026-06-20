@@ -44,7 +44,7 @@ namespace AMBus.TripManage.Persistance
 
             services.AddHangfireServer();
             services.AddHttpContextAccessor();
-
+            services.AddScoped<CleanupExpiredCardPaymentsJob>();
             services
                 .AddIdentity<User, IdentityRole<Guid>>(opt =>
                 {
@@ -110,6 +110,7 @@ namespace AMBus.TripManage.Persistance
             services.AddScoped<ISystemNotificationService, SystemNotificationService>();
             services.AddScoped<IPdfService, PdfService>();
             services.AddScoped<IChatRepository, ChatRepository>();
+
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors =
