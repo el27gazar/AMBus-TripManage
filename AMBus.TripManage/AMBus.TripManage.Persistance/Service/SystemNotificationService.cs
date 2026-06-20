@@ -72,6 +72,7 @@ namespace AMBus.TripManage.Persistance.Service
         public async Task NotifyPaymentReceivedAsync(Guid bookingId, decimal amount)
         {
             var booking = await _ctx.Bookings
+                .Include(b => b.User)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
             if (booking is null) return;
 
@@ -85,6 +86,7 @@ namespace AMBus.TripManage.Persistance.Service
         public async Task NotifyPaymentFailedAsync(Guid bookingId)
         {
             var booking = await _ctx.Bookings
+                .Include(b => b.User)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
             if (booking is null) return;
 
@@ -108,6 +110,7 @@ namespace AMBus.TripManage.Persistance.Service
                 NotificationType.PaymentReceived,
                 $"شكراً | سيصلك خلال 3-5 أيام عمل {amount} جنيه | تم إرجاع");
         }
+
         public async Task NotifyTripStartedAsync(Guid tripId)
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
@@ -156,7 +159,7 @@ namespace AMBus.TripManage.Persistance.Service
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
                 t => $"⏰ تذكير | رحلتك بعد ساعة | " +
-                     $"{t.From.Name}  →  {t.To.Name} | " +
+                     $"{t.From.Name} → {t.To.Name} | " +
                      $"{t.DepartureTime:HH:mm} | كن في موعدك!");
 
             await _sender.SendBulkAsync(
