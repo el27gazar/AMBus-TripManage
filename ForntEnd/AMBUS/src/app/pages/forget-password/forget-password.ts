@@ -47,7 +47,6 @@ export class ForgetPassword {
         this._router.navigate(['/ResetPassword'],{queryParams:{Email:Data.Email}});
       },
       error:(err)=>{
-         console.log(err.error);
          document.getElementsByClassName("toast-message")[0].innerHTML = err.error;
             document.getElementById("toastError")?.classList.add("show");
             setTimeout(() => {

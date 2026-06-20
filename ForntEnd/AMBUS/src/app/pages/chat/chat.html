@@ -1,31 +1,75 @@
-<!-- <div class="container">
-  <h2>Manage Chats</h2>
-  <ul>
+
+  <h2>Chat</h2>
+
+<div class="chat-dashboard">
+
+  <!-- Sidebar -->
+  <div class="chat-sidebar">
+
+    <div class="sidebar-header">
+      <h4>Support Chats</h4>
+    </div>
     @for (item of AllConversation; track $index) {
-      <li (click)="chat(item.id)">
-        {{item.userName}}
-        @if (item.unreadCount>0) {
-          <span>{{item.unreadCount}}</span>
-        }
-      </li>
-    }
-  </ul>
-</div>
+        <div class="chat-user" (click)="GetAllMessages(item.id)">
+        <div class="avatar">
+           {{item.userName[0]}}
+        </div>
 
-<div class="chat hide">
+        <div class="user-info">
+          <h6>{{item.userName}}</h6>
+          <span>{{item.unreadCount}} unread messages</span>
+        </div>
+      </div>
+      }@empty{
+         <p class="empty">No Chats</p>
+      }
 
-  <ul>
-    @for (item of AllMessage; track $index) {
-    @if (item.senderId == userId) {
-    <li><i class="bi bi-person-fill"></i> {{item.content}}</li>
-    }@else{
-    <li class="message"> {{item.content}} <i class="bi bi-person-fill right"></i> </li>
-    }
-    }
-  </ul>
-  <div class="send">
-    <input type="text" placeholder="Message" [(ngModel)]="message" />
-    <button (click)="Send()"><i class="bi bi-send-fill"></i></button>
   </div>
-  <button class="close-modal" (click)="closeModal()">X</button>
-</div> -->
+
+  <!-- Chat Area -->
+  <div class="chat-content">
+
+    <div class="chat-header">
+
+      <div>
+        <h5>{{user}}</h5>
+        <!-- <small>Opened Ticket #145</small> -->
+      </div>
+
+      <!-- <button class="btn btn-danger btn-sm">
+        Close Ticket
+      </button> -->
+
+    </div>
+
+    <div class="messages">
+
+      @for (item of AllMessage; track $index) {
+        @if(item.senderId== userId){
+        <div class="message admin">
+          {{item.content}}
+        </div>
+        }@else {
+            <div class="message user">
+              {{item.content}}
+            </div>
+        }
+
+
+      }
+    </div>
+
+    @if (id != "") {
+      <div class="message-box">
+        <input type="text" [(ngModel)]="message" placeholder="Type your reply..." />
+        <button (click)="Send()">
+          Send
+        </button>
+      </div>
+    }
+
+
+
+  </div>
+
+</div>

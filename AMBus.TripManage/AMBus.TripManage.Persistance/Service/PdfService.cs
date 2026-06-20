@@ -29,20 +29,20 @@ namespace AMBus.TripManage.Persistance.Service
             var doc = new Document(pdf, PageSize.A4);
 
             // Header
-            doc.Add(new Paragraph("كشف ركاب الرحلة")
+            doc.Add(new Paragraph("Sheet Passengers")
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontSize(20)
                 .SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD)));
 
-            doc.Add(new Paragraph($"من: {trip.From.Name}  →  إلى: {trip.To.Name}")
+            doc.Add(new Paragraph($"From: {trip.From.Name}  →  To: {trip.To.Name}")
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontSize(14));
 
-            doc.Add(new Paragraph($"تاريخ الرحلة: {trip.DepartureTime:dd/MM/yyyy HH:mm}")
+            doc.Add(new Paragraph($"Trip Date: {trip.DepartureTime:dd/MM/yyyy HH:mm}")
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontSize(12));
 
-            doc.Add(new Paragraph($"الباص: {trip.Bus.PlateNumber} | المقاعد المتاحة: {trip.AvailableSeats}")
+            doc.Add(new Paragraph($"Bus: {trip.Bus.PlateNumber} | AvailableSeats: {trip.AvailableSeats}")
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontSize(11));
 
@@ -53,7 +53,7 @@ namespace AMBus.TripManage.Persistance.Service
                 .UseAllAvailableWidth();
 
             // Table Headers
-            foreach (var h in new[] { "#", "اسم الراكب", "رقم الهوية", "رقم المقعد", "حالة الحجز" })
+            foreach (var h in new[] { "#", "Passenger Name", "ID", "SeatNumber", "Status" })
             {
                 table.AddHeaderCell(
                     new Cell().Add(new Paragraph(h))
@@ -90,12 +90,12 @@ namespace AMBus.TripManage.Persistance.Service
             doc.Add(table);
 
             // Footer
-            doc.Add(new Paragraph($"\nإجمالي الركاب: {counter - 1}")
+            doc.Add(new Paragraph($"\n All Passenger: {counter - 1}")
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontSize(20))
                 .SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD));
 
-            doc.Add(new Paragraph($"تم الطباعة: {DateTime.Now:dd/MM/yyyy HH:mm}")
+            doc.Add(new Paragraph($"Print At: {DateTime.Now:dd/MM/yyyy HH:mm}")
                 .SetFontSize(10)
                 .SetFontColor(ColorConstants.GRAY));
 

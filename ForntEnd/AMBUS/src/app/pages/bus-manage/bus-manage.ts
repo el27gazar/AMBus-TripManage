@@ -11,7 +11,7 @@ import { GlobalService } from '../../Core/Services/global-service';
   templateUrl: './bus-manage.html',
   styleUrl: './bus-manage.css',
 })
-export class BusManage implements OnInit,AfterViewInit {
+export class BusManage implements OnInit {
 AllBuses:any[]=[];
 isLoading:boolean = false;
 plateNumber!:FormControl;
@@ -48,7 +48,7 @@ initFormGroup(){
     id : new FormControl('',[Validators.required]),
     plateNumber : this.plateNumber,
     model : this.model,
-    isActive: new FormControl(''),
+    isActive: new FormControl('true'),
   });
 
   this.SearchForm = new FormGroup({
@@ -67,9 +67,6 @@ constructor(private _busService:Bus,
 
 ngOnInit(){
   this.GetAll();
-}
-ngAfterViewInit(){
-  // this.GetAll();
 }
 
 GetAll(){
@@ -125,9 +122,9 @@ submit(){
 }
 
 Update(){
-  console.log(this.UpdateForm.value);
+  console.log(this.UpdateForm.value.isActive);
   this._busService.UpdateBus(this.UpdateForm.value.id,
-    {plateNumber:this.UpdateForm.value.plateNumber,model:this.UpdateForm.value.model,isActive:this.UpdateForm.value.isActive=="true"?true:false}).subscribe({
+    {plateNumber:this.UpdateForm.value.plateNumber,model:this.UpdateForm.value.model,isActive:this.UpdateForm.value.isActive.toString()=="true"?true:false}).subscribe({
     next:(res)=>{
       this.GetAll();
       this._cd.markForCheck();

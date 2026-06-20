@@ -12,6 +12,7 @@ import { User } from '../../Core/Services/user';
 export class Chat {
 AllMessage:any[]=[]
 userId:string=""
+user:any;
 message:string=""
 id:string=""
   AllConversation:any[]=[]
@@ -19,7 +20,7 @@ id:string=""
             private _cd:ChangeDetectorRef,
             private _userService:User
   ) {
-    // this.GetAllConversation();
+    this.GetAllConversation();
     this._userService.GetProfile().subscribe({
       next:(res) =>{
         this.userId = res.id;
@@ -28,40 +29,38 @@ id:string=""
     })
   }
 
-  // GetAllConversation(){
-  //  this._chatservice.GetAllConversation().subscribe({
-  //   next:(res) =>{
-  //     this.AllConversation = [...res.items];
-  //     this._cd.markForCheck();
-  //   }
-  //  });
-  // }
+  GetAllConversation(){
+   this._chatservice.GetChats().subscribe({
+    next:(res) =>{
+      this.AllConversation = [...res.items];
+      this._cd.markForCheck();
+    }
+   });
+  }
 
-  // chat(id:string){
-  //   this.id = id;
-  //   console.log(id);
-  //   this.GetAllChat(id);
-  //    this.closeModal();
-  // }
+  GetAllMessages(id:string){
+    this.id = id;
+    this._chatservice.GetMessages(id).subscribe({
+      next:(res) =>{
+        this.AllMessage = [...res.items];
+        this.user = res.items[0].senderName;
 
-  // GetAllChat(id:string){
-  //   this._chatservice.GetAllChat(id).subscribe({
-  //     next:(res) =>{
-  //       this.AllMessage = [...res.items];
-  //       this._cd.markForCheck();
-  //     }
-  //   });
-  // }
+        this._cd.markForCheck();
+      }
+    });
+  }
 
-  // Send(){
-  //   console.log(this.message);
-  //   if(this.message == "") return;
-  //   this._chatservice.sendMessage(this.id,this.message).subscribe({
-  //     next:(res) =>{
-  //       this.GetAllChat(this.id);
-  //     }
-  //   });
-  // }
+
+
+
+  Send(){
+    if(this.message == "") return;
+    this._chatservice.SendMessage(this.id,this.message).subscribe({
+      next:(res) =>{
+        this.GetAllMessages(this.id);
+      }
+    });
+  }
 
   closeModal(){
     document.getElementsByClassName('chat')[0].classList.toggle("hide");

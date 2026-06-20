@@ -1,0 +1,38 @@
+
+<div class="form">
+   <label>Status</label>
+     <select class="select-form" [(ngModel)]="status"  (change)="GetMyTrip()">
+       <option value="" selected >All</option>
+        <option value="Scheduled">Scheduled</option>
+        <option value="Completed">Completed</option>
+     </select>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>From</th>
+      <th>To</th>
+      <th>DepartureTime</th>
+      <th>ArrivalTime</th>
+      <th>status</th>
+      <th>AvailableSeats</th>
+      <th>BusType</th>
+      <th>Download File</th>
+    </tr>
+  </thead>
+  <tbody>
+      @for(item of AllTripss;track $index){
+         <tr>
+            <td>{{item.fromCity}}</td>
+            <td>{{item.toCity}}</td>
+            <td>{{item.departureTime}}</td>
+            <td>{{item.arrivalTime}}</td>
+            <td>{{item.status}}</td>
+            <td>{{item.availableSeats}}</td>
+            <td>{{item.busType}}</td>
+            <td class="download"><a (click)="UploadFile(item.id)">Download</a></td>
+         </tr>
+      }
+  </tbody>
+</table>

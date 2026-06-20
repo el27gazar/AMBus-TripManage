@@ -188,6 +188,12 @@ MyData:any;
 
    }
 
+
+   Back(){
+    this.toogle();
+        this.SelectedSeat=[];
+      location.reload();
+   }
 closeModal(){
   document.getElementsByClassName('modal')[0].classList.toggle("hide");
   document.getElementsByClassName('overlay')[0].classList.toggle("hide");

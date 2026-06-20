@@ -36,13 +36,9 @@ emergencyContactA!:FormControl;
 Email!:FormControl;
 
 AddForm!:FormGroup;
-
-
 idDriver:string ="";
  temp:boolean = false;
-
  driver:any;
-
  AllUsers:any[] = [];
 
   constructor(private _userservice:User
@@ -196,7 +192,7 @@ idDriver:string ="";
      if(this.UpdateForm.value.fullName && this.UpdateForm.value.phoneNumber && this.UpdateForm.value.role){
       this.UpdateRole(this.UpdateForm.value.id,this.UpdateForm.value.role);
        setTimeout(() => {
-        this._userservice.UpdateUser({id:this.UpdateForm.value.id,fullName:this.UpdateForm.value.fullName,phoneNumber:this.UpdateForm.value.phoneNumber}).subscribe({
+        this._userservice.UpdateUser({id:this.UpdateForm.value.id,fullName:this.fullName.value,phoneNumber:this.phoneNumber.value}).subscribe({
           next:(res)=>{
             this._toast.showToaster("User Updated Successfully");
             this._toast.closeModal();

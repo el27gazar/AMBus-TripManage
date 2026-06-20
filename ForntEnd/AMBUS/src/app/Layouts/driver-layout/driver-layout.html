@@ -1,13 +1,25 @@
-<div class="container">
-  <div class="tripList">
-            <div class="logo">
-              <h1><span>AM</span>BUS</h1>
-            </div>
 
-            <button class="btnlog" (click)="logout()"><i class="bi bi-box-arrow-left"></i> Logout</button>
-  </div>
-  <div class="data">
+<div class="nav">
+      <div class="logo" [routerLink]="['/driver/Trips']">
+        <h1><span>AM</span>BUS</h1>
+      </div>
+      <div class="auth">
+        <div class="user-menu">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1YM3dx3reFLZOUbvkGRZJ5PQDbMo76y6E52Y_aALrXA&s"
+            class="user-img" (click)="isOpen = !isOpen">
+          <div class="menuLogout" *ngIf="isOpen">
+            <a routerLink="/driver/ProfileDriver" (click)="!isOpen">Profile</a>
+            <button (click)="logout()">Logout</button>
+          </div>
+        </div>
+        </div>
+ </div>
 
-  </div>
-  <button></button>
+
+
+<div class="content">
+  <router-outlet></router-outlet>
 </div>
+
+
+<!-- <app-footer></app-footer> -->

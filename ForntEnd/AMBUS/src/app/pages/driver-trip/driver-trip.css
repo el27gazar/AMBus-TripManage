@@ -1,0 +1,43 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+}
+
+table,
+tr,
+th,
+td {
+  border: 1px solid #fff;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600px;
+  padding: 10px;
+}
+
+.download {
+  cursor: pointer;
+}
+
+.download:hover a {
+  color: #4d04f9;
+  text-decoration: underline;
+  cursor: pointer;
+  text-underline-offset: 5px;
+}
+
+.select-form {
+  margin-left: 10px;
+  font-size: 20px;
+  font-weight: 600px;
+}
+.select-form,
+option {
+  color: #000;
+  font-size: 20px;
+  padding: 2px 20px;
+}

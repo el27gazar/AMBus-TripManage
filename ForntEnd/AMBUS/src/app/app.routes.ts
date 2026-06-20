@@ -51,6 +51,12 @@ export const routes: Routes = [
     canActivate:[adminGuard]
   },
   {path:'driver',loadComponent: () => import('./Layouts/driver-layout/driver-layout').then(m => m.DriverLayout),
+     children:[
+       {path:'',redirectTo:'Trips',pathMatch:'full'},
+       {path:'Trips',loadComponent: () => import('./pages/driver-trip/driver-trip').then(m => m.DriverTrip),canActivate:[driverGuard]},
+       {path:'ProfileDriver',loadComponent: () => import('./pages/profile-driver/profile-driver').then(m => m.ProfileDriver),canActivate:[driverGuard]}
+     ]
+    ,
     canActivate:[driverGuard]},
    {path:'unauthorized',loadComponent: () => import('./pages/unauthorized/unauthorized').then(m => m.Unauthorized)},
   // {path:'**',redirectTo:'Login',pathMatch:'full'},
