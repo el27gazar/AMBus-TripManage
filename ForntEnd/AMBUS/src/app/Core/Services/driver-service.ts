@@ -38,4 +38,30 @@ export class DriverService {
     return this._httpClient.get(BaseUrl+"/Drivers/"+id+"/profile");
   }
 
+  GetMyTrip(status?:string):Observable<any> {
+    if(status == null || status == undefined)
+      return this._httpClient.get(BaseUrl+"/Drivers/my-trips");
+    else
+     return this._httpClient.get(BaseUrl+"/Drivers/my-trips?status="+status);
+  }
+
+  downloadManifest(id: string) {
+  this._httpClient.get(
+    `${BaseUrl}/Drivers/my-trips/${id}/manifest`,
+    { responseType: 'blob' }
+  ).subscribe(blob => {
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'manifest.pdf';
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+  });
+}
+
+ 
+
 }

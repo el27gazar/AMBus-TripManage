@@ -1,0 +1,108 @@
+<div class="container py-4">
+
+  <div class="card shadow border-0">
+    <div class="card-body">
+
+      <div class="row align-items-center">
+
+        <div class="col-md-3 text-center">
+          <img class="img" [src]="'https://ui-avatars.com/api/?name=' + driver.fullName + '&size=200'" class="profile-image" alt="Driver">
+
+          <div class="display-row">
+          <h3 class="mt-3 mb-1">{{driver.fullName}}</h3>
+          <span class="badge" [ngClass]="driver.isAvailable ? 'bg-success' : 'bg-danger'">
+            {{driver.isAvailable ? 'Available' : 'Unavailable'}}
+          </span>
+          </div>
+        </div>
+
+
+
+
+        <div class="data col-md-9">
+
+          <h4 class="mb-4">Personal Information</h4>
+
+          <div class="info row g-3">
+
+            <div class="col-md-6">
+              <label>Email</label>
+              <p>{{driver.email}}</p>
+            </div>
+
+            <div class="col-md-6">
+              <label>Phone Number</label>
+              <p>{{driver.phoneNumber}}</p>
+            </div>
+
+            <div class="col-md-6">
+              <label>License Number</label>
+              <p>{{driver.licenseNumber}}</p>
+            </div>
+
+            <div class="col-md-6">
+              <label>License Expiry</label>
+              <p>{{driver.licenseExpiry | date:'dd MMM yyyy'}}</p>
+            </div>
+
+            <div class="col-md-6">
+              <label>Emergency Contact</label>
+              <p>{{driver.emergencyContact}}</p>
+            </div>
+
+            <div class="col-md-6">
+              <label>Created Date</label>
+              <p>{{driver.createdDate | date:'dd MMM yyyy'}}</p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Statistics -->
+
+  <div class="row mt-4 g-4">
+
+    <div class="col-md-2">
+      <div class="stat-card">
+        <h2>{{driver.stats.totalTrips}}</h2>
+        <span>Total Trips</span>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="stat-card success">
+        <h2>{{driver.stats.completedTrips}}</h2>
+        <span>Completed</span>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="stat-card danger">
+        <h2>{{driver.stats.cancelledTrips}}</h2>
+        <span>Cancelled</span>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="stat-card primary">
+        <h2>{{driver.stats.activeTrips}}</h2>
+        <span>Active</span>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="stat-card warning">
+        <h2>{{driver.stats.upcomingTrips}}</h2>
+        <span>Upcoming</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>

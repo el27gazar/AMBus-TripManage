@@ -162,7 +162,8 @@ namespace AMBus.TripManage.Api.Controllers
             var bus = await _uow.Buses.GetByIdAsync(id)
                 ?? throw new NotFoundException(nameof(Bus), id);
 
-            _uow.Buses.Delete(bus);
+            bus.IsActive = false; 
+            //_uow.Buses.Delete(bus);
             await _uow.SaveChangesAsync();
             return NoContent();
         }

@@ -129,3 +129,9 @@ button:hover i {
   margin: auto;
   display: block;
 }
+
+.empty {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 900;
+}

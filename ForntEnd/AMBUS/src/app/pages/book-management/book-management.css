@@ -278,7 +278,7 @@ p {
 
 .btns {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 50%;
   margin: auto;

@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
   <div class="user-img">
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1YM3dx3reFLZOUbvkGRZJ5PQDbMo76y6E52Y_aALrXA&s" alt="user" />
   </div>
@@ -79,8 +79,72 @@
     </form>
     </div>
     </div>
-</div>
+</div> -->
 
+
+
+
+<div class="container py-4">
+
+  <div class="row g-4">
+
+    <!-- Profile Card -->
+    <div class="col-lg-4">
+      <div class="profile-card">
+
+        <img [src]="'https://ui-avatars.com/api/?name=' + user.fullName + '&size=200'" class="avatar" alt="User">
+
+        <h3>{{user.fullName}}</h3>
+
+        <div class="info-item">
+          <span>Email</span>
+          <p>{{user.email}}</p>
+        </div>
+
+        <div class="info-item">
+          <span>Phone Number</span>
+          <p>{{user.phoneNumber}}</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="col-lg-8">
+      <div class="password-card">
+
+        <h4>Change Password</h4>
+
+        <form [formGroup]="FormChangePassword">
+
+          <div class="mb-3">
+            <label>Current Password</label>
+            <input type="password" class="form-control" formControlName="currentPassword">
+          </div>
+
+          <div class="mb-3">
+            <label>New Password</label>
+            <input type="password" class="form-control" formControlName="newPassword">
+          </div>
+
+          <div class="mb-4">
+            <label>Confirm Password</label>
+            <input type="password" class="form-control" formControlName="confirmPassword">
+          </div>
+
+          <button type="button" class="btn btn-primary px-4" (click)="changePassword()">
+
+            Update Password
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
 
 <div class="toast" id="toastError">
   <p class="toast-message"> </p>

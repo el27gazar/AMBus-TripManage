@@ -12,28 +12,42 @@
 
   </div>
     @if(isloggedIn){
-    <!-- <div class="chat-bubble" >
+    <div (click)="OpenConv()" class="chat-bubble" >
       <i class="bi-chat"></i>
-    </div> -->
-    <!-- <div class="chat hide">
+    </div>
 
-      <ul>
+    <div class="chat-popup hide">
+      <div class="chat-header">
+        <div class="user-info">
+          <img src="https://i.pravatar.cc/40" alt="user">
+          <span>Support Team</span>
+        </div>
+        <button (click)="closeModal()">✖</button>
+      </div>
+
+      <div class="chat-body">
+
         @for (item of AllMessage; track $index) {
           @if (item.senderId == userId) {
-        <li ><i class="bi bi-person-fill"></i> {{item.content}}</li>
-        }@else{
-        <li class="message"> {{item.content}} <i class="bi bi-person-fill right"></i> </li>
+            {{item.senderId }} - {{userId}}
+          <div class="message sent">
+            {{item.content}}
+          </div>
+          }@else{
+          <div class="message received ">
+            {{item.content}}
+          </div>
+          }
         }
-      }
-      </ul>
-      <div class="send">
-        <input type="text" placeholder="Message" [(ngModel)]="message" />
-        <button (click)="Send()"><i class="bi bi-send-fill"></i></button>
       </div>
-      <button class="close-modal" (click)="closeModal()">X</button>
-    </div> -->
 
-    }
+      <div class="chat-footer">
+        <input type="text" [(ngModel)]="message" placeholder="Type a message...">
+        <button (click)="Send()">➤</button>
+      </div>
+    </div>
+
+  }
 
 </div>
 

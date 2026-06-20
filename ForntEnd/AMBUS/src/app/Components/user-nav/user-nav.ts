@@ -21,7 +21,12 @@ export class UserNav {
 
 
   logout(){
-     this._authService.Logout().subscribe(res=>{});
+     this._authService.Logout().subscribe({
+       next:(res)=>{
+         localStorage.removeItem('role');
+         location.href = '/login';
+       },
+     });
      this.isOpen=false;
   }
 

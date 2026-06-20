@@ -26,7 +26,8 @@ export class AuthService {
   }
 
   ResetPasswordService(Data:IresetPassword):Observable<any>{
-    return this._httpClient.post(BaseUrl+"/Auth/reset-password",Data);
+    console.log(Data);
+    return this._httpClient.post(BaseUrl+"/Auth/reset-password",{email:Data.Email,otpCode:Data.Token,newPassword:Data.NewPassword});
   }
 
   ChangePasswordService(Data:IChangePassword):Observable<any>{

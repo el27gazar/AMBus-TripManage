@@ -11,6 +11,11 @@ import { GlobalService } from '../../Core/Services/global-service';
   styleUrl: './profile.css',
 })
 export class Profile {
+  user = {
+  fullName: 'User',
+  email: '8521d9cdbc@emailinbo.live',
+  phoneNumber: '01235458966'
+};
 MyData:any;
 fullName!:FormControl;
 phoneNumber!:FormControl;

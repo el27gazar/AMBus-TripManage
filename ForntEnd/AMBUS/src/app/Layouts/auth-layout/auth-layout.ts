@@ -10,4 +10,12 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AuthLayout {
 
+  constructor() {
+    var role = localStorage.getItem('role');
+    if(role === 'User') location.href = '/user/home'
+    else if(role === 'Driver') location.href = '/driver'
+    else if(role === 'Admin') location.href = '/admin/Dashboard'
+
+
+  }
 }

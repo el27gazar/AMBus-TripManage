@@ -1,8 +1,8 @@
-*{
+/* *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color:#000; 
+  color:#000;
 }
 .chat-container {
   width: 500px;
@@ -16,4 +16,125 @@
 
 input {
   color: #000;
+} */
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* Chat Box */
+.chat-popup {
+  width: 340px;
+  height: 500px;
+  background: white;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.chat-header {
+  background: #0084ff;
+  color: white;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.chat-header button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Body */
+.chat-body {
+  flex: 1;
+  padding: 15px;
+  background: #f0f2f5;
+  overflow-y: auto;
+}
+
+.message {
+  max-width: 75%;
+  padding: 10px 15px;
+  border-radius: 18px;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+}
+
+.received {
+  background: white;
+  color: #333;
+}
+
+.sent {
+  background: #0084ff;
+  color: white;
+  margin-left: auto;
+}
+
+/* Footer */
+.chat-footer {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background: white;
+}
+
+.chat-footer input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 20px;
+  background: #f0f2f5;
+}
+
+.chat-footer button {
+  margin-left: 8px;
+  border: none;
+  background: #0084ff;
+  color: white;
+  width: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Floating Icon */
+.chat-icon {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 60px;
+  height: 60px;
+  background: #0084ff;
+  color: white;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }

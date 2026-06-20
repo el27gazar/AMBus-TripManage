@@ -1,73 +1,27 @@
-<div class="chat-container">
-
-  <div class="messages">
-
-    <div *ngFor="let msg of messages">
-
-      <strong>
-        {{msg.senderName}}
-      </strong>
-
-      :
-
-      {{msg.content}}
-
-      <small>
-        {{msg.createdDate}}
-      </small>
-
-    </div>
-
-  </div>
-
-  <div *ngIf="isTyping">
-    Typing...
-  </div>
-
-  <input [(ngModel)]="message" (input)="typing()" (blur)="stopTyping()">
-
-  <button (click)="sendMessage()">
-
-    Send
-
-  </button>
-
+<div class="chat-icon">
+  💬
 </div>
-
-<div class="row">
-
-  <div class="col-4">
-
-    <div *ngFor="let conv of conversations" (click)="openConversation(conv.id)">
-
-      {{conv.subject}}
-
+<!-- <div class="chat-popup">
+  <div class="chat-header">
+    <div class="user-info">
+      <img src="https://i.pravatar.cc/40" alt="user">
+      <span>Support Team</span>
     </div>
-
+    <button>✖</button>
   </div>
 
-  <div class="col-8">
-
-    <div *ngFor="let msg of messages">
-
-      <b>
-        {{msg.senderName}}
-      </b>
-
-      :
-
-      {{msg.content}}
-
+  <div class="chat-body">
+    <div class="message received">
+      Hello 👋
     </div>
 
-    <input [(ngModel)]="messageText">
-
-    <button (click)="sendMessage()">
-
-      Send
-
-    </button>
-
+    <div class="message sent">
+      Hi, how can I help?
+    </div>
   </div>
 
-</div>
+  <div class="chat-footer">
+    <input type="text" placeholder="Type a message...">
+    <button>➤</button>
+  </div>
+</div> -->
