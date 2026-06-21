@@ -2,6 +2,7 @@
 using AMBus.TripManage.Application.Contracts.Interfaces.Services;
 using AMBus.TripManage.Application.Dtos.Payment;
 using AMBus.TripManage.Application.Exceptions;
+using AMBus.TripManage.Application.Templates;
 using AMBus.TripManage.Domain.Entites;
 using AutoMapper;
 using MediatR;
@@ -20,11 +21,12 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.VarifyStripe
         private readonly IMapper _mapper;
         private readonly IPaymentService _paymentService;
         private readonly ISystemNotificationService _notif;
+        private readonly IEmailService _email;
 
         public VerifyAndConfirmStripeSessionCommandHandler(
             IUnitOfWork uow, IMapper mapper,
-            IPaymentService paymentService, ISystemNotificationService notif)
-        { _uow = uow; _mapper = mapper; _paymentService = paymentService; _notif = notif; }
+            IPaymentService paymentService, ISystemNotificationService notif, IEmailService email)
+        { _uow = uow; _mapper = mapper; _paymentService = paymentService; _notif = notif; _email = email; }
 
         public async Task<PaymentResultDto> Handle(
             VerifyAndConfirmStripeSessionCommand request, CancellationToken ct)
@@ -55,7 +57,6 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.VarifyStripe
 
             if (verify.Status != "paid")
             {
-                // لسه مدفوعة، أو العميل لغى، أو الجلسة منتهية - ما نلمسش الداتا بيز
                 return new PaymentResultDto(false,
                     "لم يكتمل الدفع بعد.", "pending",
                     _mapper.Map<PaymentDto>(payment));
@@ -79,8 +80,43 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.VarifyStripe
             await _notif.NotifyPaymentReceivedAsync(booking.Id, payment.Amount);
             await _notif.NotifyBookingConfirmedAsync(booking.Id);
 
+            try
+            {
+                await SendTicketEmailAsync(booking, payment);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send ticket email: {ex.Message}");
+            }
+
             return new PaymentResultDto(true, "تم تأكيد الدفع بنجاح.", "complete",
                 _mapper.Map<PaymentDto>(payment));
         }
+
+
+        private async Task SendTicketEmailAsync(Booking booking, Payment payment)
+        {
+            if (string.IsNullOrWhiteSpace(booking.User?.Email))
+                return;
+
+            var seatNumbers = booking.BookingSeats != null && booking.BookingSeats.Any()
+                ? string.Join(", ", booking.BookingSeats.Select(bs => bs.Seat?.SeatNumber))
+                : "-";
+
+            var subject = "تأكيد حجزك - AMBus";
+
+            var body = EmailTemplates.BookingConfirmed(
+                fullName: booking.User.FullName,
+                fromCity: booking.Trip?.From?.Name ?? "-",
+                toCity: booking.Trip?.To?.Name ?? "-",
+                departureTime: booking.Trip?.DepartureTime ?? DateTime.UtcNow,
+                seatNumbers: seatNumbers,
+                amount: payment.Amount,
+                currency: payment.Currency,
+                bookingId: booking.Id);
+
+            await _email.SendEmailAsync(booking.User.Email, subject, body);
+        }
     }
+
 }
