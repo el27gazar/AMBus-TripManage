@@ -1,7 +1,9 @@
 ﻿using AMBus.TripManage.Application.Contracts.Interfaces;
 using AMBus.TripManage.Application.Contracts.Interfaces.Services;
 using AMBus.TripManage.Application.Dtos.Payment;
+using AMBus.TripManage.Application.Dtos.TicketDto;
 using AMBus.TripManage.Application.Exceptions;
+using AMBus.TripManage.Application.Features.BookingsF.Queries.GetTicket;
 using AMBus.TripManage.Application.Templates;
 using AMBus.TripManage.Domain.Entites;
 using AutoMapper;
@@ -66,35 +68,39 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.ConfirmCashPa
             {
                 var fullBooking = await _uow.Bookings.GetBookingWithDetailsAsync(booking.Id);
                 if (fullBooking != null)
-                    await SendTicketEmailAsync(fullBooking, payment);
+                {
+                    var ticket = _mapper.Map<TicketDto>(fullBooking);
+                    await SendTicketEmailAsync(fullBooking, payment, ticket);
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"⚠️ Failed to send ticket email: {ex.Message}");
             }
+
             return new PaymentResultDto(true, "تم تأكيد الدفع الكاش بنجاح.", "complete",
                 _mapper.Map<PaymentDto>(payment));
         }
-        private async Task SendTicketEmailAsync(Booking booking, Payment payment)
+        private async Task SendTicketEmailAsync(Booking booking, Payment payment, TicketDto ticket)
         {
             if (string.IsNullOrWhiteSpace(booking.User?.Email))
                 return;
 
-            var seatNumbers = booking.BookingSeats != null && booking.BookingSeats.Any()
-                ? string.Join(", ", booking.BookingSeats.Select(bs => bs.Seat?.SeatNumber))
-                : "-";
+            var seatNumbers = ticket.Passengers?.Select(p => p.SeatNumber).ToList()
+                ?? new List<string>();
 
-            var subject = "تأكيد حجزك - AMBus";
+            var subject = "تذكرتك جاهزة - AMBus";
 
-            var body = EmailTemplates.BookingConfirmed(
+            var body = EmailTemplates.Ticket(
                 fullName: booking.User.FullName,
-                fromCity: booking.Trip?.From?.Name ?? "-",
-                toCity: booking.Trip?.To?.Name ?? "-",
-                departureTime: booking.Trip?.DepartureTime ?? DateTime.UtcNow,
+                fromCity: ticket.FromCity,
+                toCity: ticket.ToCity,
+                departureTime: ticket.DepartureTime,
+                busPlate: ticket.BusPlate,
+                busType: ticket.BusType,
                 seatNumbers: seatNumbers,
-                amount: payment.Amount,
-                currency: payment.Currency,
-                bookingId: booking.Id);
+                qrCodeBase64: ticket.QrCode,
+                bookingId: ticket.BookingId);
 
             await _email.SendEmailAsync(booking.User.Email, subject, body);
         }
