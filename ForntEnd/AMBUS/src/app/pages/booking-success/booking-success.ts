@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BookTripService } from '../../Core/Services/book-trip';
 
 @Component({
   selector: 'app-booking-success',
@@ -8,13 +9,11 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './booking-success.css',
 })
 export class BookingSuccess {
-
-  constructor(private route: ActivatedRoute) {}
+sessionId:string=''
+constructor(private route: ActivatedRoute,private _bookService:BookTripService) {}
   ngOnInit() {
   this.route.queryParams.subscribe(params => {
-    const sessionId = params['session_id'];
-
-    console.log(sessionId);
+    this.sessionId = params['session_id'];
   });
 }
 
@@ -24,4 +23,11 @@ CloseModal(){
   location.href = "user/MyTrips";
 }
 
+Confirm(){
+  this._bookService.ConfirmPayment(this.sessionId).subscribe({
+    next:(res)=>{
+      this.CloseModal();
+    }
+  })
+}
 }

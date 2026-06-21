@@ -32,31 +32,31 @@ namespace AMBus.TripManage.Application.Features.ChatF.Commands.CreateConversatio
 
             if (existing is not null)
             {
-                if (!string.IsNullOrWhiteSpace(command.FirstMessage))
-                {
-                    var now = DateTime.UtcNow;
-                    var uid = command.UserId.ToString();
+                //if (!string.IsNullOrWhiteSpace(command.FirstMessage))
+                //{
+                //    var now = DateTime.UtcNow;
+                //    var uid = command.UserId.ToString();
 
-                    var newMessage = new ChatMessage
-                    {
-                        Id = Guid.NewGuid(),
-                        ConversationId = existing.Id,
-                        SenderId = command.UserId,
-                        Content = command.FirstMessage.Trim(),
-                        IsRead = false,
-                        CreatedBy = uid,
-                        CreatedDate = now,
-                        LastModifiedBy = uid,
-                        LastModifiedDate = now
-                    };
+                //    var newMessage = new ChatMessage
+                //    {
+                //        Id = Guid.NewGuid(),
+                //        ConversationId = existing.Id,
+                //        SenderId = command.UserId,
+                //        Content = command.FirstMessage.Trim(),
+                //        IsRead = false,
+                //        CreatedBy = uid,
+                //        CreatedDate = now,
+                //        LastModifiedBy = uid,
+                //        LastModifiedDate = now
+                //    };
 
-                    await _chatRepo.AddMessageAsync(newMessage);
+                //    await _chatRepo.AddMessageAsync(newMessage);
 
-                    existing.LastModifiedDate = now;
-                    existing.LastModifiedBy = uid;
+                //    existing.LastModifiedDate = now;
+                //    existing.LastModifiedBy = uid;
 
-                    await _chatRepo.SaveChangesAsync();
-                }
+                //    await _chatRepo.SaveChangesAsync();
+                //}
 
                 return _mapper.Map<ConversationDto>(existing);
             }

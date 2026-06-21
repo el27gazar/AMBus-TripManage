@@ -86,8 +86,7 @@
 
 <div class="container py-4">
 
-  <div class="row g-4">
-
+  <div class="row  g-4">
     <!-- Profile Card -->
     <div class="col-lg-4">
       <div class="profile-card">
@@ -110,8 +109,11 @@
     </div>
 
     <!-- Change Password -->
-    <div class="col-lg-8">
-      <div class="password-card">
+     <div class="btnchange ">
+       <button class="btn btn-primary px-4 btnchangex " (click)="displayChangePassword()">Change Password</button>
+     </div>
+    <div class="col-lg-8 p-3 formchange hide">
+      <div class="password-card ">
 
         <h4>Change Password</h4>
 
@@ -140,6 +142,7 @@
         </form>
 
       </div>
+
     </div>
 
   </div>

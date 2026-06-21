@@ -14,6 +14,7 @@ export class Login {
   Email!:FormControl ;
   Password!:FormControl ;
 
+  showPassword:boolean = false;
   LoginForm!:FormGroup;
 
 
@@ -65,5 +66,8 @@ export class Login {
       });
     }
 
+      ChangePassword(){
+    this.showPassword = !this.showPassword;
+  }
 
 }

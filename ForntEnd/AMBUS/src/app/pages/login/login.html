@@ -16,12 +16,16 @@
             <p class="Error"> ! Validation error: Email Address Is Required </p>
          }
        }
-      <input type="password" placeholder="Password" formControlName="Password" />
+      <input [type]="showPassword? 'text': 'password'" placeholder="Password" formControlName="Password" />
        @if(Password.dirty){
          @if(Password.getError("required")){
             <p class="Error"> ! Validation error: Password Is Required </p>
          }
        }
+            <div class="showPassword">
+              <input type="checkbox" (change)="ChangePassword()" />
+              <label for="checkbox" style="color:black; ">Show Password</label>
+            </div>
       <a [routerLink]="['/ForgetPassword']" class="a-form">Forgot your Password? </a>
       <button class="submit-from" type="submit">Login</button>
     </form>

@@ -56,7 +56,7 @@ namespace AMBus.TripManage.Api.Controllers
 
         // POST /api/payments/{id}/refund  [Admin]
         [HttpPost("{id:guid}/refund")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Refund(
             Guid id, [FromBody] RefundRequest req)
         {

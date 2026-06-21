@@ -17,8 +17,8 @@
     </div>
 
     <div class="chat-popup hide">
-      <div class="chat-header">
-        <div class="user-info">
+      <div class="chat-header" >
+        <div class="user-info" (click)="OpenConv()">
           <img src="https://i.pravatar.cc/40" alt="user">
           <span>Support Team</span>
         </div>
@@ -29,7 +29,6 @@
 
         @for (item of AllMessage; track $index) {
           @if (item.senderId == userId) {
-            {{item.senderId }} - {{userId}}
           <div class="message sent">
             {{item.content}}
           </div>
