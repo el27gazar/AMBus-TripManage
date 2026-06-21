@@ -41,6 +41,9 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
 
             var booking = payment.Booking;
 
+            if (booking.Status == BookingStatus.Cancelled)
+                throw new ConflictException("الحجز ملغي بالفعل.");
+
             var trip = await _uow.Trips.GetByIdAsync(booking.TripId)
                 ?? throw new NotFoundException(nameof(Trip), booking.TripId);
 
