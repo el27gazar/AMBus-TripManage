@@ -29,7 +29,7 @@ export const routes: Routes = [
       {path:'MyTrips',loadComponent: () => import('./pages/my-trips/my-trips').then(m => m.MyTrips),canActivate:[userGuard]},
       {path:'About',loadComponent: () => import('./pages/about/about').then(m => m.About),canActivate:[userGuard]},
       {path:'Notification',loadComponent: () => import('./pages/notification/notification').then(m => m.Notification),canActivate:[userGuard]},
-      {path:'Chat',loadComponent: () => import('./pages/chat-component/chat-component').then(m => m.ChatComponent),canActivate:[userGuard]},
+      // {path:'Chat',loadComponent: () => import('./pages/chat-component/chat-component').then(m => m.ChatComponent),canActivate:[userGuard]},
       {path:'profile',loadComponent: () => import('./pages/profile/profile').then(m => m.Profile),canActivate:[userGuard]},
     ],
     canActivate:[userGuard]

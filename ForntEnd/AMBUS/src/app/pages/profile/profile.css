@@ -185,6 +185,7 @@ input {
   outline: none;
   margin: auto;
   display: block;
+  cursor: pointer;
 }
 
 .btn-primary:hover {
@@ -200,4 +201,12 @@ label {
 form {
   width: 50%;
   margin: auto;
+}
+
+.hide {
+  display: none;
+}
+.btnchange {
+  display: block;
+  padding-bottom: 14px;
 }

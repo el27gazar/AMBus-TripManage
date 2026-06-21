@@ -110,4 +110,11 @@ ConfirmPasswordMatch (Password:AbstractControl):ValidatorFn{
       return null;
     }
 }
+
+
+displayChangePassword(){
+  document.getElementsByClassName("formchange")[0].classList.toggle("hide");
+  document.getElementsByClassName("btnchangex")[0].classList.toggle("hide");
+}
+
 }

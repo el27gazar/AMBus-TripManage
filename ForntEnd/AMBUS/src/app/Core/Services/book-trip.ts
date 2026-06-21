@@ -44,5 +44,7 @@ Confirm(id:string):Observable<any>{
   return this._httpClient.put(BaseUrl+"/Bookings/"+id+"/confirm","");
 }
 
-
+ConfirmPayment(id:string):Observable<any>{
+  return this._httpClient.get(BaseUrl+"/Payments/verify-session?sessionId="+id);
+}
 }
