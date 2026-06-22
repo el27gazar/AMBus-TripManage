@@ -25,7 +25,7 @@ namespace AMBus.TripManage.Application.Features.NotificationF.Commands.DeleteNot
                 ?? throw new NotFoundException(nameof(Notification), request.NotificationId);
 
             if (notification.UserId != request.UserId)
-                throw new UnauthorizedException("ليس لديك صلاحية حذف هذا الإشعار.");
+                throw new UnauthorizedException("You do not have the authority to edit this notice..");
 
             _uow.Notifications.Delete(notification);
             await _uow.SaveChangesAsync();

@@ -36,3 +36,37 @@
       }
   </tbody>
 </table>
+
+<div (click)="OpenConv()" class="chat-bubble">
+  <i class="bi-chat"></i>
+</div>
+
+<div class="chat-popup hide">
+  <div class="chat-header">
+    <div class="user-info" (click)="OpenConv()">
+      <img src="https://i.pravatar.cc/40" alt="user">
+      <span>Support Team</span>
+    </div>
+    <button (click)="closeModal()">✖</button>
+  </div>
+
+  <div class="chat-body">
+
+    @for (item of AllMessage; track $index) {
+    @if (item.senderId == userId) {
+    <div class="message sent">
+      {{item.content}}
+    </div>
+    }@else{
+    <div class="message received ">
+      {{item.content}}
+    </div>
+    }
+    }
+  </div>
+
+  <div class="chat-footer">
+    <input type="text" [(ngModel)]="message" placeholder="Type a message...">
+    <button (click)="Send()">➤</button>
+  </div>
+</div>

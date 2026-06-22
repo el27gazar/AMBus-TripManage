@@ -30,10 +30,10 @@ namespace AMBus.TripManage.Persistance.Service
             await _sender.SendAsync(
                 booking.User.Id,
                 NotificationType.BookingConfirmed,
-                $"✅ تم تأكيد حجزك | " +
+                $"✅ Your reservation has been confirmed | " +
                 $"{booking.Trip.From.Name} → {booking.Trip.To.Name} | " +
                 $"{booking.Trip.DepartureTime:dd MMM HH:mm} | " +
-                $"رمز الحجز: {booking.QrCode}");
+                $"Reservation Code: {booking.QrCode}");
         }
 
         public async Task NotifyBookingCancelledAsync(
@@ -42,7 +42,7 @@ namespace AMBus.TripManage.Persistance.Service
             var booking = await GetBookingWithTripAsync(bookingId);
             if (booking is null) return;
 
-            var msg = $"❌ تم إلغاء حجزك | " +
+            var msg = $"❌ Your reservation has been cancelled | " +
                       $"{booking.Trip.From.Name} → " +
                       $"{booking.Trip.To.Name}";
 
@@ -53,7 +53,7 @@ namespace AMBus.TripManage.Persistance.Service
                 await _sender.SendAsync(
                     booking.User.Id,
                     NotificationType.General,
-                    "تم إلغاء حجزك من قِبل الإدارة. سيتم استرداد المبلغ خلال 3-5 أيام.");
+                    "Your booking has been cancelled by management. You will receive a refund within 3-5 days.");
         }
 
         public async Task NotifyBookingPendingPaymentAsync(Guid bookingId)
@@ -64,9 +64,9 @@ namespace AMBus.TripManage.Persistance.Service
             await _sender.SendAsync(
                 booking.User.Id,
                 NotificationType.General,
-                $"⏳ حجزك في انتظار الدفع | " +
+                $"⏳ Your reservation is pending payment | " +
                 $"{booking.Trip.From.Name} → {booking.Trip.To.Name} | " +
-                $"المبلغ: {booking.TotalPrice} جنيه");
+                $"Price: {booking.TotalPrice} EGP");
         }
 
         public async Task NotifyPaymentReceivedAsync(Guid bookingId, decimal amount)
@@ -79,8 +79,8 @@ namespace AMBus.TripManage.Persistance.Service
             await _sender.SendAsync(
                 booking.User.Id,
                 NotificationType.PaymentReceived,
-                $"💰 تم استلام دفعتك بنجاح | المبلغ: {amount} جنيه | " +
-                $"رمز الحجز: {booking.QrCode}");
+                $"💰 Your payment has been successfully received | Amount: {amount} EGP | " +
+                $"Reservation Code: {booking.QrCode}");
         }
 
         public async Task NotifyPaymentFailedAsync(Guid bookingId)
@@ -93,8 +93,8 @@ namespace AMBus.TripManage.Persistance.Service
             await _sender.SendAsync(
                 booking.User.Id,
                 NotificationType.General,
-                $"⚠️ فشلت عملية الدفع | رمز الحجز: {booking.QrCode} | " +
-                $"يرجى المحاولة مرة أخرى.");
+                $"⚠️ Payment failed | Booking code: {booking.QrCode} | " +
+                $"Try again later.");
         }
 
         public async Task NotifyRefundProcessedAsync(Guid bookingId, decimal amount)
@@ -108,14 +108,14 @@ namespace AMBus.TripManage.Persistance.Service
             await _sender.SendAsync(
                 booking.User.Id,
                 NotificationType.PaymentReceived,
-                $"شكراً | سيصلك خلال 3-5 أيام عمل {amount} جنيه | تم إرجاع");
+                $"Thank you | You will receive it within 3-5 business days {amount} EGP | Returned");
         }
 
         public async Task NotifyTripStartedAsync(Guid tripId)
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
-                t => $"🚌 رحلتك بدأت | " +
-                     $"{t.From.Name} → {t.To.Name} | رحلة موفقة!");
+                t => $"🚌Your journey has begun | " +
+                     $"{t.From.Name} → {t.To.Name} | god speed!");
 
             await _sender.SendBulkAsync(
                 userIds, NotificationType.General, msg);
@@ -124,10 +124,10 @@ namespace AMBus.TripManage.Persistance.Service
         public async Task NotifyTripCancelledAsync(Guid tripId, string reason)
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
-                t => $"❌ تم إلغاء الرحلة | " +
+                t => $"❌The flight has been cancelled | " +
                      $"{t.From.Name} → {t.To.Name} | " +
                      $"{t.DepartureTime:dd MMM HH:mm} | " +
-                     $"السبب: {reason} | سيتم استرداد المبلغ تلقائياً.");
+                     $"Reason: {reason} | The amount will be refunded automatically.");
 
             await _sender.SendBulkAsync(
                 userIds, NotificationType.TripCancelled, msg);
@@ -141,15 +141,15 @@ namespace AMBus.TripManage.Persistance.Service
                 await _sender.SendAsync(
                     trip.Driver.UserId,
                     NotificationType.TripCancelled,
-                    $"❌ تم إلغاء رحلتك | {msg}");
+                    $"❌ Your flight has been cancelled| {msg}");
         }
 
         public async Task NotifyTripCompletedAsync(Guid tripId)
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
-                t => $"✅ اكتملت رحلتك | " +
+                t => $"✅Your journey is complete | " +
                      $"{t.From.Name} → {t.To.Name} | " +
-                     $"شاركنا تقييمك ⭐");
+                     $"Share your rating with us ⭐");
 
             await _sender.SendBulkAsync(
                 userIds, NotificationType.General, msg);
@@ -158,9 +158,9 @@ namespace AMBus.TripManage.Persistance.Service
         public async Task NotifyTripReminderAsync(Guid tripId)
         {
             var (userIds, msg) = await BuildTripDataAsync(tripId,
-                t => $"⏰ تذكير | رحلتك بعد ساعة | " +
+                t => $"⏰Reminder | Your flight is in one hour | " +
                      $"{t.From.Name} → {t.To.Name} | " +
-                     $"{t.DepartureTime:HH:mm} | كن في موعدك!");
+                     $"{t.DepartureTime:HH:mm} | Be on time!");
 
             await _sender.SendBulkAsync(
                 userIds, NotificationType.TripReminder, msg);

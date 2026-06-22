@@ -34,15 +34,15 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
                 ?? throw new NotFoundException(nameof(Payment), command.PaymentId);
 
             if (payment.Status == PaymentStatus.Refunded)
-                throw new ConflictException("تم الاسترداد مسبقاً.");
+                throw new ConflictException("The refund has already been processed.");
 
             if (payment.Status != PaymentStatus.Paid)
-                throw new BusinessRuleException("لا يمكن استرداد دفعة غير مكتملة.");
+                throw new BusinessRuleException("An incomplete payment cannot be refunded.");
 
             var booking = payment.Booking;
 
             if (booking.Status == BookingStatus.Cancelled)
-                throw new ConflictException("الحجز ملغي بالفعل.");
+                throw new ConflictException("The reservation has already been cancelled.");
 
             var trip = await _uow.Trips.GetByIdAsync(booking.TripId)
                 ?? throw new NotFoundException(nameof(Trip), booking.TripId);
@@ -51,20 +51,20 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
 
             if (timeUntilDeparture <= TimeSpan.FromHours(1))
                 throw new BusinessRuleException(
-                    "لا يمكن استرداد المبلغ خلال أقل من ساعة على انطلاق الرحلة.");
+                    "Refunds cannot be issued within one hour of the flight's departure.");
 
             if (payment.Method != PaymentMethod.Cash)
             {
                 // لازم PaymentIntent ID الحقيقي (pi_...) - مش Session ID
                 var txId = payment.StripePaymentIntentId
                         ?? throw new BusinessRuleException(
-                            "لا يوجد معرف عملية Stripe صالح لهذه الدفعة.");
+                            "There is no valid Stripe transaction ID for this batch.");
 
                 var refund = await _paymob.RefundAsync(
                     txId, "Stripe", payment.Amount, command.Reason);
 
                 if (!refund.Success)
-                    throw new BusinessRuleException($"فشل الاسترداد: {refund.Error}");
+                    throw new BusinessRuleException($"Refund failed: {refund.Error}");
             }
 
             var now = DateTime.UtcNow;
@@ -89,7 +89,7 @@ namespace AMBus.TripManage.Application.Features.PaymentsF.Commands.RefundPayment
 
             await _notif.NotifyRefundProcessedAsync(booking.Id, payment.Amount);
 
-            return new PaymentResultDto(true, "تم الاسترداد بنجاح.", "complete",
+            return new PaymentResultDto(true, "Refund Success.", "complete",
                 _mapper.Map<PaymentDto>(payment));
         }
     }

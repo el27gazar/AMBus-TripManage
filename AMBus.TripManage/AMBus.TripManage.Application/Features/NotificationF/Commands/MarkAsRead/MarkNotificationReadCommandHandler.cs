@@ -25,7 +25,7 @@ namespace AMBus.TripManage.Application.Features.NotificationF.Commands.MarkAsRea
                 ?? throw new NotFoundException(nameof(Notification), request.NotificationId);
 
             if (notification.UserId != request.UserId)
-                throw new UnauthorizedException("ليس لديك صلاحية تعديل هذا الإشعار.");
+                throw new UnauthorizedException("You do not have the authority to edit this notice..");
 
             notification.IsRead = true;
             notification.LastModifiedDate = DateTime.UtcNow;

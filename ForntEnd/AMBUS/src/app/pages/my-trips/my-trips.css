@@ -86,6 +86,7 @@ button:hover i {
 
 .modal {
   overflow-y: scroll;
+  max-height: 80vh;
   color: #000;
 }
 .modal label,

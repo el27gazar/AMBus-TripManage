@@ -22,7 +22,7 @@ namespace AMBus.TripManage.Application.Features.NotificationF.Commands.SendNotif
             CancellationToken cancellationToken)
         {
             if (!Enum.TryParse<NotificationType>(request.Type, out var type))
-                throw new BusinessRuleException("نوع إشعار غير صحيح.");
+                throw new BusinessRuleException("Invalid Notify.");
 
             var notifications = request.UserIds.Select(userId => new Notification
             {

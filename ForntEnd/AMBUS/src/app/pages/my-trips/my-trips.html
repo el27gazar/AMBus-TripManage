@@ -11,6 +11,7 @@
         @if (item.status=="Confirmed") {
         <li>
           <button  (click)="GetTicket(item.id)">Ticket</button>
+          <button  (click)="Refund(item.id)">Refund</button>
         </li>
 }
       </ul>
@@ -50,3 +51,6 @@
   <button class="btn-Close" (click)="closeModal()">Close</button>
 </div>
 
+  <div class="toast" id="toastError">
+    <p class="toast-message"> </p>
+  </div>

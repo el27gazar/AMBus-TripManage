@@ -46,4 +46,21 @@ closeModal(){
 this._toast.closeModal();
 }
 
+Refund(id:string){
+  this._bookService.GetById(id).subscribe({
+    next:(res)=>{
+     this._bookService.Refund(res.payment.id).subscribe({
+         next:(res)=>{
+           this._toast.showToaster("Refund Successfull");
+           this.GetMyBooking();
+         },
+         error:(err)=>{
+           this._toast.showToaster(err.error.errors[0]);
+         }
+       })
+    }
+  })
+
+}
+
 }
